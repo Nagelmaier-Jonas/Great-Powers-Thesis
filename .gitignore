@@ -416,5 +416,4 @@ packages
 global.json
 
 # Database
-/Database/data/
-/Database/schema.sql
+/Databases
