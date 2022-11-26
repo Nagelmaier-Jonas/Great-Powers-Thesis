@@ -1,0 +1,67 @@
+﻿@import url(https://fonts.googleapis.com/css?family=Bebas+Neue);
+
+a .gold-texture{
+    background: url('../img/gold-texture.jpg') no-repeat center center;
+    background-size: 100%;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+button span .gold-texture{
+    background: url('../img/gold-texture.jpg') no-repeat center center;
+    background-size: 100%;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+div .gold-texture{
+    background: url('../img/gold-texture.jpg') no-repeat center center;
+    background-size: 100%;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+span.gold-texture{
+    font-family: 'Bebas Neue', cursive;
+    font-size: 3em;
+    font-weight: bolder;
+    text-align: center;
+    filter: drop-shadow(2px 4px 6px black);
+    letter-spacing: 5px;
+}
+
+span.logo {
+    font-size: 4em !important;
+}
+
+.nav-link:hover span:not(.logo){
+    filter: drop-shadow(0px 0px 0px black) !important;
+    transition: filter 0.3s ease-in-out;
+}
+.nav-button:hover span:not(.logo){
+    filter: drop-shadow(0px 0px 0px black) !important;
+    transition: filter 0.3s ease-in-out;
+}
+.nav-link.nav-link:hover{
+    text-decoration: none !important; 
+}
+
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.hundredPercent{
+    width: 100% !important;
+    height: 100% !important;
+}
+.menuImage {
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
