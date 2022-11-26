@@ -1,0 +1,23 @@
+﻿@page "/Load"
+@using Domain.Services
+@inject DockerService DockerService
+
+<SaveStates DockerContainers="DockerContainer"/>
+@if (IsLoading){
+    <MudProgressCircular Indeterminate="true" Color="Color.Primary"/>
+}
+
+@code {
+
+    private List<string> DockerContainer { get; set; } = new();
+
+    [CascadingParameter]
+    private bool IsLoading { get; set; }
+
+    protected override void OnInitialized(){
+        DockerContainer = Directory.GetDirectories("../Databases").Select(x => x.Split('\\').Last()).ToList();
+        DockerContainer.Remove("default");
+    }
+
+}
+

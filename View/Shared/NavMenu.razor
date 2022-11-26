@@ -1,0 +1,44 @@
+﻿@using Model.Configuration
+@using Microsoft.EntityFrameworkCore
+@using View.Components.Sidebar
+@using Domain.Services
+@inject GreatPowersDbContext GreatPowersDbContext
+@inject SidebarService SidebarService
+
+<div>
+    <nav class="flex-column noselect">
+        <div class="nav-item px-3">
+            <MudLink class="nav-link gold-texture" Href="/">
+                 <span class="gold-texture logo">Great Powers</span>
+            </MudLink>
+        </div>
+    </nav>
+    @foreach (var item in SidebarService.Items){
+        <nav class="flex-column noselect">
+            <div class="nav-item px-3">
+                @if (item.OnClick is not null){
+                    <MudButton class="nav-link gold-texture" OnClick="@item.OnClick">
+                        <span class="oi oi-@item.Icon" aria-hidden="true"></span><span class="gold-texture">@item.Name</span>
+                    </MudButton>
+                }
+                else{
+                    <MudLink class="nav-link gold-texture" Href="@item.Link">
+                        <span class="oi oi-@item.Icon" aria-hidden="true"></span><span class="gold-texture">@item.Name</span>
+                    </MudLink>
+                }
+            </div>
+        </nav>
+    }
+</div>
+
+@code {
+    protected override void OnInitialized(){
+        SidebarService.HandleSidebarChange += HandleSidebarChange;
+    }
+
+    private async void HandleSidebarChange(){
+        await InvokeAsync(StateHasChanged);
+    }
+
+}
+

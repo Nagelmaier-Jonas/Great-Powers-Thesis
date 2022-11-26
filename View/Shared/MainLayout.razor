@@ -1,0 +1,43 @@
+﻿@using Model.Entities
+@using Domain.Repositories
+@inherits LayoutComponentBase
+@inject UserRepository UserRepository
+
+<PageTitle>Great - Powers</PageTitle>
+
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<CascadingValue Value="CurrentUser">
+    <div class="page">
+        <div class="sidebar">
+            <NavMenu/>
+        </div>
+        <main>
+            <article class="content">
+                @Body
+            </article>
+        </main>
+    </div>
+</CascadingValue>
+
+@code{
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    private User? CurrentUser { get; set; }
+
+    protected override async Task OnInitializedAsync(){
+        var authState = await authenticationStateTask;
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated){
+            CurrentUser = Task.Run(() => UserRepository.GetByUsername(user.Identity.Name)).Result;
+            if (CurrentUser is null){
+                Console.WriteLine("User not found");
+            }
+        }
+       
+        await InvokeAsync(StateHasChanged);
+    }
+}

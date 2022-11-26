@@ -1,0 +1,39 @@
+﻿@page "/MainMenu"
+@using Model.Entities
+@using Model.Configuration
+@inherits SidebarComponent
+@inject GreatPowersDbContext GreatPowersDbContext
+
+<MudImage Class="menuImage" Src="https://www.aviartnutkins.com/images/pencil/large/PC17-Spirit-of-Kent.jpg"/> 
+
+@code {
+    protected override void OnInitialized(){
+        Items.Add(new SidebarItem(){
+            Name = "Online",
+            Link = "/OnlineMenu"
+        });
+        Items.Add(new SidebarItem(){
+            Name = "Local",
+            Link = "/LocalMenu"
+        });
+        Items.Add(new SidebarItem(){
+            Name = "Register",
+            Link = "/Identity/Account/Register"
+        });
+        Items.Add(new SidebarItem(){
+            Name = "Login",
+            Link = "/Identity/Account/Login"
+        });
+        Items.Add(new SidebarItem(){
+            Name = "Exit",
+            OnClick = ExitApp
+        });
+        base.OnInitialized();
+    }
+
+    private void ExitApp(){
+        GreatPowersDbContext.Dispose();
+        Environment.Exit(0);
+    }
+
+}
