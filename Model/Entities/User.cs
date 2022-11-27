@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 namespace Model.Entities;
 
 [Table("USER")]
-public class User : IdentityUser
-{
-    
+public class User : IdentityUser{
+    public List<Nation> Nations{ get; set; }
 }

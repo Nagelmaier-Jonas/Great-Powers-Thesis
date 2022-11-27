@@ -12,4 +12,10 @@ public class UserRepository : ARepository<User>{
         return await _set.Where(u => u.UserName == username)
             .FirstOrDefaultAsync();
     }
+
+    public async Task<User?> ReadGraphAsync(string Id){
+        return await _set
+            .Include(u => u.Nations)
+            .FirstOrDefaultAsync(u => u.Id == Id);
+    }
 }

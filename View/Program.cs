@@ -59,9 +59,6 @@ builder.Services.AddMudServices(config => {
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-//Register authentication service
-builder.Services
-    .AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 //Register repositories
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<SidebarService>();
