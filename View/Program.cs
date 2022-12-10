@@ -20,6 +20,7 @@ TcpListener t = new TcpListener(ipLocalEndPoint);
 t.Start();
 t.Stop();
 
+
 //start docker container
 var process = new Process();
 var startInfo = new ProcessStartInfo{
@@ -60,6 +61,10 @@ builder.Services.AddMudServices(config => {
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 //Register repositories
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Services.AddLogging();
+
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<SidebarService>();
 builder.Services.AddScoped<DockerService>();

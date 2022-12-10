@@ -1,7 +1,35 @@
 ﻿@page "/OnlineMenu"
+@inherits SidebarComponent
+@using Model.Entities
+@using Model.Configuration
+@inject NavigationManager NavigationManager
+@inject GreatPowersDbContext GreatPowersDbContext
 
-
-
+<style>
+    body {
+        background-image: url('img/paper-bg.jpg')
+    }
+</style>
 @code {
-    
+
+    protected override void OnInitialized(){
+        Items.Add(new SidebarItem(){
+            Name = "Create",
+            OnClick = () => NavigationManager.NavigateTo("/Create")
+        });
+        Items.Add(new SidebarItem(){
+            Name = "Load",
+            OnClick = () => NavigationManager.NavigateTo("/Load")
+        });
+        Items.Add(new SidebarItem(){
+            Name = "Join",
+            OnClick = () => NavigationManager.NavigateTo("/Join")
+        });
+        Items.Add(new SidebarItem(){
+            Name = "MainMenu",
+            Link = "/MainMenu"
+        });
+        base.OnInitialized();
+    }
+
 }

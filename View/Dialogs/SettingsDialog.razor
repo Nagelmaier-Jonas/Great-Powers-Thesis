@@ -1,0 +1,25 @@
+﻿@inject NavigationManager NavigationManager
+
+<MudDialog>
+    <DialogContent>
+        <MudButton OnClick="BackToMenu">Back to Menu</MudButton>
+        <MudButton OnClick="ExitApp">Close Application</MudButton>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+    
+    void BackToMenu()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+        NavigationManager.NavigateTo("/");
+    }
+
+    private void ExitApp(){
+        Environment.Exit(0);
+    }
+}

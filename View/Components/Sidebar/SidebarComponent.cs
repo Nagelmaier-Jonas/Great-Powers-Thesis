@@ -14,5 +14,12 @@ public class SidebarComponent : ComponentBase{
 
     protected override void OnInitialized(){
         Service.RefreshSidebar(Items);
+        StateHasChanged();
+    }
+
+    protected override Task OnInitializedAsync(){
+        Service.RefreshSidebar(Items);
+        StateHasChanged();
+        return Task.CompletedTask;
     }
 }

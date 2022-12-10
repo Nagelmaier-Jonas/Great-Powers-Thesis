@@ -1,42 +1,23 @@
 ﻿@page "/LocalMenu"
 @inherits SidebarComponent
-@using Model.Configuration
-@using Microsoft.EntityFrameworkCore
-@using System.Diagnostics
 @using Model.Entities
-@using MySqlConnector
 @inject NavigationManager NavigationManager
-@inject GreatPowersDbContext GreatPowersDbContext
 
-<MudForm>
-    <MudTextField T="string" Label="SessionName" Required="true" RequiredError="Session name is required!" @bind-Value="SessionName"/>
-    <div class="d-flex align-center justify-space-between mt-3">
-        <MudButton OnClick="CreateNewGame" Class="m-auto">Create</MudButton>
-    </div>
-</MudForm>
-
-<MudButton OnClick="@(() => NavigationManager.NavigateTo("/SaveGames"))">
-    Load
-</MudButton>
-
-@if (IsLoading){
-    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
-}
-
+<style>
+    body {
+        background-image: url('img/paper-bg.jpg')
+    }
+</style>
 @code {
-
-    private string? SessionName { get; set; }
-
-    private bool IsLoading { get; set; }
 
     protected override void OnInitialized(){
         Items.Add(new SidebarItem(){
             Name = "Create",
-            OnClick = CreateNewGame
+            OnClick = () => NavigationManager.NavigateTo("/Create")
         });
         Items.Add(new SidebarItem(){
             Name = "Load",
-            OnClick = () => NavigationManager.NavigateTo("/SaveGames")
+            OnClick = () => NavigationManager.NavigateTo("/Load")
         });
         Items.Add(new SidebarItem(){
             Name = "MainMenu",
@@ -44,65 +25,4 @@
         });
         base.OnInitialized();
     }
-
-    private async void CreateNewGame(){
-        IsLoading = true;
-        await Task.Run(WriteDockerFile);
-        await Task.Run(StartDockerContainer);
-        while (!CheckConnection()){}
-        await Task.Run(ChangeDbContext);
-        StateHasChanged();
-    }
-
-    private Task WriteDockerFile(){
-        var schema = File.ReadAllText("..\\Databases\\schema.sql");
-        var dockerComposeFile = File.ReadAllText("..\\Databases\\docker-compose.yml");
-        dockerComposeFile = dockerComposeFile.Replace("./default:/var/lib/mysql", $"./{SessionName}:/var/lib/mysql");
-        dockerComposeFile = dockerComposeFile.Replace("26280", "26281");
-        dockerComposeFile = dockerComposeFile.Replace("greatpowers_db_default", "greatpowers_db_local");
-        Directory.CreateDirectory($"..\\Databases\\{SessionName}");
-        File.WriteAllText($"..\\Databases\\{SessionName}\\schema.sql", schema);
-        File.WriteAllText($"..\\Databases\\{SessionName}\\docker-compose.yml", dockerComposeFile);
-        return Task.CompletedTask;
-    }
-
-    private Task StartDockerContainer(){
-        var process = new Process();
-        var startInfo = new ProcessStartInfo{
-            WindowStyle = ProcessWindowStyle.Hidden,
-            FileName = "cmd.exe"
-        };
-        process.StartInfo = startInfo;
-        process.StartInfo.Arguments = $"/c cd ..\\Databases\\{SessionName} && docker-compose up -d --build";
-        process.Start();
-        process.WaitForExit();
-        return Task.CompletedTask;
-    }
-
-    private Task ChangeDbContext(){
-        try{
-            AppSettings.Port = "26281";
-            GreatPowersDbContext.Database.CloseConnection();
-            GreatPowersDbContext.Database.SetConnectionString("server=localhost; port=26281; database=greatpowers; user=greatpowers; password=greatpowers; Persist Security Info=False; Connect Timeout=300");
-            GreatPowersDbContext.Database.OpenConnection();
-            IsLoading = false;
-            return Task.CompletedTask;
-        }
-        catch (Exception e){
-            throw;
-        }
-    }
-
-    private bool CheckConnection(){
-        try{
-            var connection = new MySqlConnection("server=localhost; port=26281; database=greatpowers; user=greatpowers; password=greatpowers; Persist Security Info=False; Connect Timeout=300");
-            connection.Open();
-            connection.Close();
-            return true;
-        }
-        catch (Exception){
-            return false;
-        }
-    }
-
 }

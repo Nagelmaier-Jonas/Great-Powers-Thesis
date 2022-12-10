@@ -1,16 +1,31 @@
 ﻿@page "/Join"
-@using Model.Configuration
-@using Microsoft.EntityFrameworkCore
-@using MySqlConnector
-@inject GreatPowersDbContext GreatPowersDbContext
-<h3>Join</h3>
+@inherits SidebarComponent
+@using Domain.Services
+@inject NavigationManager NavigationManager
+@inject ILogger<Join> Logger
+@inject DockerService DockerService
 
+<style>
+    body {
+        background-image: url('img/paper-bg.jpg')
+    }
+</style>
 <MudForm>
-    <MudTextField T="string" Label="IpAddress" Required="true" RequiredError="Session name is required!" @bind-Value="IpAddress"/>
-    <MudTextField T="string" Label="Port" Required="true" RequiredError="Session name is required!" @bind-Value="Port"/>
-    <div class="d-flex align-center justify-space-between mt-3">
-        <MudButton OnClick="JoinGame" Class="m-auto">Create</MudButton>
-    </div>
+    <MudGrid>
+        <MudItem xs="12" sm="6">
+            <MudPaper Class="pa-4">
+                <MudText>Ip Adress</MudText>
+                <MudTextField T="string" Label="IpAddress" Required="true" RequiredError="Ip Address is required!" @bind-Value="IpAddress"/>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6">
+            <MudPaper Class="pa-4">
+                <MudText>Port</MudText>
+                <MudTextField T="string" Label="Port" Required="true" RequiredError="Port is required!" @bind-Value="Port"/>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+    <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="JoinGame">Join Session</MudButton>
 </MudForm>
 
 @code {
@@ -18,43 +33,15 @@
 
     private string? Port { get; set; }
 
-    private bool IsLoading { get; set; }
-
     private async void JoinGame(){
         if (Port == null || IpAddress == null) return;
-        IsLoading = true;
-        if (CheckConnection()){
-            await Task.Run(ChangeDbContext);
+        if (DockerService.CheckConnection(IpAddress, Port)){
+            await DockerService.ChangeDbContext(IpAddress, Port);
+        }
+        else{
+            Logger.Log(LogLevel.Critical,  "Cannot connect to the server");
         }
         StateHasChanged();
-    }
-
-    private Task ChangeDbContext(){
-        if (Port == null || IpAddress == null) return Task.CompletedTask;
-        try{
-            GreatPowersDbContext.Database.CloseConnection();
-            GreatPowersDbContext.Database.SetConnectionString($"server={AppSettings.IpAddress}; port={AppSettings.Port}; database=greatpowers; user=greatpowers; password=greatpowers; Persist Security Info=False; Connect Timeout=300");
-            GreatPowersDbContext.Database.OpenConnection();
-            IsLoading = false;
-            return Task.CompletedTask;
-        }
-        catch (Exception e){
-            throw;
-        }
-    }
-
-    private bool CheckConnection(){
-        try{
-            var connection = new MySqlConnection($"server={AppSettings.IpAddress}; port={AppSettings.Port}; database=greatpowers; user=greatpowers; password=greatpowers; Persist Security Info=False; Connect Timeout=300");
-            connection.Open();
-            connection.Close();
-            AppSettings.Port = Port;
-            AppSettings.IpAddress = IpAddress;
-            return true;
-        }
-        catch (Exception){
-            return false;
-        }
     }
 
 }

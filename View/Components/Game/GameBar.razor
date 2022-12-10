@@ -1,0 +1,55 @@
+﻿@using View.Dialogs
+@inject IDialogService DialogService
+
+<MudAppBar Style="background-color: rgba(0,0,0,0.4)" Fixed="true">
+    <MudAvatar Square="true" Style="@($"color:{Colors.Grey.Default};")" Variant="Variant.Outlined" @onclick="OpenSettingsDialog">
+        <MudIcon Icon="@Icons.Material.Filled.Settings" />
+    </MudAvatar>
+    <MudText Style="@($"color:{Colors.Amber.Default};")" Class="ml-3">
+        Round 1
+    </MudText>
+    <MudSpacer/>
+    <MudAvatarGroup Max="5" Spacing="0" Outlined="false">
+        <MudAvatar Image="img/flags/Ussr.svg" Class="mr-1" Elevation="10"/>
+        <MudAvatar Image="img/flags/Germany.svg" Class="mr-1" Elevation="10"/>
+        <MudAvatar Image="img/flags/Uk.svg" Class="mr-1" Elevation="10"/>
+        <MudAvatar Image="img/flags/Japan.svg" Class="mr-1" Elevation="10"/>
+        <MudAvatar Image="img/flags/Us.svg" Class="mr-1" Elevation="10"/>
+    </MudAvatarGroup>
+    <MudSpacer/>
+    <MudText Style="@($"color:{Colors.Amber.Default};")">
+        Phase: Movement
+        <br/>
+        <MudAvatar Size="Size.Small"/>
+        <MudAvatar Size="Size.Small"/>
+        <MudAvatar Size="Size.Small"/>
+        <MudAvatar Size="Size.Small"/>
+        <MudAvatar Size="Size.Small"/>
+    </MudText>
+    <MudSpacer/>
+    <MudAvatar Square="true" Variant="Variant.Outlined">7/9</MudAvatar>
+    <MudStack Row="true">
+        <MudPaper Class="mud-theme-primary"/>
+        <MudPaper Class="mud-theme-primary"/>
+        <MudPaper Class="mud-theme-primary"/>
+        <MudPaper Class="mud-theme-primary"/>
+        <MudPaper Class="mud-theme-primary"/>
+        <MudPaper Class="mud-theme-primary"/>
+        <MudPaper Class="mud-theme-primary"/>
+        <MudPaper Class="mud-theme-secondary"/>
+        <MudPaper Class="mud-theme-secondary"/>
+        <MudPaper Class="mud-theme-secondary"/>
+        <MudPaper Class="mud-theme-secondary"/>
+        <MudPaper Class="mud-theme-secondary"/>
+        <MudPaper Class="mud-theme-secondary"/>
+    </MudStack>
+    <MudAvatar Square="true" Variant="Variant.Outlined">6/10</MudAvatar>
+</MudAppBar>
+
+@code {
+    private void OpenSettingsDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true , CloseButton = true};
+        DialogService.Show<SettingsDialog>("Menu", options);
+    }
+}

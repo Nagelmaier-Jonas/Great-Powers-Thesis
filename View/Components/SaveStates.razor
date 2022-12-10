@@ -2,29 +2,12 @@
 @inject DockerService DockerService
 
 @foreach (var container in DockerContainers){
-    <MudCard>
-        <MudCardContent Class="d-flex">
-            <MudItem Class="col-12">
-                <MudText>Spielstand: @container</MudText>
-            </MudItem>
-            <MudItem Class="col-6">
-                <MudText>Axis: 5/9</MudText>
-            </MudItem>
-            <MudItem Class="col-6">
-                <MudText>Allies: 8/10</MudText>
-            </MudItem>
-            <MudItem Class="col-12">
-                <MudText>Runde: 3</MudText>
-            </MudItem>
-            <MudItem Class="col-6">
-                <MudText>Standardmäßiger Sieg</MudText>
-            </MudItem>
-            <MudItem Class="col-6">
-                <MudText>Standard Würfel</MudText>
-            </MudItem>
+    <MudCard Outlined="true">
+        <MudCardContent>
+            <MudText>@container</MudText>
         </MudCardContent>
         <MudCardActions>
-            <MudButton OnClick="@(() => LoadSession(container, "localhost", 28261))">Load</MudButton>
+            <MudButton OnClick="@(() => LoadSession(container, "127.0.0.1", "26281"))">Load</MudButton>
         </MudCardActions>
     </MudCard>
 }
@@ -34,16 +17,11 @@
     [Parameter]
     public List<string> DockerContainers { get; set; }
 
-    [CascadingParameter]
-    private bool IsLoading { get; set; }
-
-    private async void LoadSession(string name, string ipAddress, int port){
-        IsLoading = true;
+    private async void LoadSession(string name, string ipAddress, string port){
         await DockerService.StartDockerContainer(name);
         while (!DockerService.CheckConnection($"{ipAddress}", port)){
         }
         await DockerService.ChangeDbContext($"{ipAddress}", port);
-        IsLoading = false;
         StateHasChanged();
     }
 

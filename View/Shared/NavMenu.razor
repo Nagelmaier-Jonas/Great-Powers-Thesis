@@ -5,33 +5,49 @@
 @inject GreatPowersDbContext GreatPowersDbContext
 @inject SidebarService SidebarService
 
+<style>
+    .nav-item {
+        display: block;
+    }
+</style>
+
 <div>
-    <nav class="flex-column noselect">
-        <div class="nav-item px-3">
-            <MudLink class="nav-link gold-texture" Href="/">
-                 <span class="gold-texture logo">Great Powers</span>
-            </MudLink>
-        </div>
-    </nav>
-    @foreach (var item in SidebarService.Items){
-        <nav class="flex-column noselect">
-            <div class="nav-item px-3">
+    <div class="nav-item px-3">
+        <MudLink class="nav-link gold-texture p-0 text-center logo-container" Href="/">
+            <span class="gold-texture logo">Great Powers</span>
+        </MudLink>
+    </div>
+    <nav class="flex-column">
+        @foreach (var item in SidebarService.Items){
+            <div class="nav-item p-3">
                 @if (item.OnClick is not null){
-                    <MudButton class="nav-link gold-texture" OnClick="@item.OnClick">
-                        <span class="oi oi-@item.Icon" aria-hidden="true"></span><span class="gold-texture">@item.Name</span>
-                    </MudButton>
+                    <MudLink class="nav-link gold-texture p-0" @onclick="@item.OnClick">
+                        @if (item.Icon is not ""){
+                            <span class="oi oi-@item.Icon" aria-hidden="true"></span>
+                        }
+                        <span class="gold-texture">@item.Name</span>
+                    </MudLink>
                 }
                 else{
-                    <MudLink class="nav-link gold-texture" Href="@item.Link">
-                        <span class="oi oi-@item.Icon" aria-hidden="true"></span><span class="gold-texture">@item.Name</span>
+                    <MudLink class="nav-link gold-texture p-0" Href="@item.Link">
+                        @if (item.Icon is not ""){
+                            <span class="oi oi-@item.Icon" aria-hidden="true"></span>
+                        }
+                        <span class="gold-texture">@item.Name</span>
                     </MudLink>
                 }
             </div>
-        </nav>
-    }
+        }
+        <div class="nav-item p-3 position-absolute bottom-0">
+            <MudLink class="nav-link gold-texture p-0" onclick="@ExitApp">
+                <span class="gold-texture">Exit</span>
+            </MudLink>
+        </div>
+    </nav>
 </div>
 
 @code {
+
     protected override void OnInitialized(){
         SidebarService.HandleSidebarChange += HandleSidebarChange;
     }
@@ -40,5 +56,9 @@
         await InvokeAsync(StateHasChanged);
     }
 
-}
+    private void ExitApp(){
+        GreatPowersDbContext.Dispose();
+        Environment.Exit(0);
+    }
 
+}
