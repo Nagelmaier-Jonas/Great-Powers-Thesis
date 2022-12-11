@@ -1,5 +1,9 @@
 ﻿@import url(https://fonts.googleapis.com/css?family=Bebas+Neue);
 
+/* -- -------------------------------------------------- -- */
+/*                  Style: Font Texture                     */
+/* -- -------------------------------------------------- -- */
+
 a .gold-texture{
     background: url('../img/gold-texture.jpg') no-repeat center center;
     background-size: 100%;
@@ -31,6 +35,10 @@ span.gold-texture{
     letter-spacing: 5px;
 }
 
+/* -- -------------------------------------------------- -- */
+/*                  Style: Logo                             */
+/* -- -------------------------------------------------- -- */
+
 span.logo {
     font-size: 55px !important;
 }
@@ -41,6 +49,10 @@ span.logo {
     display: inline-grid;
     border: 3px solid #c7a340;
 }
+
+/* -- -------------------------------------------------- -- */
+/*                  Style: Navigation Buttons               */
+/* -- -------------------------------------------------- -- */
 
 .nav-link:hover span:not(.logo){
     filter: drop-shadow(0px 0px 0px black) !important;
@@ -73,6 +85,11 @@ span.logo {
     width: 50vw;
     filter: sepia(0.3);
 }
+
+/* -- -------------------------------------------------- -- */
+/*                  Style: Game Bar                         */
+/* -- -------------------------------------------------- -- */
+
 .gamebar-btn{
     border-color: #9e9e9e !important;
     border-radius: 10px !important;
@@ -93,17 +110,20 @@ span.logo {
     border-radius: 0 !important;
     gap: 1px !important;
 }
+.dot-mini{
+    width: 15px !important;
+    height: 15px !important;
+}
+
+/* -- -------------------------------------------------- -- */
+/*                  Style: Colors                           */
+/* -- -------------------------------------------------- -- */
 
 .bg-red{
     background-color: #ff4136 !important;
 }
 .bg-blue{
     background-color: #6b8cff !important;
-}
-
-.dot-mini{
-    width: 15px !important;
-    height: 15px !important;
 }
 .border-us{
     border: 5px solid #97a95f !important;
@@ -120,6 +140,10 @@ span.logo {
 .border-ussr{
     border: 5px solid #ba8772 !important;
 }
+
+/* -- -------------------------------------------------- -- */
+/*                  Style: Setting Dialog                   */
+/* -- -------------------------------------------------- -- */
 .settings-dialog{
     margin-bottom: 250px !important;
     background-color: rgba(0,0,0,0.8) !important;
@@ -137,6 +161,10 @@ span.logo {
 .settings-dialog button.mud-button-text:hover{
     color: #9e9e9e !important;
 }
+
+/* -- -------------------------------------------------- -- */
+/*                  Style: Phase Button                     */
+/* -- -------------------------------------------------- -- */
 
 .phase-btn{
     width: 7.5vw !important;
