@@ -2,54 +2,67 @@
 @inject IDialogService DialogService
 
 <MudAppBar Style="background-color: rgba(0,0,0,0.4)" Fixed="true">
-    <MudAvatar Square="true" Style="@($"color:{Colors.Grey.Default};")" Variant="Variant.Outlined" @onclick="OpenSettingsDialog">
-        <MudIcon Icon="@Icons.Material.Filled.Settings" />
+    <MudAvatar Square="true" Style="@($"color:{Colors.Grey.Default};")" Class="gamebar-btn" Variant="Variant.Outlined" @onclick="OpenSettingsDialog">
+        <MudIcon Icon="@Icons.Material.Filled.Settings"/>
     </MudAvatar>
-    <MudText Style="@($"color:{Colors.Amber.Default};")" Class="ml-3">
+    <MudText Style="@($"color:{Colors.Amber.Default};")" Class="ml-3 fw-bold">
         Round 1
     </MudText>
     <MudSpacer/>
     <MudAvatarGroup Max="5" Spacing="0" Outlined="false">
-        <MudAvatar Image="img/flags/Ussr.svg" Class="mr-1" Elevation="10"/>
-        <MudAvatar Image="img/flags/Germany.svg" Class="mr-1" Elevation="10"/>
-        <MudAvatar Image="img/flags/Uk.svg" Class="mr-1" Elevation="10"/>
-        <MudAvatar Image="img/flags/Japan.svg" Class="mr-1" Elevation="10"/>
-        <MudAvatar Image="img/flags/Us.svg" Class="mr-1" Elevation="10"/>
+        <MudAvatar Image="img/flags/Ussr.svg" Class="mr-1 bg-transparent border-ussr" Elevation="10"/>
+        <MudAvatar Image="img/flags/Germany.svg" Class="mr-1 bg-transparent border-gm" Elevation="10" />
+        <MudAvatar Image="img/flags/Uk.svg" Class="mr-1 bg-transparent border-uk" Elevation="10"/>
+        <MudAvatar Image="img/flags/Japan.svg" Class="mr-1 bg-transparent border-jp" Elevation="10"/>
+        <MudAvatar Image="img/flags/Us.svg" Class="mr-1 bg-transparent border-us" Elevation="10"/>
     </MudAvatarGroup>
     <MudSpacer/>
-    <MudText Style="@($"color:{Colors.Amber.Default};")">
-        Phase: Movement
+    <MudText Class="fw-bold" Style="@($"color:{Colors.Amber.Default};")">
+        Combat Move
         <br/>
-        <MudAvatar Size="Size.Small"/>
-        <MudAvatar Size="Size.Small"/>
-        <MudAvatar Size="Size.Small"/>
-        <MudAvatar Size="Size.Small"/>
-        <MudAvatar Size="Size.Small"/>
+        <span class="d-flex justify-content-around">
+            <MudAvatar Class="dot-mini" Size="Size.Small"/>
+            <MudAvatar Class="dot-mini" Size="Size.Small" Style="@($"background-color:{Colors.Amber.Default};")"/>
+            <MudAvatar Class="dot-mini" Size="Size.Small"/>
+            <MudAvatar Class="dot-mini" Size="Size.Small"/>
+            <MudAvatar Class="dot-mini" Size="Size.Small"/>
+        </span>
     </MudText>
     <MudSpacer/>
-    <MudAvatar Square="true" Variant="Variant.Outlined">7/9</MudAvatar>
-    <MudStack Row="true">
-        <MudPaper Class="mud-theme-primary"/>
-        <MudPaper Class="mud-theme-primary"/>
-        <MudPaper Class="mud-theme-primary"/>
-        <MudPaper Class="mud-theme-primary"/>
-        <MudPaper Class="mud-theme-primary"/>
-        <MudPaper Class="mud-theme-primary"/>
-        <MudPaper Class="mud-theme-primary"/>
-        <MudPaper Class="mud-theme-secondary"/>
-        <MudPaper Class="mud-theme-secondary"/>
-        <MudPaper Class="mud-theme-secondary"/>
-        <MudPaper Class="mud-theme-secondary"/>
-        <MudPaper Class="mud-theme-secondary"/>
-        <MudPaper Class="mud-theme-secondary"/>
+    <MudAvatar Class="gamebar-score fw-bold" Square="true" Variant="Variant.Outlined" Style="@($"color:{Colors.Grey.Default};")">7/9</MudAvatar>
+    <MudStack Row="true" Style="gap: 1px !important;">
+        <MudPaper Class="gamebar-score-point bg-red"/>
+        <MudPaper Class="gamebar-score-point bg-red"/>
+        <MudPaper Class="gamebar-score-point bg-red"/>
+        <MudPaper Class="gamebar-score-point bg-red"/>
+        <MudPaper Class="gamebar-score-point bg-red"/>
+        <MudPaper Class="gamebar-score-point bg-red"/>
+        <MudPaper Class="gamebar-score-point bg-red"/>
+        <MudPaper Class="gamebar-score-point bg-blue"/>
+        <MudPaper Class="gamebar-score-point bg-blue"/>
+        <MudPaper Class="gamebar-score-point bg-blue"/>
+        <MudPaper Class="gamebar-score-point bg-blue"/>
+        <MudPaper Class="gamebar-score-point bg-blue"/>
+        <MudPaper Class="gamebar-score-point bg-blue"/>
     </MudStack>
-    <MudAvatar Square="true" Variant="Variant.Outlined">6/10</MudAvatar>
+    <MudAvatar Class="gamebar-score fw-bold" Square="true" Variant="Variant.Outlined" Style="@($"color:{Colors.Grey.Default};")">6/10</MudAvatar>
 </MudAppBar>
 
+<MudPaper Class="position-fixed bottom-0 end-0 d-flex flex-column align-items-center justify-content-around phase-btn">
+    <MudText Class="fw-bold text-center" Style="@($"color:{Colors.Amber.Default};")">End Phase</MudText>
+    <MudIconButton OnClick="OpenPhaseSummaryDialog" Icon="@Icons.Rounded.Forward" Variant="Variant.Filled" Color="Color.Error" Size="Size.Large" Style="border-radius: 50%;"/>
+</MudPaper>
+
 @code {
-    private void OpenSettingsDialog()
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true , CloseButton = true};
+
+    private void OpenSettingsDialog(){
+        var options = new DialogOptions{ CloseOnEscapeKey = true, CloseButton = true};
         DialogService.Show<SettingsDialog>("Menu", options);
+    }
+    
+    private void OpenPhaseSummaryDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = false, DisableBackdropClick = true };
+        DialogService.Show<PhaseSummaryDialog>("Phase Summary", options);
     }
 }
