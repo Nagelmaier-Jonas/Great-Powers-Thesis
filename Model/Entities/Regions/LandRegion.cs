@@ -30,15 +30,15 @@ public class LandRegion : ARegion{
         return units;
     }
     
-    public List<LandRegion> GetAllFriendlyNeighbours(int distance) =>
+    public List<ARegion> GetAllFriendlyNeighbours(int distance) =>
         GetFriendlyNeighbours(distance, Nation);
 
-    public List<LandRegion> GetAllFriendlyNeighboursWithSource(int distance) =>
+    public List<ARegion> GetAllFriendlyNeighboursWithSource(int distance) =>
         GetFriendlyNeighbours(distance, Nation, false);
 
-    public List<LandRegion> GetFriendlyNeighboursByLand(int distance) =>
+    public List<ARegion> GetFriendlyNeighboursByLand(int distance) =>
         GetFriendlyNeighbours(distance, Nation, true, true);
 
-    public List<LandRegion> GetFriendlyNeighboursByLandWithSource(int distance) =>
+    public List<ARegion> GetFriendlyNeighboursByLandWithSource(int distance) =>
         GetFriendlyNeighbours(distance, Nation, false, true);
 }

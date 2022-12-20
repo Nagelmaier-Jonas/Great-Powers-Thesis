@@ -24,4 +24,6 @@ public class Ship : AUnit{
     
     
     public bool CheckIfReachable(WaterRegion target) => Region.GetNeighboursByType(CurrentMovement, ERegionType.WATER).Contains(target);
+    
+    public override ARegion GetLocation() => Region;
 }

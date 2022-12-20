@@ -29,4 +29,6 @@ public class Plane : AUnit{
     }
     
     public override bool CheckIfReachable(ARegion target) => Region.GetAllFriendlyNeighbours(CurrentMovement, Nation).Contains(target);
+    
+    public override ARegion GetLocation() => Region;
 }

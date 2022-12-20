@@ -55,23 +55,23 @@ public abstract class ARegion{
 
     #region FriendlyNeighbours
 
-    protected List<LandRegion> GetFriendlyNeighbours(int distance, Nation nation, bool excludeSource = true,
+    protected List<ARegion> GetFriendlyNeighbours(int distance, Nation nation, bool excludeSource = true,
         bool filterType = false, ERegionType type = ERegionType.LAND){
-        if (distance <= 0) return new List<LandRegion>();
-        HashSet<LandRegion> regions = new HashSet<LandRegion>();
+        if (distance <= 0) return new List<ARegion>();
+        HashSet<ARegion> regions = new HashSet<ARegion>();
         foreach (var neighbour in Neighbours){
             if(neighbour.Neighbour.ContainsEnemies(nation)) continue;
             LandRegion? neigh = null;
             if (neighbour.Neighbour.Type == ERegionType.LAND) neigh = (LandRegion)neighbour.Neighbour;
             if (neighbour.Neighbour.Type == type || !filterType){
                 if (neigh == null){
+                    regions.Add(neighbour.Neighbour);
                     regions.UnionWith(neighbour.Neighbour.GetFriendlyNeighbours(distance - 1, nation, false, filterType, type));
                     continue;
                 }
                 if (neigh.Nation == nation || neigh.Nation.Allies.Any(a => a.Ally == nation)){
-                    regions.UnionWith(
-                        neighbour.Neighbour.GetFriendlyNeighbours(distance - 1, nation, false, filterType, type));
                     regions.Add(neigh);
+                    regions.UnionWith(neighbour.Neighbour.GetFriendlyNeighbours(distance - 1, nation, false, filterType, type));
                 }
             }
         }
@@ -80,16 +80,16 @@ public abstract class ARegion{
         return regions.ToList();
     }
 
-    public List<LandRegion> GetAllFriendlyNeighbours(int distance, Nation nation) =>
+    public List<ARegion> GetAllFriendlyNeighbours(int distance, Nation nation) =>
         GetFriendlyNeighbours(distance, nation);
 
-    public List<LandRegion> GetAllFriendlyNeighboursWithSource(int distance, Nation nation) =>
+    public List<ARegion> GetAllFriendlyNeighboursWithSource(int distance, Nation nation) =>
         GetFriendlyNeighbours(distance, nation, false);
 
-    public List<LandRegion> GetFriendlyNeighboursByLand(int distance, Nation nation) =>
+    public List<ARegion> GetFriendlyNeighboursByLand(int distance, Nation nation) =>
         GetFriendlyNeighbours(distance, nation, true, true);
 
-    public List<LandRegion> GetFriendlyNeighboursByLandWithSource(int distance, Nation nation) =>
+    public List<ARegion> GetFriendlyNeighboursByLandWithSource(int distance, Nation nation) =>
         GetFriendlyNeighbours(distance, nation, false, true);
 
     #endregion
@@ -102,4 +102,13 @@ public abstract class ARegion{
 
     public bool ContainsEnemies(Nation nation) => GetStationedUnits()
         .Any(u => u.Nation != nation && u.Nation.Allies.All(a => a.Ally != nation));
+/*
+    public List<ARegion> GetPath(int distance, ARegion target){
+        
+    }
+    
+    public List<ARegion> GetFriendlyPath(int distance, ARegion target, Nation nation){
+        if (!GetAllFriendlyNeighbours(distance, nation).Contains(target)) return new List<ARegion>();
+        
+    }*/
 }

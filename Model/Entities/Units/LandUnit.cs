@@ -29,5 +29,6 @@ public class LandUnit : AUnit{
     }
 
     public override bool CheckIfReachable(ARegion target) => Region.GetFriendlyNeighboursByLand(CurrentMovement).Contains(target);
-    
+
+    public override ARegion GetLocation() => Region;
 }
