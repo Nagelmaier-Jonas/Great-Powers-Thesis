@@ -107,8 +107,8 @@ public abstract class ARegion{
 
     #region Distance
 
-    protected int GetDistance(ARegion target, Nation? nation = null, bool filterLand = false, int distance = 1){
-        if (distance == 300) return 0;
+    protected int GetDistance(ARegion target, Nation? nation = null, bool filterLand = false, int maxDistance = 10, int distance = 1){
+        if (distance == maxDistance) return 0;
         if (nation != null && !filterLand){
             if (GetAllFriendlyNeighbours(distance, nation).Contains(target)) return distance;
         }
@@ -125,22 +125,28 @@ public abstract class ARegion{
             if (GetAllNeighbours(distance).Contains(target)) return distance;
         }
 
-        return GetDistance(target, nation, filterLand, distance + 1);
+        return GetDistance(target, nation, filterLand, maxDistance,distance + 1);
     }
 
     public int GetMinimalDistance(ARegion target) => GetDistance(target);
+    public int GetMinimalDistanceWithMax(ARegion target, int maxDistance) => GetDistance(target, null, false, maxDistance);
     public int GetMinimalDistanceByFriendlies(ARegion target, Nation nation) => GetDistance(target, nation);
+    public int GetMinimalDistanceByFriendliesWithMax(ARegion target, Nation nation, int maxDistance) => GetDistance(target, nation,  false, maxDistance);
     public int GetMinimalDistanceByLand(ARegion target) => GetDistance(target, null, true);
+    public int GetMinimalDistanceByLandWithMax(ARegion target, int maxDistance) => GetDistance(target, null, true, maxDistance);
     public int GetMinimalDistanceByFriendlyLand(ARegion target, Nation nation) => GetDistance(target, nation, true);
+    public int GetMinimalDistanceByFriendlyLandWithMax(ARegion target, Nation nation, int maxDistance) => GetDistance(target, nation, true, maxDistance);
 
     #endregion
 
-    protected List<ARegion> GetPath(ARegion target, Nation? nation = null, bool filterLand = false){
-        int distance = GetDistance(target, nation, filterLand);
+    #region Path
+    protected List<ARegion> GetPath(ARegion target, Nation? nation = null, bool filterLand = false, int maxDistance = 10){
+        int distance = GetDistance(target, nation, filterLand, maxDistance);
         if (distance == 0) return new List<ARegion>();
 
         List<ARegion> path = new List<ARegion>();
         path.Add(this);
+        if(distance == 1)path.Add(target);
 
         List<ARegion> neighbours = new List<ARegion>();
 
@@ -169,9 +175,16 @@ public abstract class ARegion{
         return path;
     }
 
+    public List<ARegion> GetPathToTarget(ARegion target) => GetPath(target);
+    public List<ARegion> GetPathToTargetWithMax(ARegion target, int maxDistance) => GetPath(target,null,false, maxDistance);
     public List<ARegion> GetPathToTargetByFriendlies(ARegion target, Nation nation) => GetPath(target, nation);
+    public List<ARegion> GetPathToTargetByFriendliesWithMax(ARegion target, Nation nation, int maxDistance) => GetPath(target, nation,false, maxDistance);
     public List<ARegion> GetPathToTargetByLand(ARegion target) => GetPath(target, null, true);
+    public List<ARegion> GetPathToTargetByLandWithMax(ARegion target, int maxDistance) => GetPath(target, null, true, maxDistance);
     public List<ARegion> GetPathToTargetByFriendlyLand(ARegion target, Nation nation) => GetPath(target, nation, true);
+    public List<ARegion> GetPathToTargetByFriendlyLandWithMax(ARegion target, Nation nation, int maxDistance) => GetPath(target, nation, true,maxDistance);
+
+    #endregion
 
     public virtual List<AUnit> GetStationedUnits() =>
         throw new NotImplementedException();
@@ -190,7 +203,7 @@ public abstract class ARegion{
 
     public List<AUnit> GetOneStationedUnitPerType(){
         List<AUnit> oneUnitPerType = new List<AUnit>();
-        foreach (var unit in GetStationedUnits().Where(unit => !oneUnitPerType.Any(u => u.Type == unit.Type))){
+        foreach (var unit in GetStationedUnits().Where(unit => oneUnitPerType.All(u => u.Type != unit.Type))){
             oneUnitPerType.Add(unit);
         }
         return oneUnitPerType;

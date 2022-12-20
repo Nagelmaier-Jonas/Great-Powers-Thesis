@@ -41,4 +41,14 @@ public class LandRegion : ARegion{
 
     public List<ARegion> GetFriendlyNeighboursByLandWithSource(int distance) =>
         GetFriendlyNeighbours(distance, Nation, false, true);
+
+    public int GetMinimalDistanceByFriendlies(ARegion target) => GetMinimalDistanceByFriendlies(target, Nation);
+    public int GetMinimalDistanceByFriendlyLand(ARegion target) => GetMinimalDistanceByFriendlyLand(target, Nation);
+    public int GetMinimalDistanceByFriendliesWithMax(ARegion target, int maxDistance) => GetMinimalDistanceByFriendliesWithMax(target, Nation,maxDistance);
+    public int GetMinimalDistanceByFriendlyLandWithMax(ARegion target, int maxDistance) => GetMinimalDistanceByFriendlyLandWithMax(target, Nation,maxDistance);
+    
+    public List<ARegion> GetPathToTargetByFriendlies(ARegion target) => GetPath(target, Nation);
+    public List<ARegion> GetPathToTargetByFriendliesWithMax(ARegion target, int maxDistance) => GetPath(target, Nation,false, maxDistance);
+    public List<ARegion> GetPathToTargetByFriendlyLand(ARegion target) => GetPath(target, Nation, true);
+    public List<ARegion> GetPathToTargetByFriendlyLandWithMax(ARegion target, int maxDistance) => GetPath(target, Nation, true,maxDistance);
 }
