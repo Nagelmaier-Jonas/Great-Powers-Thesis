@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Drawing;
 using System.Diagnostics;
 using Model.Entities.Units;
 
@@ -19,6 +20,12 @@ public abstract class ARegion{
 
     [Column("REGION_TYPE", TypeName = "VARCHAR(45)")]
     public ERegionType? Type{ get; set; }
+    
+    [Column("IDENTIFIER")]
+    public ERegion Identifier{ get; set; }
+    
+    [NotMapped]
+    public Point Position{ get; set; }
 
     public List<Plane> StationedPlanes{ get; set; } = new List<Plane>();
     public List<Plane>? IncomingPlanes{ get; set; }
@@ -177,15 +184,15 @@ public abstract class ARegion{
 
     public Dictionary<EUnitType, int> GetStationedUnitCounts(){
         Dictionary<EUnitType, int> counts = new Dictionary<EUnitType, int>();
-        foreach (var unit in GetStationedUnits()){
-            counts[unit.Type] += 1;
-        }
+        foreach (var unit in GetStationedUnits()) counts[unit.Type] = counts.GetValueOrDefault(unit.Type, 0) + 1;
         return counts;
     }
 
     public List<AUnit> GetOneStationedUnitPerType(){
-        List<AUnit> units = new List<AUnit>();
-        units = GetStationedUnits().SkipWhile(us => units.Any(u => u.Type == us.Type)).ToList();
-        return units;
+        List<AUnit> oneUnitPerType = new List<AUnit>();
+        foreach (var unit in GetStationedUnits().Where(unit => !oneUnitPerType.Any(u => u.Type == unit.Type))){
+            oneUnitPerType.Add(unit);
+        }
+        return oneUnitPerType;
     }
 }
