@@ -3,6 +3,7 @@
 public enum EUnitType{
     INFANTRY,
     ARTILLERY,
+    ANTI_AIR,
     TANK,
     FIGHTER,
     BOMBER,

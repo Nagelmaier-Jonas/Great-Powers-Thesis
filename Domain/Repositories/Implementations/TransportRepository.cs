@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Model.Configuration;
 using Model.Entities.Units;
 
-namespace Domain.Repositories;
+namespace Domain.Repositories.Implementations;
 
 public class TransportRepository : ARepository<Transport>, ITransportRepository{
     public TransportRepository(GreatPowersDbContext context) : base(context){

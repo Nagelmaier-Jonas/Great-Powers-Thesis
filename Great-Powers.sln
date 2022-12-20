@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{69E5DFA9-1EEA-4F19-8060-1AB751E0A1B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Great-Powers.unittest", "Great-Powers.unittest\Great-Powers.unittest.csproj", "{48B6A4B8-6555-438D-935C-60A7EF4F4B1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{69E5DFA9-1EEA-4F19-8060-1AB751E0A1B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69E5DFA9-1EEA-4F19-8060-1AB751E0A1B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69E5DFA9-1EEA-4F19-8060-1AB751E0A1B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48B6A4B8-6555-438D-935C-60A7EF4F4B1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B6A4B8-6555-438D-935C-60A7EF4F4B1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48B6A4B8-6555-438D-935C-60A7EF4F4B1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48B6A4B8-6555-438D-935C-60A7EF4F4B1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Model.Configuration;
 using Model.Entities.Regions;
-using Model.Entities.Units;
 
-namespace Domain.Repositories;
+namespace Domain.Repositories.Implementations;
 
 public class LandRegionRepository : ARepository<LandRegion>, ILandRegionRepository{
     public LandRegionRepository(GreatPowersDbContext context) : base(context){

@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Model.Configuration;
 using Model.Entities.Regions;
 
-namespace Domain.Repositories;
+namespace Domain.Repositories.Implementations;
 
 public class WaterRegionRepository : ARepository<WaterRegion>, IWaterRegionRepository{
     public WaterRegionRepository(GreatPowersDbContext context) : base(context){

@@ -1,5 +1,5 @@
 ﻿namespace Model.Entities;
 
 public enum EDiceMode{
-    NORMAL, FAST, USW
+    STANDARD, WEIGHTED, LOW_LUCK
 }

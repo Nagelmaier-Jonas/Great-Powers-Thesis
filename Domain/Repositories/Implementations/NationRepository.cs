@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Model.Configuration;
 using Model.Entities;
 
-namespace Domain.Repositories;
+namespace Domain.Repositories.Implementations;
 
 public class NationRepository : ARepository<Nation>, INationRepository{
     public NationRepository(GreatPowersDbContext context) : base(context){
