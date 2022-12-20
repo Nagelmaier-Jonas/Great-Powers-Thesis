@@ -16,6 +16,7 @@ public static class ShipFactory{
         };
         unit.Region = region;
         unit.Nation = nation;
+        unit.Type = type;
         return unit;
     }
 }
