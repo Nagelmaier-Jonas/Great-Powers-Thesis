@@ -182,4 +182,10 @@ public abstract class ARegion{
         }
         return counts;
     }
+
+    public List<AUnit> GetOneStationedUnitPerType(){
+        List<AUnit> units = new List<AUnit>();
+        units = GetStationedUnits().SkipWhile(us => units.Any(u => u.Type == us.Type)).ToList();
+        return units;
+    }
 }
