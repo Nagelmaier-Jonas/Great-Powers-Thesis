@@ -29,7 +29,7 @@ public class LandRegion : ARegion{
         units.AddRange(StationedPlanes);
         return units;
     }
-    
+
     public List<ARegion> GetAllFriendlyNeighbours(int distance) =>
         GetFriendlyNeighbours(distance, Nation);
 

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using Model.Entities.Units;
 
 namespace Model.Entities.Regions;
@@ -60,18 +61,21 @@ public abstract class ARegion{
         if (distance <= 0) return new List<ARegion>();
         HashSet<ARegion> regions = new HashSet<ARegion>();
         foreach (var neighbour in Neighbours){
-            if(neighbour.Neighbour.ContainsEnemies(nation)) continue;
+            if (neighbour.Neighbour.ContainsEnemies(nation)) continue;
             LandRegion? neigh = null;
             if (neighbour.Neighbour.Type == ERegionType.LAND) neigh = (LandRegion)neighbour.Neighbour;
             if (neighbour.Neighbour.Type == type || !filterType){
                 if (neigh == null){
                     regions.Add(neighbour.Neighbour);
-                    regions.UnionWith(neighbour.Neighbour.GetFriendlyNeighbours(distance - 1, nation, false, filterType, type));
+                    regions.UnionWith(
+                        neighbour.Neighbour.GetFriendlyNeighbours(distance - 1, nation, false, filterType, type));
                     continue;
                 }
+
                 if (neigh.Nation == nation || neigh.Nation.Allies.Any(a => a.Ally == nation)){
                     regions.Add(neigh);
-                    regions.UnionWith(neighbour.Neighbour.GetFriendlyNeighbours(distance - 1, nation, false, filterType, type));
+                    regions.UnionWith(
+                        neighbour.Neighbour.GetFriendlyNeighbours(distance - 1, nation, false, filterType, type));
                 }
             }
         }
@@ -94,6 +98,74 @@ public abstract class ARegion{
 
     #endregion
 
+    #region Distance
+
+    protected int GetDistance(ARegion target, Nation? nation = null, bool filterLand = false, int distance = 1){
+        if (distance == 300) return 0;
+        if (nation != null && !filterLand){
+            if (GetAllFriendlyNeighbours(distance, nation).Contains(target)) return distance;
+        }
+
+        if (filterLand && nation == null){
+            if (GetNeighboursByType(distance, ERegionType.LAND).Contains(target)) return distance;
+        }
+
+        if (filterLand && nation != null){
+            if (GetFriendlyNeighboursByLand(distance, nation).Contains(target)) return distance;
+        }
+
+        if (!filterLand && nation == null){
+            if (GetAllNeighbours(distance).Contains(target)) return distance;
+        }
+
+        return GetDistance(target, nation, filterLand, distance + 1);
+    }
+
+    public int GetMinimalDistance(ARegion target) => GetDistance(target);
+    public int GetMinimalDistanceByFriendlies(ARegion target, Nation nation) => GetDistance(target, nation);
+    public int GetMinimalDistanceByLand(ARegion target) => GetDistance(target, null, true);
+    public int GetMinimalDistanceByFriendlyLand(ARegion target, Nation nation) => GetDistance(target, nation, true);
+
+    #endregion
+
+    protected List<ARegion> GetPath(ARegion target, Nation? nation = null, bool filterLand = false){
+        int distance = GetDistance(target, nation, filterLand);
+        if (distance == 0) return new List<ARegion>();
+
+        List<ARegion> path = new List<ARegion>();
+        path.Add(this);
+
+        List<ARegion> neighbours = new List<ARegion>();
+
+        if (nation != null && !filterLand){
+            neighbours = GetAllFriendlyNeighbours(1, nation);
+        }
+
+        if (filterLand && nation == null){
+            neighbours = GetNeighboursByType(1, ERegionType.LAND);
+        }
+
+        if (filterLand && nation != null){
+            neighbours = GetFriendlyNeighboursByLand(1, nation);
+        }
+
+        if (!filterLand && nation == null){
+            neighbours = GetAllNeighbours(1);
+        }
+
+        foreach (var neigh in neighbours){
+            if (path.Any(r => r.GetDistance(target, nation, filterLand) == distance - 1)) break;
+            if (neigh.GetDistance(target, nation, filterLand) == distance - 1)
+                path.AddRange(neigh.GetPath(target, nation, filterLand));
+        }
+
+        return path;
+    }
+
+    public List<ARegion> GetPathToTargetByFriendlies(ARegion target, Nation nation) => GetPath(target, nation);
+    public List<ARegion> GetPathToTargetByLand(ARegion target) => GetPath(target, null, true);
+    public List<ARegion> GetPathToTargetByFriendlyLand(ARegion target, Nation nation) => GetPath(target, nation, true);
+
     public virtual List<AUnit> GetStationedUnits() =>
         throw new NotImplementedException();
 
@@ -102,13 +174,12 @@ public abstract class ARegion{
 
     public bool ContainsEnemies(Nation nation) => GetStationedUnits()
         .Any(u => u.Nation != nation && u.Nation.Allies.All(a => a.Ally != nation));
-/*
-    public List<ARegion> GetPath(int distance, ARegion target){
-        
+
+    public Dictionary<EUnitType, int> GetStationedUnitCounts(){
+        Dictionary<EUnitType, int> counts = new Dictionary<EUnitType, int>();
+        foreach (var unit in GetStationedUnits()){
+            counts[unit.Type] += 1;
+        }
+        return counts;
     }
-    
-    public List<ARegion> GetFriendlyPath(int distance, ARegion target, Nation nation){
-        if (!GetAllFriendlyNeighbours(distance, nation).Contains(target)) return new List<ARegion>();
-        
-    }*/
 }
