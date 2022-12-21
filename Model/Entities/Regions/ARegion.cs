@@ -262,8 +262,7 @@ public abstract class ARegion{
 
     #endregion
 
-    public virtual List<AUnit> GetStationedUnits() =>
-        throw new NotImplementedException();
+    public virtual List<AUnit> GetStationedUnits() => null;
 
     public List<AUnit> GetStationedFriendlyUnits(Nation nation) => GetStationedUnits()
         .Where(u => u.Nation == nation || u.Nation.Allies.Any(a => a.Ally == nation)).ToList();
@@ -286,5 +285,5 @@ public abstract class ARegion{
         return oneUnitPerType;
     }
 
-    public virtual Nation GetOwner() => throw new NotImplementedException();
+    public virtual Nation GetOwner() => null;
 }
