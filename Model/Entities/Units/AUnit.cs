@@ -29,7 +29,10 @@ public abstract class AUnit{
     public int Attack{ get; private protected set; }
     public int Defense{ get; private protected set; }
 
-    public virtual bool CheckIfReachable(ARegion target) => throw new NotImplementedException();
 
     public virtual ARegion GetLocation() => throw new NotImplementedException();
+    public virtual bool SetLocation(ARegion region) => throw new NotImplementedException();
+
+    public virtual bool SetTarget(ARegion region) => throw new NotImplementedException();
+    public virtual bool CanReach(ARegion region) => throw new NotImplementedException();
 }

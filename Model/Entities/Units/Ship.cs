@@ -21,9 +21,15 @@ public class Ship : AUnit{
         Attack = attack;
         Defense = defense;
     }
-    
-    
-    public bool CheckIfReachable(WaterRegion target) => Region.GetNeighboursByType(CurrentMovement, ERegionType.WATER).Contains(target);
-    
+
     public override ARegion GetLocation() => Region;
+    public override bool SetLocation(ARegion region){
+        if (region.Type == ERegionType.LAND){
+            Region = (WaterRegion)region;
+            return true;
+        }
+        return false;
+    }
+    
+    public override bool CanReach(ARegion region) => Region.GetPathToTargetByWaterWithMax(region,CurrentMovement).Count != 0;
 }

@@ -17,4 +17,5 @@ public class WaterRegion : ARegion{
         units.AddRange(StationedPlanes);
         return units;
     }
+    public override Nation GetOwner() => null;
 }

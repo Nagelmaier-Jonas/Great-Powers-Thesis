@@ -27,8 +27,21 @@ public class Plane : AUnit{
         Attack = attack;
         Defense = defense;
     }
-    
-    public override bool CheckIfReachable(ARegion target) => Region.GetAllFriendlyNeighbours(CurrentMovement, Nation).Contains(target);
-    
+
     public override ARegion GetLocation() => Region;
+    
+    public override bool SetLocation(ARegion region){
+        if (region.Type == ERegionType.WATER){
+            WaterRegion reg = (WaterRegion)region;
+            if (reg.HasLandingStrip){
+                Region = region;
+                return true;
+            }
+            return false;
+        }
+        Region = region;
+        return true;
+    }
+    
+    public override bool CanReach(ARegion region) => Region.GetPathToTargetWithMax(region,CurrentMovement).Count != 0;
 }

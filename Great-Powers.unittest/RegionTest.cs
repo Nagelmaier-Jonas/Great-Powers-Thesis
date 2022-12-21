@@ -321,17 +321,17 @@ public class RegionTest{
         #endregion
 
         Assert.IsTrue(deutschland.GetAllNeighbours(1).Count == 5);
-        Assert.IsTrue(deutschland.GetNeighboursByType(1, ERegionType.LAND).Count == 3);
-        Assert.IsTrue(deutschland.GetNeighboursByType(1, ERegionType.WATER).Count == 2);
+        Assert.IsTrue(deutschland.GetNeighboursByLand(1).Count == 3);
+        Assert.IsTrue(deutschland.GetNeighboursByWater(1).Count == 2);
 
         Assert.IsTrue(deutschland.GetAllNeighbours(2).Count == 9);
-        Assert.IsTrue(deutschland.GetNeighboursByType(2, ERegionType.LAND).Count == 5);
-        Assert.IsTrue(deutschland.GetNeighboursByType(2, ERegionType.WATER).Count == 3);
-        Assert.IsTrue(tschechien.GetNeighboursByType(1, ERegionType.WATER).Count == 0);
+        Assert.IsTrue(deutschland.GetNeighboursByLand(2).Count == 5);
+        Assert.IsTrue(deutschland.GetNeighboursByWater(2).Count == 3);
+        Assert.IsTrue(tschechien.GetNeighboursByWater(1).Count == 0);
 
         Assert.IsTrue(deutschland.GetAllNeighbours(2).Contains(finnland));
         Assert.IsTrue(deutschland.GetAllNeighbours(3).Contains(china));
-        Assert.IsTrue(russland.GetNeighboursByType(3, ERegionType.WATER).Contains(atlantik));
+        Assert.IsTrue(russland.GetNeighboursByWater(3).Contains(atlantik));
 
         Assert.IsFalse(deutschland.GetAllNeighbours(2).Contains(deutschland));
         
@@ -663,7 +663,7 @@ public class RegionTest{
         Assert.IsTrue(dänemark.GetAllFriendlyNeighboursWithSource(2).Contains(dänemark));
         Assert.IsTrue(dänemark.GetAllFriendlyNeighboursWithSource(2).Count == 5);
         
-        Assert.IsTrue(deutschland.GetFriendlyNeighboursByLand(2).Count == 3);
+        Assert.AreEqual(3,deutschland.GetFriendlyNeighboursByLand(2).Count);
         Assert.IsTrue(dänemark.GetFriendlyNeighboursByLand(2).Count == 2);
         Assert.IsTrue(dänemark.GetFriendlyNeighboursByLand(3).Count == 3);
         

@@ -28,7 +28,15 @@ public class LandUnit : AUnit{
         Defense = defense;
     }
 
-    public override bool CheckIfReachable(ARegion target) => Region.GetFriendlyNeighboursByLand(CurrentMovement).Contains(target);
-
     public override ARegion GetLocation() => Region;
+
+    public override bool SetLocation(ARegion region){
+        if (region.Type == ERegionType.LAND){
+            Region = (LandRegion)region;
+            return true;
+        }
+        return false;
+    }
+
+    public override bool CanReach(ARegion region) => Region.GetPathToTargetByFriendlyLandWithMax(region,CurrentMovement).Count != 0;
 }

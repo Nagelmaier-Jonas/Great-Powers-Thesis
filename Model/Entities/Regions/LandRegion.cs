@@ -30,6 +30,8 @@ public class LandRegion : ARegion{
         return units;
     }
 
+    public override Nation GetOwner() => Nation;
+
     public List<ARegion> GetAllFriendlyNeighbours(int distance) =>
         GetFriendlyNeighbours(distance, Nation);
 
@@ -37,18 +39,20 @@ public class LandRegion : ARegion{
         GetFriendlyNeighbours(distance, Nation, false);
 
     public List<ARegion> GetFriendlyNeighboursByLand(int distance) =>
-        GetFriendlyNeighbours(distance, Nation, true, true);
+        GetFriendlyNeighbours(distance, Nation, true, ERegionType.LAND);
 
     public List<ARegion> GetFriendlyNeighboursByLandWithSource(int distance) =>
-        GetFriendlyNeighbours(distance, Nation, false, true);
+        GetFriendlyNeighbours(distance, Nation, false, ERegionType.LAND);
 
     public int GetMinimalDistanceByFriendlies(ARegion target) => GetMinimalDistanceByFriendlies(target, Nation);
     public int GetMinimalDistanceByFriendlyLand(ARegion target) => GetMinimalDistanceByFriendlyLand(target, Nation);
+    public int GetMinimalDistanceByFriendlyWater(ARegion target) => GetMinimalDistanceByFriendlyWater(target, Nation);
     public int GetMinimalDistanceByFriendliesWithMax(ARegion target, int maxDistance) => GetMinimalDistanceByFriendliesWithMax(target, Nation,maxDistance);
     public int GetMinimalDistanceByFriendlyLandWithMax(ARegion target, int maxDistance) => GetMinimalDistanceByFriendlyLandWithMax(target, Nation,maxDistance);
+    public int GetMinimalDistanceByFriendlyWaterWithMax(ARegion target, int maxDistance) => GetMinimalDistanceByFriendlyWaterWithMax(target, Nation,maxDistance);
     
     public List<ARegion> GetPathToTargetByFriendlies(ARegion target) => GetPath(target, Nation);
-    public List<ARegion> GetPathToTargetByFriendliesWithMax(ARegion target, int maxDistance) => GetPath(target, Nation,false, maxDistance);
-    public List<ARegion> GetPathToTargetByFriendlyLand(ARegion target) => GetPath(target, Nation, true);
-    public List<ARegion> GetPathToTargetByFriendlyLandWithMax(ARegion target, int maxDistance) => GetPath(target, Nation, true,maxDistance);
+    public List<ARegion> GetPathToTargetByFriendliesWithMax(ARegion target, int maxDistance) => GetPath(target, Nation,null, maxDistance);
+    public List<ARegion> GetPathToTargetByFriendlyLand(ARegion target) => GetPath(target, Nation, ERegionType.LAND);
+    public List<ARegion> GetPathToTargetByFriendlyLandWithMax(ARegion target, int maxDistance) => GetPath(target, Nation, ERegionType.LAND,maxDistance);
 }
