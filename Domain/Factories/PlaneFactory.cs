@@ -13,6 +13,7 @@ public static class PlaneFactory{
         unit.Region = region;
         unit.Nation = nation;
         unit.Type = type;
+        unit.CurrentMovement = unit.Movement;
         return unit;
     }
 }

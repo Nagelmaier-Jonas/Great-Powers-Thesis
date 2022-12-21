@@ -27,21 +27,44 @@ public class Plane : AUnit{
         Attack = attack;
         Defense = defense;
     }
-
+    
     public override ARegion GetLocation() => Region;
-    
-    public override bool SetLocation(ARegion region){
-        if (region.Type == ERegionType.WATER){
-            WaterRegion reg = (WaterRegion)region;
-            if (reg.HasLandingStrip){
-                Region = region;
-                return true;
-            }
-            return false;
+
+    public override bool SetLocation(ARegion target){
+        if (target.Type == Region.Type){
+            Region = target;
+            return true;
         }
-        Region = region;
-        return true;
+        return false;
     }
+
+    public override ARegion GetTarget() => Target;
+
+    public override bool SetTarget(ARegion region){
+        if (region == null){
+            Target = null;
+            return true;
+        }
+        if (CanTarget(region)){
+            Target = region;
+            return true;
+        }
+        return false;
+    }
+
+    public override List<ARegion> GetPathToCurrentTarget() =>
+        Region.GetPathToTargetWithMax(Target, CurrentMovement);
+
+    protected override bool CanTarget(ARegion target) =>
+        Region.GetPathToTargetWithMax(target, CurrentMovement).Count != 0;
     
-    public override bool CanReach(ARegion region) => Region.GetPathToTargetWithMax(region,CurrentMovement).Count != 0;
+    public override bool MoveToTarget(){
+        if (GetTarget() != null){
+            CurrentMovement -= GetLocation().GetMinimalDistance(Target);
+            SetLocation(GetTarget());
+            SetTarget(null);
+            return true;
+        }
+        return false;
+    }
 }

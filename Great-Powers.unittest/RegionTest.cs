@@ -321,25 +321,25 @@ public class RegionTest{
         #endregion
 
         Assert.IsTrue(deutschland.GetAllNeighbours(1).Count == 5);
-        Assert.IsTrue(deutschland.GetNeighboursByLand(1).Count == 3);
-        Assert.IsTrue(deutschland.GetNeighboursByWater(1).Count == 2);
+        Assert.IsTrue(deutschland.GetLandNeighbours(1).Count == 3);
+        Assert.IsTrue(deutschland.GetWaterNeighbours(1).Count == 2);
 
         Assert.IsTrue(deutschland.GetAllNeighbours(2).Count == 9);
-        Assert.IsTrue(deutschland.GetNeighboursByLand(2).Count == 5);
-        Assert.IsTrue(deutschland.GetNeighboursByWater(2).Count == 3);
-        Assert.IsTrue(tschechien.GetNeighboursByWater(1).Count == 0);
+        Assert.IsTrue(deutschland.GetLandNeighbours(2).Count == 5);
+        Assert.IsTrue(deutschland.GetWaterNeighbours(2).Count == 3);
+        Assert.IsTrue(tschechien.GetWaterNeighbours(1).Count == 0);
 
         Assert.IsTrue(deutschland.GetAllNeighbours(2).Contains(finnland));
         Assert.IsTrue(deutschland.GetAllNeighbours(3).Contains(china));
-        Assert.IsTrue(russland.GetNeighboursByWater(3).Contains(atlantik));
+        Assert.IsTrue(russland.GetWaterNeighbours(3).Contains(atlantik));
 
         Assert.IsFalse(deutschland.GetAllNeighbours(2).Contains(deutschland));
         
         Assert.IsTrue(deutschland.GetAllNeighboursWithSource(2).Count == 10);
         Assert.IsTrue(deutschland.GetAllNeighboursWithSource(2).Contains(deutschland));
         
-        Assert.IsTrue(deutschland.GetNeighboursByTypeWithSource(2,ERegionType.LAND).Count == 6);
-        Assert.IsTrue(deutschland.GetNeighboursByTypeWithSource(2,ERegionType.LAND).Contains(deutschland));
+        Assert.IsTrue(deutschland.GetLandNeighboursWithSource(2).Count == 6);
+        Assert.IsTrue(deutschland.GetLandNeighboursWithSource(2).Contains(deutschland));
     }
     
     [Test]
@@ -650,29 +650,40 @@ public class RegionTest{
 
         #endregion
 
-        Assert.IsTrue(deutschland.GetAllFriendlyNeighbours(2).Count == 5);
+        Assert.AreEqual(5,deutschland.GetAllFriendlyNeighbours(2).Count);
         Assert.IsTrue(dänemark.GetAllFriendlyNeighbours(2).Count == 4);
-        Assert.IsTrue(deutschland.GetAllFriendlyNeighbours(3).Count == 6);
+        Assert.AreEqual(6,deutschland.GetAllFriendlyNeighbours(3).Count);
         Assert.IsFalse(deutschland.GetAllFriendlyNeighbours(2).Contains(russland));
         Assert.IsFalse(deutschland.GetAllFriendlyNeighbours(2).Contains(tschechien));
         
         Assert.IsTrue(deutschland.GetAllFriendlyNeighboursWithSource(2).Count == 6);
-        Assert.IsTrue(deutschland.GetAllFriendlyNeighboursWithSource(3).Count == 7);
+        Assert.IsTrue(deutschland.GetAllFriendlyNeighboursWithSource(3).Contains(deutschland));
+        Assert.AreEqual(7,deutschland.GetAllFriendlyNeighboursWithSource(3).Count);
         Assert.IsTrue(deutschland.GetAllFriendlyNeighboursWithSource(2).Contains(deutschland));
         Assert.IsFalse(deutschland.GetAllFriendlyNeighboursWithSource(2).Contains(tschechien));
         Assert.IsTrue(dänemark.GetAllFriendlyNeighboursWithSource(2).Contains(dänemark));
         Assert.IsTrue(dänemark.GetAllFriendlyNeighboursWithSource(2).Count == 5);
         
-        Assert.AreEqual(3,deutschland.GetFriendlyNeighboursByLand(2).Count);
-        Assert.IsTrue(dänemark.GetFriendlyNeighboursByLand(2).Count == 2);
-        Assert.IsTrue(dänemark.GetFriendlyNeighboursByLand(3).Count == 3);
+        Assert.AreEqual(3,deutschland.GetFriendlyLandNeighbours(2).Count);
+        Assert.IsTrue(dänemark.GetFriendlyLandNeighbours(2).Count == 2);
+        Assert.IsTrue(dänemark.GetFriendlyLandNeighbours(3).Count == 3);
         
-        Assert.IsTrue(deutschland.GetFriendlyNeighboursByLandWithSource(2).Count == 4);
-        Assert.IsTrue(deutschland.GetFriendlyNeighboursByLandWithSource(2).Contains(deutschland));
-        Assert.IsTrue(dänemark.GetFriendlyNeighboursByLandWithSource(2).Count == 3);
-        Assert.IsTrue(dänemark.GetFriendlyNeighboursByLandWithSource(2).Contains(dänemark));
-        Assert.IsTrue(dänemark.GetFriendlyNeighboursByLandWithSource(3).Count == 4);
-        Assert.IsTrue(dänemark.GetFriendlyNeighboursByLandWithSource(3).Contains(dänemark));
+        Assert.AreEqual(2,dänemark.GetFriendlyWaterNeighbours(2, deutsch).Count);
+        Assert.IsFalse(dänemark.GetFriendlyWaterNeighbours(2, deutsch).Contains(ostsee));
+        Assert.AreEqual(3,dänemark.GetFriendlyWaterNeighbours(3, deutsch).Count);
+        
+        Assert.IsTrue(deutschland.GetFriendlyLandNeighboursWithSource(2).Count == 4);
+        Assert.IsTrue(deutschland.GetFriendlyLandNeighboursWithSource(2).Contains(deutschland));
+        Assert.IsTrue(dänemark.GetFriendlyLandNeighboursWithSource(2).Count == 3);
+        Assert.IsTrue(dänemark.GetFriendlyLandNeighboursWithSource(2).Contains(dänemark));
+        Assert.IsTrue(dänemark.GetFriendlyLandNeighboursWithSource(3).Count == 4);
+        Assert.IsTrue(dänemark.GetFriendlyLandNeighboursWithSource(3).Contains(dänemark));
+        
+        Assert.AreEqual(3,nordsee.GetFriendlyWaterNeighboursWithSource(2, deutsch).Count);
+        Assert.AreEqual(3,dänemark.GetFriendlyWaterNeighboursWithSource(2, deutsch).Count);
+        Assert.IsFalse(nordsee.GetFriendlyWaterNeighboursWithSource(2, deutsch).Contains(ostsee));
+        Assert.IsTrue(dänemark.GetFriendlyWaterNeighboursWithSource(2, deutsch).Contains(dänemark));
+        Assert.IsTrue(nordsee.GetFriendlyWaterNeighboursWithSource(2, deutsch).Contains(nordsee));
     }
 
     [Test]
@@ -1604,32 +1615,36 @@ public class RegionTest{
         Assert.IsTrue(deutschland.GetPathToTarget(china).Contains(russland));
         Assert.IsTrue(deutschland.GetPathToTarget(china).Contains(china));
         
-        Assert.IsTrue(deutschland.GetPathToTargetByFriendlies(china).Count == 5);
-        Assert.IsTrue(deutschland.GetPathToTargetByFriendlies(china).Contains(deutschland));
-        Assert.IsTrue(deutschland.GetPathToTargetByFriendlies(china).Contains(nordsee));
-        Assert.IsTrue(deutschland.GetPathToTargetByFriendlies(china).Contains(atlantik));
-        Assert.IsTrue(deutschland.GetPathToTargetByFriendlies(china).Contains(afrikaUmrundung));
-        Assert.IsTrue(deutschland.GetPathToTargetByFriendlies(china).Contains(china));
+        Assert.IsTrue(deutschland.GetPathToFriendlyTarget(china).Count == 5);
+        Assert.IsTrue(deutschland.GetPathToFriendlyTarget(china).Contains(deutschland));
+        Assert.IsTrue(deutschland.GetPathToFriendlyTarget(china).Contains(nordsee));
+        Assert.IsTrue(deutschland.GetPathToFriendlyTarget(china).Contains(atlantik));
+        Assert.IsTrue(deutschland.GetPathToFriendlyTarget(china).Contains(afrikaUmrundung));
+        Assert.IsTrue(deutschland.GetPathToFriendlyTarget(china).Contains(china));
         
         Assert.IsTrue(deutschland.GetPathToTarget(finnland).Count == 3);
         Assert.IsTrue(deutschland.GetPathToTarget(finnland).Contains(deutschland));
         Assert.IsTrue(deutschland.GetPathToTarget(finnland).Contains(ostsee));
         Assert.IsTrue(deutschland.GetPathToTarget(finnland).Contains(finnland));
         
-        Assert.IsTrue(deutschland.GetPathToTargetByLand(finnland).Count == 4);
-        Assert.IsTrue(deutschland.GetPathToTargetByLand(finnland).Contains(deutschland));
-        Assert.IsTrue(deutschland.GetPathToTargetByLand(finnland).Contains(polen));
-        Assert.IsTrue(deutschland.GetPathToTargetByLand(finnland).Contains(russland));
-        Assert.IsTrue(deutschland.GetPathToTargetByLand(finnland).Contains(finnland));
+        Assert.IsTrue(deutschland.GetPathToLandTarget(finnland).Count == 4);
+        Assert.IsTrue(deutschland.GetPathToLandTarget(finnland).Contains(deutschland));
+        Assert.IsTrue(deutschland.GetPathToLandTarget(finnland).Contains(polen));
+        Assert.IsTrue(deutschland.GetPathToLandTarget(finnland).Contains(russland));
+        Assert.IsTrue(deutschland.GetPathToLandTarget(finnland).Contains(finnland));
+        
+        Assert.AreEqual(0,deutschland.GetPathToWaterTarget(finnland).Count);
+        Assert.AreEqual(2,deutschland.GetPathToWaterTarget(nordsee).Count);
+        Assert.AreEqual(3,deutschland.GetPathToWaterTarget(atlantik).Count);
         
         Assert.IsTrue(deutschland.GetPathToTargetWithMax(china,6).Count == 4);
         Assert.IsTrue(deutschland.GetPathToTargetWithMax(china,3).Count == 0);
         
-        Assert.IsTrue(deutschland.GetPathToTargetByFriendlyLand(china).Count == 0);
-        Assert.IsTrue(deutschland.GetPathToTargetByFriendlyLand(finnland).Count == 0);
-        Assert.IsTrue(deutschland.GetPathToTargetByFriendlyLand(ukraine).Count == 3);
-        Assert.IsTrue(deutschland.GetPathToTargetByFriendlyLand(dänemark).Count == 2);
-        Assert.IsTrue(deutschland.GetPathToTargetByFriendlyLand(tschechien).Count == 0);
+        Assert.IsTrue(deutschland.GetPathToFriendlyLandTarget(china).Count == 0);
+        Assert.IsTrue(deutschland.GetPathToFriendlyLandTarget(finnland).Count == 0);
+        Assert.IsTrue(deutschland.GetPathToFriendlyLandTarget(ukraine).Count == 3);
+        Assert.IsTrue(deutschland.GetPathToFriendlyLandTarget(dänemark).Count == 2);
+        Assert.IsTrue(deutschland.GetPathToFriendlyLandTarget(tschechien).Count == 0);
 
         #region pathRegions
         
@@ -1729,8 +1744,8 @@ public class RegionTest{
         
         Assert.IsTrue(d.GetPathToTarget(d5).Count == 4);
         Assert.IsTrue(d1.GetPathToTarget(d5).Count == 3);
-        Assert.IsTrue(d1.GetPathToTargetByFriendlies(d5).Count == 3);
-        Assert.IsTrue(d1.GetPathToTargetByLand(d5).Count == 3);
+        Assert.IsTrue(d1.GetPathToFriendlyTarget(d5).Count == 3);
+        Assert.IsTrue(d1.GetPathToLandTarget(d5).Count == 3);
         
     }
 }

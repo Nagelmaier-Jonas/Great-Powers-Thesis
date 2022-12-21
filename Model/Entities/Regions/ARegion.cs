@@ -56,29 +56,32 @@ public abstract class ARegion{
     public List<ARegion> GetAllNeighboursWithSource(int distance) =>
         GetNeighbours(distance, false);
 
-    public List<ARegion> GetNeighboursByLand(int distance) =>
+    public List<ARegion> GetLandNeighbours(int distance) =>
         GetNeighbours(distance, true, ERegionType.LAND);
     
-    public List<ARegion> GetNeighboursByWater(int distance) =>
+    public List<ARegion> GetWaterNeighbours(int distance) =>
         GetNeighbours(distance, true, ERegionType.WATER);
 
-    public List<ARegion> GetNeighboursByTypeWithSource(int distance, ERegionType type) =>
-        GetNeighbours(distance, false, type);
+    public List<ARegion> GetLandNeighboursWithSource(int distance) =>
+        GetNeighbours(distance, false, ERegionType.LAND);
+    public List<ARegion> GetWaterNeighboursWithSource(int distance) =>
+        GetNeighbours(distance, false, ERegionType.WATER);
 
     #endregion
 
     #region FriendlyNeighbours
 
     protected List<ARegion> GetFriendlyNeighbours(int distance, Nation nation, bool excludeSource = true, ERegionType? type = null){
-        if (distance <= 0) return new List<ARegion>();
         HashSet<ARegion> regions = new HashSet<ARegion>();
+        if (!excludeSource) regions.Add(this);
+        if (distance == 0) return regions.ToList();
         foreach (var neighbour in Neighbours){
             if (neighbour.Neighbour.ContainsEnemies(nation)) continue;
-            LandRegion? neigh = null;
-            if (neighbour.Neighbour.Type == ERegionType.LAND) neigh = (LandRegion)neighbour.Neighbour;
             if (type != null){
                 if (neighbour.Neighbour.Type != type) continue;
             }
+            LandRegion? neigh = null;
+            if (neighbour.Neighbour.Type == ERegionType.LAND) neigh = (LandRegion)neighbour.Neighbour;
             if (neigh == null){
                 regions.Add(neighbour.Neighbour);
                 regions.UnionWith(
@@ -93,7 +96,7 @@ public abstract class ARegion{
             }
         }
 
-        if (excludeSource && Type == ERegionType.LAND) regions.Remove((LandRegion)this);
+        if (excludeSource) regions.Remove(this);
         return regions.ToList();
     }
 
@@ -103,23 +106,24 @@ public abstract class ARegion{
     public List<ARegion> GetAllFriendlyNeighboursWithSource(int distance, Nation nation) =>
         GetFriendlyNeighbours(distance, nation, false);
 
-    public List<ARegion> GetFriendlyNeighboursByLand(int distance, Nation nation) =>
+    public List<ARegion> GetFriendlyLandNeighbours(int distance, Nation nation) =>
         GetFriendlyNeighbours(distance, nation, true, ERegionType.LAND);
-    public List<ARegion> GetFriendlyNeighboursByWater(int distance, Nation nation) =>
+    public List<ARegion> GetFriendlyWaterNeighbours(int distance, Nation nation) =>
         GetFriendlyNeighbours(distance, nation, true, ERegionType.WATER);
 
-    public List<ARegion> GetFriendlyNeighboursByLandWithSource(int distance, Nation nation) =>
+    public List<ARegion> GetFriendlyLandNeighboursWithSource(int distance, Nation nation) =>
         GetFriendlyNeighbours(distance, nation, false, ERegionType.LAND);
-    public List<ARegion> GetFriendlyNeighboursByWaterWithSource(int distance, Nation nation) =>
+    public List<ARegion> GetFriendlyWaterNeighboursWithSource(int distance, Nation nation) =>
         GetFriendlyNeighbours(distance, nation, false, ERegionType.WATER);
 
     #endregion
 
     #region Distance
 
-    protected int GetDistance(ARegion target, Nation? nation = null, ERegionType? type = null, int maxDistance = 10,
+    protected int GetDistance(ARegion? target, Nation? nation = null, ERegionType? type = null, int maxDistance = 10,
         int distance = 1){
-        if (distance == maxDistance) return 0;
+        if (target == null) return 0;
+        if (distance > maxDistance) return 0;
         if (nation != null && type == null){
             if (GetAllFriendlyNeighbours(distance, nation).Contains(target)) return distance;
         }
@@ -127,10 +131,10 @@ public abstract class ARegion{
         if (type != null && nation == null){
             switch (type){
                 case ERegionType.LAND:
-                    if (GetNeighboursByLand(distance).Contains(target)) return distance;
+                    if (GetLandNeighbours(distance).Contains(target)) return distance;
                     break;
                 case ERegionType.WATER:
-                    if (GetNeighboursByWater(distance).Contains(target)) return distance;
+                    if (GetWaterNeighbours(distance).Contains(target)) return distance;
                     break;
             }
         }
@@ -138,10 +142,10 @@ public abstract class ARegion{
         if (type != null && nation != null){
             switch (type){
                 case ERegionType.LAND:
-                    if (GetFriendlyNeighboursByLand(distance, nation).Contains(target)) return distance;
+                    if (GetFriendlyLandNeighbours(distance, nation).Contains(target)) return distance;
                     break;
                 case ERegionType.WATER:
-                    if (GetFriendlyNeighboursByWater(distance, nation).Contains(target)) return distance;
+                    if (GetFriendlyWaterNeighbours(distance, nation).Contains(target)) return distance;
                     break;
             }
         }
@@ -183,8 +187,9 @@ public abstract class ARegion{
 
     #region Path
 
-    protected List<ARegion> GetPath(ARegion target, Nation? nation = null, ERegionType? type = null,
+    protected List<ARegion> GetPath(ARegion? target, Nation? nation = null, ERegionType? type = null,
         int maxDistance = 10){
+        if (target == null) return new List<ARegion>();
         int distance = GetDistance(target, nation, type, maxDistance);
         if (distance == 0) return new List<ARegion>();
 
@@ -201,10 +206,10 @@ public abstract class ARegion{
         if (type != null && nation == null){
             switch (type){
                 case ERegionType.LAND:
-                    neighbours = GetNeighboursByLand(distance);
+                    neighbours = GetLandNeighbours(distance);
                     break;
                 case ERegionType.WATER:
-                    neighbours = GetNeighboursByWater(distance);
+                    neighbours = GetWaterNeighbours(distance);
                     break;
             }
         }
@@ -212,10 +217,10 @@ public abstract class ARegion{
         if (type != null && nation != null){
             switch (type){
                 case ERegionType.LAND:
-                    neighbours = GetFriendlyNeighboursByLand(1, nation);
+                    neighbours = GetFriendlyLandNeighbours(1, nation);
                     break;
                 case ERegionType.WATER:
-                    neighbours = GetFriendlyNeighboursByWater(1, nation);
+                    neighbours = GetFriendlyWaterNeighbours(1, nation);
                     break;
             }
             
@@ -239,30 +244,29 @@ public abstract class ARegion{
     public List<ARegion> GetPathToTargetWithMax(ARegion target, int maxDistance) =>
         GetPath(target, null, null, maxDistance);
 
-    public List<ARegion> GetPathToTargetByFriendlies(ARegion target, Nation nation) => GetPath(target, nation);
+    public List<ARegion> GetPathToFriendlyTarget(ARegion target, Nation nation) => GetPath(target, nation);
 
-    public List<ARegion> GetPathToTargetByFriendliesWithMax(ARegion target, Nation nation, int maxDistance) =>
+    public List<ARegion> GetPathToFriendlyTargetWithMax(ARegion target, Nation nation, int maxDistance) =>
         GetPath(target, nation, null, maxDistance);
 
-    public List<ARegion> GetPathToTargetByLand(ARegion target) => GetPath(target, null, ERegionType.LAND);
-    public List<ARegion> GetPathToTargetByWater(ARegion target) => GetPath(target, null, ERegionType.WATER);
+    public List<ARegion> GetPathToLandTarget(ARegion target) => GetPath(target, null, ERegionType.LAND);
+    public List<ARegion> GetPathToWaterTarget(ARegion target) => GetPath(target, null, ERegionType.WATER);
 
-    public List<ARegion> GetPathToTargetByLandWithMax(ARegion target, int maxDistance) =>
+    public List<ARegion> GetPathToLandTargetWithMax(ARegion target, int maxDistance) =>
         GetPath(target, null, ERegionType.LAND, maxDistance);
-    public List<ARegion> GetPathToTargetByWaterWithMax(ARegion target, int maxDistance) =>
+    public List<ARegion> GetPathToWaterTargetWithMax(ARegion target, int maxDistance) =>
         GetPath(target, null, ERegionType.WATER, maxDistance);
 
-    public List<ARegion> GetPathToTargetByFriendlyLand(ARegion target, Nation nation) => GetPath(target, nation, ERegionType.LAND);
-    public List<ARegion> GetPathToTargetByFriendlyWater(ARegion target, Nation nation) => GetPath(target, nation, ERegionType.WATER);
+    public List<ARegion> GetPathToFriendlyLandTarget(ARegion target, Nation nation) => GetPath(target, nation, ERegionType.LAND);
+    public List<ARegion> GetPathToFriendlyWaterTarget(ARegion target, Nation nation) => GetPath(target, nation, ERegionType.WATER);
 
-    public List<ARegion> GetPathToTargetByFriendlyLandWithMax(ARegion target, Nation nation, int maxDistance) =>
+    public List<ARegion> GetPathToFriendlyLandTargetWithMax(ARegion target, Nation nation, int maxDistance) =>
         GetPath(target, nation, ERegionType.LAND, maxDistance);
-    public List<ARegion> GetPathToTargetByFriendlyWaterWithMax(ARegion target, Nation nation, int maxDistance) =>
+    public List<ARegion> GetPathToFriendlyWaterTargetWithMax(ARegion target, Nation nation, int maxDistance) =>
         GetPath(target, nation, ERegionType.WATER, maxDistance);
 
     #endregion
 
-    public virtual List<AUnit> GetStationedUnits() => null;
 
     public List<AUnit> GetStationedFriendlyUnits(Nation nation) => GetStationedUnits()
         .Where(u => u.Nation == nation || u.Nation.Allies.Any(a => a.Ally == nation)).ToList();
@@ -284,6 +288,7 @@ public abstract class ARegion{
 
         return oneUnitPerType;
     }
+    public virtual List<AUnit> GetStationedUnits() => null;
 
     public virtual Nation GetOwner() => null;
 }
