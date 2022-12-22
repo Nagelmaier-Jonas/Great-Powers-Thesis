@@ -9,7 +9,7 @@ main {
 }
 
 .sidebar {
-    background-image: url('img/Border.png');
+    background-image: url('img/menu/Border.png');
     background-size: cover;
     background-position-y: center;
     border-left: 3px solid #c7a340;

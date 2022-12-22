@@ -4,22 +4,23 @@
 /*                  Style: Font Texture                     */
 /* -- -------------------------------------------------- -- */
 
+
 a .gold-texture{
-    background: url('../img/gold-texture.jpg') no-repeat center center;
+    background: url('../img/menu/gold-texture.jpg') no-repeat center center;
     background-size: 100%;
     color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
 }
 button span .gold-texture{
-    background: url('../img/gold-texture.jpg') no-repeat center center;
+    background: url('../img/menu/gold-texture.jpg') no-repeat center center;
     background-size: 100%;
     color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
 }
 div .gold-texture{
-    background: url('../img/gold-texture.jpg') no-repeat center center;
+    background: url('../img/menu/gold-texture.jpg') no-repeat center center;
     background-size: 100%;
     color: transparent;
     -webkit-background-clip: text;
@@ -36,6 +37,29 @@ span.gold-texture{
 }
 
 /* -- -------------------------------------------------- -- */
+/*                  Style: Troop Drawer                     */
+/* -- -------------------------------------------------- -- */
+.troop_drawer{
+    position: fixed !important;
+    width: 50vw !important;
+    bottom: 0;
+    transform: translateX(50%);
+    background-color: rgba(0,0,0,0.6) !important;
+}
+.troop_drawer .content svg{
+    width: 75px !important;
+    height: 75px !important;
+}
+.drawer_btn {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    width: 30px !important;
+    height: 30px !important;
+    margin: 10px !important;
+}
+
+/* -- -------------------------------------------------- -- */
 /*                  Style: Logo                             */
 /* -- -------------------------------------------------- -- */
 
@@ -43,9 +67,8 @@ span.logo {
     font-size: 55px !important;
 }
 .logo-container{
-    background: url(../img/green_leather.jpg) !important;
     padding: 10px !important;
-    background-position: center !important;
+    background: url(../img/menu/green_leather.jpg) center !important;
     display: inline-grid;
     border: 3px solid #c7a340;
 }
@@ -140,6 +163,9 @@ span.logo {
 .border-ussr{
     border: 5px solid #ba8772 !important;
 }
+.active_country{
+    fill: #eddf69 !important;
+}
 
 /* -- -------------------------------------------------- -- */
 /*                  Style: Setting Dialog                   */
@@ -172,4 +198,9 @@ span.logo {
     margin-bottom: 3vh !important;
     background-color: rgb(30 29 27) !important;
     border-bottom-left-radius: 35px !important;
+}
+
+.svg_country{
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
 }

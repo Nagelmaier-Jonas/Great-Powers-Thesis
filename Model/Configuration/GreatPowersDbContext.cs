@@ -85,23 +85,28 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         builder.Entity<Nation>().HasData(new List<Nation>(){
             new Nation(){
                 Id = 1,
-                Name = "Deutschland"
+                Name = "Germany",
+                Color = "#8ea39e"
             },
             new Nation(){
                 Id = 2,
-                Name = "Japan"
+                Name = "Japan",
+                Color = "#d29151"
             },
             new Nation(){
                 Id = 3,
-                Name = "UDSSR"
+                Name = "Soviet_Union",
+                Color = "#ba8772"
             },
             new Nation(){
                 Id = 4,
-                Name = "USA"
+                Name = "United_States",
+                Color = "#97a95f"
             },
             new Nation(){
                 Id = 5,
-                Name = "Großbritannien"
+                Name = "United_Kingdom",
+                Color = "#b59b68"
             }
         });
 
