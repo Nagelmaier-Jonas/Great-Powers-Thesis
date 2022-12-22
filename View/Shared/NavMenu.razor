@@ -2,8 +2,10 @@
 @using Microsoft.EntityFrameworkCore
 @using View.Components.Sidebar
 @using Domain.Services
+@using System.Diagnostics
 @inject GreatPowersDbContext GreatPowersDbContext
 @inject SidebarService SidebarService
+@inject DockerService DockerService
 
 <style>
     .nav-item {
@@ -57,6 +59,7 @@
     }
 
     private void ExitApp(){
+        DockerService.StopDockerContainer();
         GreatPowersDbContext.Dispose();
         Environment.Exit(0);
     }

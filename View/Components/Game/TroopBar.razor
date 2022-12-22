@@ -1,0 +1,45 @@
+﻿@using Model.Entities.Regions
+@using View.Services
+@using Model.Entities
+@inject ActiveRegion ActiveRegion
+
+@if (Region is not null){
+    <div>
+        <MudDrawer Class="troop_drawer" Open="true" Anchor="Anchor.Bottom" DisableOverlay="true" Elevation="0" Variant="@DrawerVariant.Temporary">
+            <MudDrawerContainer Class="content">
+                <MudBadge Bordered="true" Origin="Origin.TopCenter" Overlap="true" Content="@Region.Name" Class="m-3">
+                    @if (Owner is not null){
+                        <MudImage Src=@($"img/flags/{Owner.Name}.svg") Width="150" Height="150" Elevation="25" Style="border-radius: 50%"/>
+                    }
+                    else{
+                        <MudImage Src="img/flags/Neutral.svg" Width="150" Height="150" Elevation="25" Style="border-radius: 50%"/>
+                    }
+                    
+                </MudBadge>
+                @foreach (var unit in Region.GetOneStationedUnitPerType()){
+                    <Unit Troop="unit" Amount="Region.GetStationedUnitCounts()[unit.Type]" Class="ml-3"/>
+                }
+                <MudIconButton Size="Size.Small" Class="drawer_btn" OnClick="Close" Icon="@Icons.Material.Filled.Close" Color="Color.Error"/>
+            </MudDrawerContainer>
+        </MudDrawer> 
+    </div>
+    
+}
+
+@code {
+
+    [Parameter]
+    public ARegion? Region { get; set; }
+
+    private Nation? Owner { get; set; }
+
+    protected override void OnParametersSet(){
+        if (Region != null) Owner = Region.GetOwner();
+    }
+    
+    private void Close(){
+        ActiveRegion.ClearRegion();
+        StateHasChanged();
+    }
+
+}

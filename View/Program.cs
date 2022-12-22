@@ -1,16 +1,17 @@
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
-using Domain.Repositories;
+using Domain.Repositories.Implementations;
 using Domain.Services;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Model.Configuration;
 using Model.Entities;
 using MudBlazor;
 using MudBlazor.Services;
-using View.Areas.Identity;
+using View.Components.Game.Country;
+using View.Components.Game.Unit;
+using BlazorPanzoom;
+using View.Services;
 
 //setup firewall
 IPAddress ipAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList[0];
@@ -60,14 +61,21 @@ builder.Services.AddMudServices(config => {
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddBlazorPanzoomServices();
 //Register repositories
+builder.Services.AddScoped<UserRepository>();
+
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Services.AddLogging();
 
-builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<SidebarService>();
 builder.Services.AddScoped<DockerService>();
+
+builder.Services.AddScoped<CountryPaths>();
+builder.Services.AddScoped<UnitPaths>();
+
+builder.Services.AddScoped<ActiveRegion>();
 
 var app = builder.Build();
 

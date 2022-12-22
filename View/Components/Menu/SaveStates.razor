@@ -1,5 +1,6 @@
 ﻿@using Domain.Services
 @inject DockerService DockerService
+@inject NavigationManager NavigationManager
 
 @foreach (var container in DockerContainers){
     <MudCard Outlined="true">
@@ -22,7 +23,7 @@
         while (!DockerService.CheckConnection($"{ipAddress}", port)){
         }
         await DockerService.ChangeDbContext($"{ipAddress}", port);
-        StateHasChanged();
+        NavigationManager.NavigateTo("/game");
     }
 
 }
