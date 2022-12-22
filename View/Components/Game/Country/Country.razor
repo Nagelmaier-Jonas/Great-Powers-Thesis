@@ -7,10 +7,10 @@
 
 @if (Region is not null){
     @if (ActiveRegion.Region == Region){
-        <path d="@CountryPaths[Region.Identifier]" class="active_country svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
+        <path d="@CountryPaths[Region.Identifier]" class="active_country svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="args => UpdateRegion(args)"/>
     }
     else{
-        <path d="@CountryPaths[Region.Identifier]" class="svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
+        <path d="@CountryPaths[Region.Identifier]" class="svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="args => UpdateRegion(args)"/>
     }
 
 }
@@ -23,7 +23,10 @@
     [Parameter]
     public Nation Owner { get; set; } = new();
 
-    private void UpdateRegion(MouseEventArgs e){
+    private void UpdateRegion(MouseEventArgs args){
+        if (args.ShiftKey){
+            return;
+        }
         if (Region != null) ActiveRegion.RefreshRegion(Region);
     }
 

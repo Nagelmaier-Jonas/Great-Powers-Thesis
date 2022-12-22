@@ -403,9 +403,6 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
-# JetBrains Rider
-*.sln.iml
-
 *.suo
 *.user
 _ReSharper.*
