@@ -6,7 +6,7 @@ namespace Model.Entities.Regions;
 [Table("LAND_REGION")]
 public class LandRegion : ARegion{
     [Column("INCOME")]
-    public int? Income{ get; set; }
+    public int Income{ get; set; }
 
     [Column("CAPITAL_ID")]
     public int? CapitalId{ get; set; }
@@ -14,14 +14,14 @@ public class LandRegion : ARegion{
     public Capital? Capital{ get; set; }
     
     [Column("OWNER_ID")]
-    public int? NationId{ get; set; }
+    public int NationId{ get; set; }
 
-    public Nation? Nation{ get; set; }
+    public Nation Nation{ get; set; }
 
-    public List<Factory>? Factories{ get; set; }
+    public List<Factory> Factories{ get; set; } = new List<Factory>();
 
     public List<LandUnit> StationedUnits{ get; set; } = new List<LandUnit>();
-    public List<LandUnit>? IncomingUnits{ get; set; }
+    public List<LandUnit> IncomingUnits{ get; set; } = new List<LandUnit>();
 
     public override List<AUnit> GetStationedUnits(){
         List<AUnit> units = new List<AUnit>();

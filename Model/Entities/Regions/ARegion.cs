@@ -14,19 +14,19 @@ public abstract class ARegion{
     public int Id{ get; set; }
 
     [Column("NAME", TypeName = "VARCHAR(45)")]
-    public string? Name{ get; set; }
+    public string Name{ get; set; }
 
-    public List<Neighbours>? Neighbours{ get; set; }
+    public List<Neighbours> Neighbours{ get; set; }
 
     [Column("REGION_TYPE", TypeName = "VARCHAR(45)")]
-    public ERegionType? Type{ get; set; }
+    public ERegionType Type{ get; set; }
 
     [Column("IDENTIFIER")] public ERegion Identifier{ get; set; }
 
     [NotMapped] public Point Position{ get; set; }
 
     public List<Plane> StationedPlanes{ get; set; } = new List<Plane>();
-    public List<Plane>? IncomingPlanes{ get; set; }
+    public List<Plane> IncomingPlanes{ get; set; } = new List<Plane>();
 
     #region Neighbours
 

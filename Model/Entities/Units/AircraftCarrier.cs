@@ -5,7 +5,7 @@ namespace Model.Entities.Units;
 
 [Table("AIRCRAFT_CARRIER")]
 public class AircraftCarrier : Ship{
-    public List<Plane>? Planes{ get; set; }
+    public List<Plane> Planes{ get; set; } = new List<Plane>();
 
     public AircraftCarrier(int movement, int cost, int attack, int defense) : base(movement, cost, attack, defense){
     }

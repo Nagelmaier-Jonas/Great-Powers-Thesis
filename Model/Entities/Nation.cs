@@ -13,10 +13,10 @@ public class Nation{
     public int Id{ get; set; }
 
     [Column("NAME", TypeName = "VARCHAR(45)")]
-    public string? Name{ get; set; }
+    public string Name{ get; set; }
     
     [Column("TREASURY")]
-    public int? Treasury{ get; set; }
+    public int Treasury{ get; set; }
 
     [Column("PLAYER_ID")]
     public string? UserId{ get; set; }
@@ -26,7 +26,7 @@ public class Nation{
     [Column("COLOR", TypeName = "VARCHAR(7)")]
     public string Color{ get; set; }
 
-    public List<LandRegion>? Regions{ get; set; }
-    public List<AUnit>? Units{ get; set; }
-    public List<Allies>? Allies{ get; set; }
+    public List<LandRegion> Regions{ get; set; } = new List<LandRegion>();
+    public List<AUnit> Units{ get; set; } = new List<AUnit>();
+    public List<Allies> Allies{ get; set; } = new List<Allies>();
 }

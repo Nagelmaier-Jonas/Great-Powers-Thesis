@@ -31,24 +31,24 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
     protected override void OnModelCreating(ModelBuilder builder){
         builder.Entity<User>().HasIndex(u => new{ u.UserName, u.Email }).IsUnique();
-        
+
         builder.Entity<Nation>().HasOne(n => n.User)
             .WithMany(u => u.Nations);
-        
+
         builder.Entity<Allies>().HasOne(n => n.Nation)
             .WithMany(r => r.Allies);
         builder.Entity<Allies>().HasOne(n => n.Ally)
             .WithMany();
         builder.Entity<Allies>().HasKey(n => new{ n.NationId, n.AllyId });
-        
+
         builder.Entity<Capital>().HasIndex(u => u.Name).IsUnique();
-        
+
         builder.Entity<ARegion>().Property(a => a.Type).HasConversion<string>();
-        
+
         builder.Entity<LandRegion>().HasOne(n => n.Nation)
             .WithMany(u => u.Regions);
         builder.Entity<LandRegion>().HasOne(l => l.Capital).WithOne();
-        
+
         builder.Entity<Factory>().HasOne(f => f.Region)
             .WithMany(r => r.Factories);
 
@@ -57,7 +57,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         builder.Entity<Neighbours>().HasOne(n => n.Neighbour)
             .WithMany();
         builder.Entity<Neighbours>().HasKey(n => new{ n.NeighbourId, n.RegionId });
-        
+
         builder.Entity<AUnit>().Property(a => a.Type).HasConversion<string>();
         builder.Entity<AUnit>().HasOne(u => u.Nation).WithMany(n => n.Units);
 
@@ -67,7 +67,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             .WithMany(u => u.StationedUnits);
         builder.Entity<LandUnit>().HasOne(n => n.Target)
             .WithMany(u => u.IncomingUnits);
-        
+
         builder.Entity<Plane>().HasOne(n => n.AircraftCarrier)
             .WithMany(u => u.Planes);
         builder.Entity<Plane>().HasOne(n => n.Region)
@@ -80,39 +80,56 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         builder.Entity<Ship>().HasOne(s => s.Target)
             .WithMany(w => w.IncomingShips);
 
-        builder.Entity<SessionInfo>().HasOne(s => s.Nation).WithOne().HasForeignKey<SessionInfo>(s => s.CurrentNationId);
+        builder.Entity<SessionInfo>().HasOne(s => s.Nation).WithOne()
+            .HasForeignKey<SessionInfo>(s => s.CurrentNationId);
+
+        #region Nations
+
+        Nation Germany = new Nation(){
+            Id = 1,
+            Name = "Germany",
+            Color = "#8ea39e"
+        };
+        Nation Japan = new Nation(){
+            Id = 2,
+            Name = "Japan",
+            Color = "#d29151"
+        };
+        Nation Soviet_Union = new Nation(){
+            Id = 3,
+            Name = "Soviet_Union",
+            Color = "#ba8772"
+        };
+        Nation United_States = new Nation(){
+            Id = 4,
+            Name = "United_States",
+            Color = "#97a95f"
+        };
+        Nation United_Kingdom = new Nation(){
+            Id = 5,
+            Name = "United_Kingdom",
+            Color = "#b59b68"
+        };
+        Nation Neutral = new Nation(){
+            Id = 6,
+            Name = "Neutral",
+            Color = "#4f4d49"
+        };
 
         builder.Entity<Nation>().HasData(new List<Nation>(){
-            new Nation(){
-                Id = 1,
-                Name = "Germany",
-                Color = "#8ea39e"
-            },
-            new Nation(){
-                Id = 2,
-                Name = "Japan",
-                Color = "#d29151"
-            },
-            new Nation(){
-                Id = 3,
-                Name = "Soviet_Union",
-                Color = "#ba8772"
-            },
-            new Nation(){
-                Id = 4,
-                Name = "United_States",
-                Color = "#97a95f"
-            },
-            new Nation(){
-                Id = 5,
-                Name = "United_Kingdom",
-                Color = "#b59b68"
-            }
+            Germany,
+            Japan,
+            Soviet_Union,
+            United_States,
+            United_Kingdom,
+            Neutral
         });
+
+        #endregion
 
         builder.Entity<Allies>().HasData(new List<Allies>(){
             new Allies(){
-                NationId =1,
+                NationId = 1,
                 AllyId = 2
             },
             new Allies(){
@@ -285,12 +302,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
                 NationId = 1
             },
             new LandRegion(){
-                Id = 74,
-                Income = 4,
-                Name = "Kaukasus",
-                NationId = 1
-            },
-            new LandRegion(){
                 Id = 75,
                 Income = 2,
                 Name = "Bulgarien Rumänien",
@@ -340,19 +351,521 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
                 Name = "Libyen",
                 NationId = 1
             },
+
+            #endregion
+
+            #region Russland
+
             new LandRegion(){
-                Id = 83,
-                Income = 2,
-                Name = "Ägypten",
-                NationId = 1
+                Id = 74,
+                Income = 4,
+                Name = "Kaukasus",
+                NationId = 3
             },
             new LandRegion(){
                 Id = 84,
                 Income = 2,
                 Name = "Karelo-Finnische SSR",
                 CapitalId = 4,
-                NationId = 1
+                NationId = 3
             },
+            new LandRegion(){
+                Id = 85,
+                Income = 1,
+                Name = "Archangelsk",
+                NationId = 3
+            },
+            new LandRegion(){
+                Id = 86,
+                Income = 8,
+                Name = "Russland",
+                CapitalId = 5,
+                NationId = 3
+            },
+            new LandRegion(){
+                Id = 87,
+                Income = 1,
+                Name = "Autonomer Kreis der Ewenken",
+                NationId = 3
+            },
+            new LandRegion(){
+                Id = 88,
+                Income = 2,
+                Name = "Wologda",
+                NationId = 3
+            },
+            new LandRegion(){
+                Id = 89,
+                Income = 1,
+                Name = "Nowosibirsk",
+                NationId = 3
+            },
+            new LandRegion(){
+                Id = 90,
+                Income = 2,
+                Name = "Kasachische SSR",
+                NationId = 3
+            },
+            new LandRegion(){
+                Id = 91,
+                Income = 1,
+                Name = "Jakutische SSR",
+                NationId = 3
+            },
+            new LandRegion(){
+                Id = 92,
+                Income = 1,
+                Name = "Burjatische SSR",
+                NationId = 3
+            },
+            new LandRegion(){
+                Id = 93,
+                Income = 1,
+                Name = "Sowjetischer Ferner Osten",
+                NationId = 3
+            },
+
+            #endregion
+            
+            #region Großbritannien
+            
+            new LandRegion(){
+                Id = 83,
+                Income = 2,
+                Name = "Ägypten",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 94,
+                Income = 1,
+                Name = "Transjordanien",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 95,
+                Income = 1,
+                Name = "Persien",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 96,
+                Income = 3,
+                Name = "Indien",
+                CapitalId = 7,
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 97,
+                Income = 1,
+                Name = "Burma",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 98,
+                Income = 1,
+                Name = "Westaustralien",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 99,
+                Income = 1,
+                Name = "Ostaustralien",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 100,
+                Income = 1,
+                Name = "Neuseeland",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 101,
+                Income = 1,
+                Name = "Französisch Madagaskar",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 102,
+                Income = 2,
+                Name = "Südafrikanische Union",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 103,
+                Income = 1,
+                Name = "Rhodesien",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 104,
+                Income = 1,
+                Name = "Belgisch-Kongo",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 105,
+                Income = 0,
+                Name = "Anglo-Ägyptischer Sudan",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 106,
+                Income = 1,
+                Name = "Italienisch-Ostafrika",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 107,
+                Income = 1,
+                Name = "Französisch-Äquatorialafrika",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 108,
+                Income = 1,
+                Name = "Französisch-Westafrika",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 109,
+                Income = 0,
+                Name = "Gibraltar",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 110,
+                Income = 8,
+                Name = "Vereinigtes Königreich",
+                CapitalId = 6,
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 111,
+                Income = 0,
+                Name = "Island",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 112,
+                Income = 3,
+                Name = "Ostkanada",
+                NationId = 5
+            },
+            new LandRegion(){
+                Id = 113,
+                Income = 1,
+                Name = "Westkanada",
+                NationId = 5
+            },
+            #endregion
+
+            #region USA
+
+            new LandRegion(){
+                Id = 114,
+                Income = 2,
+                Name = "Alaska",
+                NationId = 4
+            },
+            new LandRegion(){
+                Id = 115,
+                Income = 10,
+                Name = "Westliche Vereinigte Staaten",
+                CapitalId = 11,
+                NationId = 4
+            },
+            new LandRegion(){
+                Id = 116,
+                Income = 6,
+                Name = "Zentrale Vereinigte Staaten",
+                NationId = 4
+            },
+            new LandRegion(){
+                Id = 117,
+                Income = 12,
+                Name = "Östliche Vereinigte Staaten",
+                CapitalId = 12,
+                NationId = 4
+            },
+            new LandRegion(){
+                Id = 118,
+                Income = 1,
+                Name = "Karibik",
+                NationId = 4
+            },
+            new LandRegion(){
+                Id = 119,
+                Income = 0,
+                Name = "Ostmexiko",
+                NationId = 4
+            },
+            new LandRegion(){
+                Id = 120,
+                Income = 1,
+                Name = "Zentralamerika",
+                NationId = 4
+            },
+            new LandRegion(){
+                Id = 121,
+                Income = 2,
+                Name = "Mexiko",
+                NationId = 4
+            },
+            new LandRegion(){
+                Id = 122,
+                Income = 3,
+                Name = "Brasilien",
+                NationId = 4
+            },
+            new LandRegion(){
+                Id = 123,
+                Income = 0,
+                Name = "Grönland",
+                NationId = 4
+            },
+            new LandRegion(){
+                Id = 124,
+                Income = 0,
+                Name = "Midway-Atoll",
+                NationId = 4
+            },
+            new LandRegion(){
+                Id = 125,
+                Income = 1,
+                Name = "Hawaii-Inseln",
+                CapitalId = 13,
+                NationId = 4
+            },
+            new LandRegion(){
+                Id = 126,
+                Income = 1,
+                Name = "Sinkiang",
+                NationId = 4
+            },
+            new LandRegion(){
+                Id = 127,
+                Income = 1,
+                Name = "Anhwei",
+                NationId = 4
+            },
+            new LandRegion(){
+                Id = 128,
+                Income = 1,
+                Name = "Sezuan",
+                NationId = 4
+            },
+            new LandRegion(){
+                Id = 129,
+                Income = 1,
+                Name = "Yunnan",
+                NationId = 4
+            },
+
+            #endregion
+
+            #region Japan
+
+            new LandRegion(){
+                Id = 130,
+                Income = 8,
+                Name = "Japan",
+                CapitalId = 9,
+                NationId = 2
+            },
+            new LandRegion(){
+                Id = 131,
+                Income = 3,
+                Name = "Mandschurei",
+                NationId = 2
+            }
+            ,
+            new LandRegion(){
+                Id = 132,
+                Income = 2,
+                Name = "Jiangsu",
+                CapitalId = 8,
+                NationId = 2
+            },
+            new LandRegion(){
+                Id = 133,
+                Income = 2,
+                Name = "Guandong",
+                NationId = 2
+            },
+            new LandRegion(){
+                Id = 134,
+                Income = 2,
+                Name = "Französisch-Indochina-Thailand",
+                NationId = 2
+            },
+            new LandRegion(){
+                Id = 135,
+                Income = 1,
+                Name = "Malaysia",
+                NationId = 2
+            },
+            new LandRegion(){
+                Id = 136,
+                Income = 4,
+                Name = "Borneo",
+                NationId = 2
+            },
+            new LandRegion(){
+                Id = 137,
+                Income = 4,
+                Name = "Ostindien",
+                NationId = 2
+            },
+            new LandRegion(){
+                Id = 138,
+                Income = 0,
+                Name = "Salomon-Inseln",
+                NationId = 2
+            },
+            new LandRegion(){
+                Id = 139,
+                Income = 1,
+                Name = "Neuguniea",
+                NationId = 2
+            },
+            new LandRegion(){
+                Id = 140,
+                Income = 3,
+                Name = "Philippinische Inseln",
+                CapitalId = 10,
+                NationId = 2
+            },
+            new LandRegion(){
+                Id = 141,
+                Income = 0,
+                Name = "Formosa",
+                NationId = 2
+            },
+            new LandRegion(){
+                Id = 142,
+                Income = 0,
+                Name = "Okinawa",
+                NationId = 2
+            },
+            new LandRegion(){
+                Id = 143,
+                Income = 0,
+                Name = "Iwojima",
+                NationId = 2
+            },
+            new LandRegion(){
+                Id = 144,
+                Income = 0,
+                Name = "Wake",
+                NationId = 2
+            },
+            new LandRegion(){
+                Id = 145,
+                Income = 0,
+                Name = "Caroline-Atoll",
+                NationId = 2
+            },
+
+            #endregion
+
+            #region Neutral
+
+            new LandRegion(){
+                Id = 146,
+                Income = 0,
+                Name = "Mogolei",
+                NationId = 6
+            },
+            new LandRegion(){
+                Id = 147,
+                Income = 0,
+                Name = "Himalaya",
+                NationId = 6
+            },
+            new LandRegion(){
+                Id = 148,
+                Income = 0,
+                Name = "Afghanistan",
+                NationId = 6
+            },
+            new LandRegion(){
+                Id = 149,
+                Income = 0,
+                Name = "Saudi Arabien",
+                NationId = 6
+            },
+            new LandRegion(){
+                Id = 150,
+                Income = 0,
+                Name = "Türkei",
+                NationId = 6
+            },
+            new LandRegion(){
+                Id = 151,
+                Income = 0,
+                Name = "Schweden",
+                NationId = 6
+            },
+            new LandRegion(){
+                Id = 152,
+                Income = 0,
+                Name = "Irland",
+                NationId = 6
+            },
+            new LandRegion(){
+                Id = 153,
+                Income = 0,
+                Name = "Spanien Portugal",
+                NationId = 6
+            },
+            new LandRegion(){
+                Id = 154,
+                Income = 0,
+                Name = "Sahara",
+                NationId = 6
+            },
+            new LandRegion(){
+                Id = 155,
+                Income = 0,
+                Name = "Angola",
+                NationId = 6
+            },
+            new LandRegion(){
+                Id = 156,
+                Income = 0,
+                Name = "Mosambik",
+                NationId = 6
+            },
+            new LandRegion(){
+                Id = 157,
+                Income = 0,
+                Name = "Schweiz",
+                NationId = 6
+            },
+            new LandRegion(){
+                Id = 158,
+                Income = 0,
+                Name = "Venezuela",
+                NationId = 6
+            },
+            new LandRegion(){
+                Id = 159,
+                Income = 0,
+                Name = "Kolumbien Ecuador",
+                NationId = 6
+            },
+            new LandRegion(){
+                Id = 160,
+                Income = 0,
+                Name = "Peru Argentinien",
+                NationId = 6
+            },
+            new LandRegion(){
+                Id = 161,
+                Income = 0,
+                Name = "Chile",
+                NationId = 6
+            }
 
             #endregion
         });
@@ -1019,7 +1532,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
             #endregion
 
-            #region LandRegions
+            #region Deutschland
 
             new Neighbours(){
                 RegionId = 66,

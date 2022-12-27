@@ -9,7 +9,7 @@ public class WaterRegion : ARegion{
     public bool HasLandingStrip{ get; set; } = false;
 
     public List<Ship> StationedShips{ get; set; } = new List<Ship>();
-    public List<Ship>? IncomingShips{ get; set; }
+    public List<Ship> IncomingShips{ get; set; } = new List<Ship>();
 
     public override List<AUnit> GetStationedUnits(){
         List<AUnit> units = new List<AUnit>();
