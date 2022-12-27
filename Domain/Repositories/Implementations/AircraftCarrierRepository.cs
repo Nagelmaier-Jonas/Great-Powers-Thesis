@@ -5,7 +5,7 @@ using Model.Entities.Units;
 
 namespace Domain.Repositories.Implementations;
 
-public class AircraftCarrierRepository : ARepository<AircraftCarrier>, IAircraftCarrierRepository{
+public class AircraftCarrierRepository : ACreatableRepository<AircraftCarrier>, IAircraftCarrierRepository{
     public AircraftCarrierRepository(GreatPowersDbContext context) : base(context){
     }
     

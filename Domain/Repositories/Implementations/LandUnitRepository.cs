@@ -4,7 +4,7 @@ using Model.Entities.Units;
 
 namespace Domain.Repositories.Implementations;
 
-public class LandUnitRepository : ARepository<LandUnit>, ILandUnitRepository{
+public class LandUnitRepository : ACreatableRepository<LandUnit>, ILandUnitRepository{
     public LandUnitRepository(GreatPowersDbContext context) : base(context){
     }
 }

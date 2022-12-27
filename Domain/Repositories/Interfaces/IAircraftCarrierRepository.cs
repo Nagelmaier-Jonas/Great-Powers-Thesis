@@ -2,6 +2,6 @@
 
 namespace Domain.Repositories.Interfaces;
 
-public interface IAircraftCarrierRepository : IRepository<AircraftCarrier>{
+public interface IAircraftCarrierRepository : ICreatableRepository<AircraftCarrier>{
     
 }

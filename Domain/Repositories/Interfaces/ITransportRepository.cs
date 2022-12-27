@@ -2,6 +2,6 @@
 
 namespace Domain.Repositories.Interfaces;
 
-public interface ITransportRepository : IRepository<Transport>{
+public interface ITransportRepository : ICreatableRepository<Transport>{
     
 }

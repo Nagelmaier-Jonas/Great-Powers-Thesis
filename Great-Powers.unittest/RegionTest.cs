@@ -1638,7 +1638,7 @@ public class RegionTest{
         Assert.AreEqual(3,deutschland.GetPathToWaterTarget(atlantik).Count);
         
         Assert.IsTrue(deutschland.GetPathToTargetWithMax(china,6).Count == 4);
-        Assert.IsTrue(deutschland.GetPathToTargetWithMax(china,3).Count == 0);
+        Assert.AreEqual(0,deutschland.GetPathToTargetWithMax(china,2).Count);
         
         Assert.IsTrue(deutschland.GetPathToFriendlyLandTarget(china).Count == 0);
         Assert.IsTrue(deutschland.GetPathToFriendlyLandTarget(finnland).Count == 0);

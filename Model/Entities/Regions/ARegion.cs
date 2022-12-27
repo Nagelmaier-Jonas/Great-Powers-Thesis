@@ -35,17 +35,11 @@ public abstract class ARegion{
         HashSet<ARegion> regions = new HashSet<ARegion>();
         foreach (var neighbour in Neighbours){
             if (type != null){
-                if (neighbour.Neighbour.Type == type){
-                    regions.Add(neighbour.Neighbour);
-                    regions.UnionWith(neighbour.Neighbour.GetNeighbours(distance - 1, false, type));
-                }
+                if (neighbour.Neighbour.Type != type) continue;
             }
-            else{
-                regions.Add(neighbour.Neighbour);
-                regions.UnionWith(neighbour.Neighbour.GetNeighbours(distance - 1, false, type));
-            }
+            regions.Add(neighbour.Neighbour);
+            regions.UnionWith(neighbour.Neighbour.GetNeighbours(distance - 1, false, type));
         }
-
         if (excludeSource) regions.Remove(this);
         return regions.ToList();
     }

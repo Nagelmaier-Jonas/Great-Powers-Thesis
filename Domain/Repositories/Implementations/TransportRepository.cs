@@ -5,7 +5,7 @@ using Model.Entities.Units;
 
 namespace Domain.Repositories.Implementations;
 
-public class TransportRepository : ARepository<Transport>, ITransportRepository{
+public class TransportRepository : ACreatableRepository<Transport>, ITransportRepository{
     public TransportRepository(GreatPowersDbContext context) : base(context){
     }
     

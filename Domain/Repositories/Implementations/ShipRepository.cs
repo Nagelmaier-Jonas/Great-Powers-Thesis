@@ -4,7 +4,7 @@ using Model.Entities.Units;
 
 namespace Domain.Repositories.Implementations;
 
-public class ShipRepository : ARepository<Ship>, IShipRepository{
+public class ShipRepository : ACreatableRepository<Ship>, IShipRepository{
     public ShipRepository(GreatPowersDbContext context) : base(context){
     }
 }

@@ -2,6 +2,6 @@
 
 namespace Domain.Repositories.Interfaces;
 
-public interface IPlaneRepository : IRepository<Plane>{
+public interface IPlaneRepository : ICreatableRepository<Plane>{
     
 }

@@ -4,7 +4,7 @@ using Model.Entities.Regions;
 
 namespace Domain.Repositories.Implementations;
 
-public class FactoryRepository : ARepository<Factory>, IFactoryRepository{
+public class FactoryRepository : ACreatableRepository<Factory>, IFactoryRepository{
     public FactoryRepository(GreatPowersDbContext context) : base(context){
     }
 }

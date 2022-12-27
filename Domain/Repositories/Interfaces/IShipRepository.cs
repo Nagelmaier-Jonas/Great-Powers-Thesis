@@ -2,6 +2,6 @@
 
 namespace Domain.Repositories.Interfaces;
 
-public interface IShipRepository : IRepository<Ship>{
+public interface IShipRepository : ICreatableRepository<Ship>{
     
 }

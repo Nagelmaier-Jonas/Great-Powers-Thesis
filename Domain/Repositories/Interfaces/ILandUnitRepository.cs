@@ -2,6 +2,6 @@
 
 namespace Domain.Repositories.Interfaces;
 
-public interface ILandUnitRepository : IRepository<LandUnit>{
+public interface ILandUnitRepository : ICreatableRepository<LandUnit>{
     
 }
