@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Domain.Factories;
 using Model.Entities;
 using Model.Entities.Regions;
 using Model.Entities.Units;
+using Model.Factories;
 using NUnit.Framework;
 
 namespace Great_Powers.unittest;

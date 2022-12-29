@@ -5,9 +5,9 @@ namespace Model.Entities.Units;
 
 [Table("LAND_UNITS")]
 public class LandUnit : AUnit{
-    [Column("LOCATION_ID")] public int RegionId{ get; set; }
+    [Column("LOCATION_ID")] public int? RegionId{ get; set; }
 
-    public LandRegion Region{ get; set; }
+    public LandRegion? Region{ get; set; }
 
     [Column("TARGET_ID")] public int? TargetId{ get; set; }
 
@@ -51,7 +51,7 @@ public class LandUnit : AUnit{
     public override List<ARegion> GetPathToCurrentTarget() =>
         Region.GetPathToFriendlyLandTargetWithMax(Target, CurrentMovement);
 
-    protected override bool CanTarget(ARegion target) =>
+    protected override bool CanTarget(ARegion target) => 
         Region.GetPathToFriendlyLandTargetWithMax(target, CurrentMovement).Count != 0;
     
     public override bool MoveToTarget(){
