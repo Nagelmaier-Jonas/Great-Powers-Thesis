@@ -26,6 +26,9 @@ public class Nation{
     [Column("COLOR", TypeName = "VARCHAR(7)")]
     public string Color{ get; set; }
 
+    [Column("TYPE")]
+    public ENation Type{ get; set; }
+
     public List<LandRegion> Regions{ get; set; } = new List<LandRegion>();
     public List<AUnit> Units{ get; set; } = new List<AUnit>();
     public List<Allies> Allies{ get; set; } = new List<Allies>();

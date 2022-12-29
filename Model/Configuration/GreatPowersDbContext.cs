@@ -90,37 +90,43 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 1,
             Name = "Germany",
             Color = "#8ea39e",
-            Treasury = 41
+            Treasury = 41,
+            Type = ENation.Germany
         };
         Nation Japan = new Nation(){
             Id = 2,
             Name = "Japan",
             Color = "#d29151",
-            Treasury = 30
+            Treasury = 30,
+            Type = ENation.Japan
         };
         Nation Soviet_Union = new Nation(){
             Id = 3,
             Name = "Soviet_Union",
             Color = "#ba8772",
-            Treasury = 24
+            Treasury = 24,
+            Type = ENation.SovietUnion
         };
         Nation United_States = new Nation(){
             Id = 4,
             Name = "United_States",
             Color = "#97a95f",
-            Treasury = 42
+            Treasury = 42,
+            Type = ENation.UnitedStates
         };
         Nation United_Kingdom = new Nation(){
             Id = 5,
             Name = "United_Kingdom",
             Color = "#b59b68",
-            Treasury = 31
+            Treasury = 31,
+            Type = ENation.UnitedKingdom
         };
         Nation Neutral = new Nation(){
             Id = 6,
             Name = "Neutral",
             Color = "#4f4d49",
-            Treasury = 24
+            Treasury = 24,
+            Type = ENation.Neutral
         };
 
         builder.Entity<Nation>().HasData(new List<Nation>(){
@@ -284,99 +290,115 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Income = 10,
             Name = "Deutschland",
             CapitalId = 1,
-            NationId = 1
+            NationId = 1,
+            Identifier = ERegion.Germany
         };
         LandRegion polen = new LandRegion(){
             Id = 67,
             Income = 2,
             Name = "Polen",
-            NationId = 1
+            NationId = 1,
+            Identifier = ERegion.Poland
         };
         LandRegion baltische_staaten = new LandRegion(){
             Id = 68,
             Income = 2,
             Name = "Baltische Staaten",
-            NationId = 1
+            NationId = 1,
+            Identifier = ERegion.BalticStates
         };
         LandRegion weissrussland = new LandRegion(){
             Id = 69,
             Income = 2,
             Name = "Weissrussland",
-            NationId = 1
+            NationId = 1,
+            Identifier = ERegion.WhiteRussia
         };
         LandRegion ukrainischessr = new LandRegion(){
             Id = 70,
             Income = 2,
             Name = "Ukrainische SSR",
-            NationId = 1
+            NationId = 1,
+            Identifier = ERegion.Ukraine
         };
         LandRegion westrussland = new LandRegion(){
             Id = 71,
             Income = 2,
             Name = "West Russland",
-            NationId = 1
+            NationId = 1,
+            Identifier = ERegion.WestRussia
         };
         LandRegion finnland = new LandRegion(){
             Id = 72,
             Income = 1,
             Name = "Finnland",
-            NationId = 1
+            NationId = 1,
+            Identifier = ERegion.Finland
         };
         LandRegion norwegen = new LandRegion(){
             Id = 73,
             Income = 2,
             Name = "Norwegen",
-            NationId = 1
+            NationId = 1,
+            Identifier = ERegion.Norway
         };
         LandRegion bulgarien_rumänien = new LandRegion(){
             Id = 75,
             Income = 2,
             Name = "Bulgarien Rumänien",
-            NationId = 1
+            NationId = 1,
+            Identifier = ERegion.BulgariaRomania
         };
         LandRegion südeuropa = new LandRegion(){
             Id = 76,
             Income = 2,
             Name = "Südeuropa",
-            NationId = 1
+            NationId = 1,
+            Identifier = ERegion.SouthEurope
         };
         LandRegion italien = new LandRegion(){
             Id = 77,
             Income = 3,
             Name = "Italien",
             CapitalId = 3,
-            NationId = 1
+            NationId = 1,
+            Identifier = ERegion.Italy
         };
         LandRegion frankreich = new LandRegion(){
             Id = 78,
             Income = 6,
             Name = "Frankreich",
             CapitalId = 2,
-            NationId = 1
+            NationId = 1,
+            Identifier = ERegion.France
         };
         LandRegion nordwesteuropa = new LandRegion(){
             Id = 79,
             Income = 2,
             Name = "Nordwesteuropa",
-            NationId = 1
+            NationId = 1,
+            Identifier = ERegion.NorthWestEurope
         };
         LandRegion marokko = new LandRegion(){
             Id = 80,
             Income = 1,
             Name = "Marokko",
-            NationId = 1
+            NationId = 1,
+            Identifier = ERegion.Morocco
         };
         LandRegion algerien = new LandRegion(){
             Id = 81,
             Income = 1,
             Name = "Algerien",
-            NationId = 1
+            NationId = 1,
+            Identifier = ERegion.Algeria
         };
         LandRegion lybien = new LandRegion(){
             Id = 82,
             Income = 1,
             Name = "Libyen",
-            NationId = 1
+            NationId = 1,
+            Identifier = ERegion.Libya
         };
 
         #endregion
@@ -387,69 +409,80 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 74,
             Income = 4,
             Name = "Kaukasus",
-            NationId = 3
+            NationId = 3,
+            Identifier = ERegion.Caucasus
         };
         LandRegion karelo_finnnischessr = new LandRegion(){
             Id = 84,
             Income = 2,
             Name = "Karelo-Finnische SSR",
             CapitalId = 4,
-            NationId = 3
+            NationId = 3,
+            Identifier = ERegion.Karelia
         };
         LandRegion archangelsk = new LandRegion(){
             Id = 85,
             Income = 1,
             Name = "Archangelsk",
-            NationId = 3
+            NationId = 3,
+            Identifier = ERegion.Archangelsk
         };
         LandRegion russland = new LandRegion(){
             Id = 86,
             Income = 8,
             Name = "Russland",
             CapitalId = 5,
-            NationId = 3
+            NationId = 3,
+            Identifier = ERegion.Russia
         };
         LandRegion autonomer_kreis_der_ewenken = new LandRegion(){
             Id = 87,
             Income = 1,
             Name = "Autonomer Kreis der Ewenken",
-            NationId = 3
+            NationId = 3,
+            Identifier = ERegion.EwenkiAutonomousDistrict
         };
         LandRegion wologda = new LandRegion(){
             Id = 88,
             Income = 2,
             Name = "Wologda",
-            NationId = 3
+            NationId = 3,
+            Identifier = ERegion.Vologda
         };
         LandRegion nowosibirsk = new LandRegion(){
             Id = 89,
             Income = 1,
             Name = "Nowosibirsk",
-            NationId = 3
+            NationId = 3,
+            Identifier = ERegion.Novosibirsk
         };
         LandRegion kasachischessr = new LandRegion(){
             Id = 90,
             Income = 2,
             Name = "Kasachische SSR",
-            NationId = 3
+            NationId = 3,
+            Identifier = ERegion.Kazakhstan
         };
         LandRegion jakutischessr = new LandRegion(){
             Id = 91,
             Income = 1,
             Name = "Jakutische SSR",
-            NationId = 3
+            NationId = 3,
+            Identifier = ERegion.Yakutia
         };
         LandRegion burjatischessr = new LandRegion(){
             Id = 92,
             Income = 1,
             Name = "Burjatische SSR",
-            NationId = 3
+            NationId = 3,
+            Identifier = ERegion.Buryatia
         };
         LandRegion sowjetischer_ferner_osten = new LandRegion(){
             Id = 93,
             Income = 1,
             Name = "Sowjetischer Ferner Osten",
-            NationId = 3
+            NationId = 3,
+            Identifier = ERegion.SovietFarEast
         };
 
         #endregion
@@ -460,129 +493,150 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 83,
             Income = 2,
             Name = "Ägypten",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.Egypt
         };
         LandRegion transjordanien = new LandRegion(){
             Id = 94,
             Income = 1,
             Name = "Transjordanien",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.Transjordan
         };
         LandRegion persien = new LandRegion(){
             Id = 95,
             Income = 1,
             Name = "Persien",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.Persia
         };
         LandRegion indien = new LandRegion(){
             Id = 96,
             Income = 3,
             Name = "Indien",
             CapitalId = 7,
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.India
         };
         LandRegion burma = new LandRegion(){
             Id = 97,
             Income = 1,
             Name = "Burma",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.Burma
         };
         LandRegion westaustralien = new LandRegion(){
             Id = 98,
             Income = 1,
             Name = "Westaustralien",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.WestAustralia
         };
         LandRegion ostaustralien = new LandRegion(){
             Id = 99,
             Income = 1,
             Name = "Ostaustralien",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.EastAustralia
         };
         LandRegion neuseeland = new LandRegion(){
             Id = 100,
             Income = 1,
             Name = "Neuseeland",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.NewZealand
         };
         LandRegion französisch_madagaskar = new LandRegion(){
             Id = 101,
             Income = 1,
             Name = "Französisch Madagaskar",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.FrenchMadagascar
         };
         LandRegion südafrikanische_union = new LandRegion(){
             Id = 102,
             Income = 2,
             Name = "Südafrikanische Union",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.SouthAfricanUnion
         };
         LandRegion rhodesien = new LandRegion(){
             Id = 103,
             Income = 1,
             Name = "Rhodesien",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.Rhodesia
         };
         LandRegion belgisch_kongo = new LandRegion(){
             Id = 104,
             Income = 1,
             Name = "Belgisch-Kongo",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.BelgianCongo
         };
         LandRegion anglo_ägyptischer_sudan = new LandRegion(){
             Id = 105,
             Income = 0,
             Name = "Anglo-Ägyptischer Sudan",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.AngloEgyptianSudan
         };
         LandRegion italienisch_ostafrika = new LandRegion(){
             Id = 106,
             Income = 1,
             Name = "Italienisch-Ostafrika",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.ItalianEastAfrica
         };
         LandRegion französisch_äquatorialafrika = new LandRegion(){
             Id = 107,
             Income = 1,
             Name = "Französisch-Äquatorialafrika",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.FrenchEquatorialAfrica
         };
         LandRegion französisch_westafrika = new LandRegion(){
             Id = 108,
             Income = 1,
             Name = "Französisch-Westafrika",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.FrenchWestAfrica
         };
         LandRegion gibraltar = new LandRegion(){
             Id = 109,
             Income = 0,
             Name = "Gibraltar",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.Gibraltar
         };
         LandRegion vereinigtes_königreich = new LandRegion(){
             Id = 110,
             Income = 8,
             Name = "Vereinigtes Königreich",
             CapitalId = 6,
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.UnitedKingdom
         };
         LandRegion island = new LandRegion(){
             Id = 111,
             Income = 0,
             Name = "Island",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.Iceland
         };
         LandRegion ostkanada = new LandRegion(){
             Id = 112,
             Income = 3,
             Name = "Ostkanada",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.EastCanada
         };
         LandRegion westkanada = new LandRegion(){
             Id = 113,
             Income = 1,
             Name = "Westkanada",
-            NationId = 5
+            NationId = 5,
+            Identifier = ERegion.WestCanada
         };
 
         #endregion
@@ -593,100 +647,116 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 114,
             Income = 2,
             Name = "Alaska",
-            NationId = 4
+            NationId = 4,
+            Identifier = ERegion.Alaska
         };
         LandRegion westliche_vereinigte_staaten = new LandRegion(){
             Id = 115,
             Income = 10,
             Name = "Westliche Vereinigte Staaten",
             CapitalId = 11,
-            NationId = 4
+            NationId = 4,
+            Identifier = ERegion.WesternUnitedStates
         };
         LandRegion zentrale_vereinigte_staaten = new LandRegion(){
             Id = 116,
             Income = 6,
             Name = "Zentrale Vereinigte Staaten",
-            NationId = 4
+            NationId = 4,
+            Identifier = ERegion.CentralUnitedStates
         };
         LandRegion östliche_vereinigte_staaten = new LandRegion(){
             Id = 117,
             Income = 12,
             Name = "Östliche Vereinigte Staaten",
             CapitalId = 12,
-            NationId = 4
+            NationId = 4,
+            Identifier = ERegion.EasternUnitedStates
         };
         LandRegion westindien = new LandRegion(){
             Id = 118,
             Income = 1,
             Name = "Westindien",
-            NationId = 4
+            NationId = 4,
+            Identifier = ERegion.WestIndia
         };
         LandRegion ostmexiko = new LandRegion(){
             Id = 119,
             Income = 0,
             Name = "Ostmexiko",
-            NationId = 4
+            NationId = 4,
+            Identifier = ERegion.EastMexico
         };
         LandRegion zentralamerika = new LandRegion(){
             Id = 120,
             Income = 1,
             Name = "Zentralamerika",
-            NationId = 4
+            NationId = 4,
+            Identifier = ERegion.CentralAmerica
         };
         LandRegion mexiko = new LandRegion(){
             Id = 121,
             Income = 2,
             Name = "Mexiko",
-            NationId = 4
+            NationId = 4,
+            Identifier = ERegion.Mexico
         };
         LandRegion brasilien = new LandRegion(){
             Id = 122,
             Income = 3,
             Name = "Brasilien",
-            NationId = 4
+            NationId = 4,
+            Identifier = ERegion.Brazil
         };
         LandRegion grönland = new LandRegion(){
             Id = 123,
             Income = 0,
             Name = "Grönland",
-            NationId = 4
+            NationId = 4,
+            Identifier = ERegion.Greenland
         };
         LandRegion midway_atoll = new LandRegion(){
             Id = 124,
             Income = 0,
             Name = "Midway-Atoll",
-            NationId = 4
+            NationId = 4,
+            Identifier = ERegion.MidwayAtoll
         };
         LandRegion hawaii_inseln = new LandRegion(){
             Id = 125,
             Income = 1,
             Name = "Hawaii-Inseln",
             CapitalId = 13,
-            NationId = 4
+            NationId = 4,
+            Identifier = ERegion.HawaiiIslands
         };
         LandRegion sinkiang = new LandRegion(){
             Id = 126,
             Income = 1,
             Name = "Sinkiang",
-            NationId = 4
+            NationId = 4,
+            Identifier = ERegion.Sinkiang
         };
         LandRegion anhwei = new LandRegion(){
             Id = 127,
             Income = 1,
             Name = "Anhwei",
-            NationId = 4
+            NationId = 4,
+            Identifier = ERegion.Anhwei
         };
         LandRegion sezuan = new LandRegion(){
             Id = 128,
             Income = 1,
             Name = "Sezuan",
-            NationId = 4
+            NationId = 4,
+            Identifier = ERegion.Sezuan
         };
         LandRegion yunnan = new LandRegion(){
             Id = 129,
             Income = 1,
             Name = "Yunnan",
-            NationId = 4
+            NationId = 4,
+            Identifier = ERegion.Yunnan
         };
 
         #endregion
@@ -698,99 +768,115 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Income = 8,
             Name = "Japan",
             CapitalId = 9,
-            NationId = 2
+            NationId = 2,
+            Identifier = ERegion.Japan
         };
         LandRegion mandschurei = new LandRegion(){
             Id = 131,
             Income = 3,
             Name = "Mandschurei",
-            NationId = 2
+            NationId = 2,
+            Identifier = ERegion.Mandschurei
         };
         LandRegion jiangsu = new LandRegion(){
             Id = 132,
             Income = 2,
             Name = "Jiangsu",
             CapitalId = 8,
-            NationId = 2
+            NationId = 2,
+            Identifier = ERegion.Jiangsu
         };
         LandRegion guandong = new LandRegion(){
             Id = 133,
             Income = 2,
             Name = "Guandong",
-            NationId = 2
+            NationId = 2,
+            Identifier = ERegion.Guandong
         };
         LandRegion französisch_indochina_thailand = new LandRegion(){
             Id = 134,
             Income = 2,
             Name = "Französisch-Indochina-Thailand",
-            NationId = 2
+            NationId = 2,
+            Identifier = ERegion.FrenchIndochinaThailand
         };
         LandRegion malaysia = new LandRegion(){
             Id = 135,
             Income = 1,
             Name = "Malaysia",
-            NationId = 2
+            NationId = 2,
+            Identifier = ERegion.Malaysia
         };
         LandRegion borneo = new LandRegion(){
             Id = 136,
             Income = 4,
             Name = "Borneo",
-            NationId = 2
+            NationId = 2,
+            Identifier = ERegion.Borneo
         };
         LandRegion ostindien = new LandRegion(){
             Id = 137,
             Income = 4,
             Name = "Ostindien",
-            NationId = 2
+            NationId = 2,
+            Identifier = ERegion.EastIndia
         };
         LandRegion salomon_inseln = new LandRegion(){
             Id = 138,
             Income = 0,
             Name = "Salomon-Inseln",
-            NationId = 2
+            NationId = 2,
+            Identifier = ERegion.SolomonIslands
         };
         LandRegion neuguniea = new LandRegion(){
             Id = 139,
             Income = 1,
             Name = "Neuguniea",
-            NationId = 2
+            NationId = 2,
+            Identifier = ERegion.NewGuinea
         };
         LandRegion philippinische_inseln = new LandRegion(){
             Id = 140,
             Income = 3,
             Name = "Philippinische Inseln",
             CapitalId = 10,
-            NationId = 2
+            NationId = 2,
+            Identifier = ERegion.PhilippineIslands
         };
         LandRegion formosa = new LandRegion(){
             Id = 141,
             Income = 0,
             Name = "Formosa",
-            NationId = 2
+            NationId = 2,
+            Identifier = ERegion.Formosa
         };
         LandRegion okinawa = new LandRegion(){
             Id = 142,
             Income = 0,
             Name = "Okinawa",
-            NationId = 2
+            NationId = 2,
+            Identifier = ERegion.Okinawa
         };
         LandRegion iwojima = new LandRegion(){
             Id = 143,
             Income = 0,
             Name = "Iwojima",
-            NationId = 2
+            NationId = 2,
+            Identifier = ERegion.Iwojima
         };
         LandRegion wake = new LandRegion(){
             Id = 144,
             Income = 0,
             Name = "Wake",
-            NationId = 2
+            NationId = 2,
+            Identifier = ERegion.Wake
         };
         LandRegion caroline_atoll = new LandRegion(){
             Id = 145,
             Income = 0,
             Name = "Caroline-Atoll",
-            NationId = 2
+            NationId = 2,
+            Identifier = ERegion.CarolineAtoll
         };
 
         #endregion
@@ -1005,72 +1091,71 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region WaterRegions
 
-        WaterRegion see1 = new WaterRegion(){ Id = 1, Name = "Seezone 1" };
-        WaterRegion see2 = new WaterRegion(){ Id = 2, Name = "Seezone 2" };
-        WaterRegion see3 = new WaterRegion(){ Id = 3, Name = "Seezone 3" };
-        WaterRegion see4 = new WaterRegion(){ Id = 4, Name = "Seezone 4" };
-        WaterRegion see5 = new WaterRegion(){ Id = 5, Name = "Seezone 5" };
-        WaterRegion see6 = new WaterRegion(){ Id = 6, Name = "Seezone 6" };
-        WaterRegion see7 = new WaterRegion(){ Id = 7, Name = "Seezone 7" };
-        WaterRegion see8 = new WaterRegion(){ Id = 8, Name = "Seezone 8" };
-        WaterRegion see9 = new WaterRegion(){ Id = 9, Name = "Seezone 9" };
-        WaterRegion see10 = new WaterRegion(){ Id = 10, Name = "Seezone 10" };
-        WaterRegion see11 = new WaterRegion(){ Id = 11, Name = "Seezone 11" };
-        WaterRegion see12 = new WaterRegion(){ Id = 12, Name = "Seezone 12" };
-        WaterRegion see13 = new WaterRegion(){ Id = 13, Name = "Seezone 13" };
-        WaterRegion see14 = new WaterRegion(){ Id = 14, Name = "Seezone 14" };
-        WaterRegion see15 = new WaterRegion(){ Id = 15, Name = "Seezone 15" };
-        WaterRegion see16 = new WaterRegion(){ Id = 16, Name = "Seezone 16" };
-        WaterRegion see17 = new WaterRegion(){ Id = 17, Name = "Seezone 17" };
-        WaterRegion see18 = new WaterRegion(){ Id = 18, Name = "Seezone 18" };
-        WaterRegion see19 = new WaterRegion(){ Id = 19, Name = "Seezone 19" };
-        WaterRegion see20 = new WaterRegion(){ Id = 20, Name = "Seezone 20" };
-        WaterRegion see21 = new WaterRegion(){ Id = 21, Name = "Seezone 21" };
-        WaterRegion see22 = new WaterRegion(){ Id = 22, Name = "Seezone 22" };
-        WaterRegion see23 = new WaterRegion(){ Id = 23, Name = "Seezone 23" };
-        WaterRegion see24 = new WaterRegion(){ Id = 24, Name = "Seezone 24" };
-        WaterRegion see25 = new WaterRegion(){ Id = 25, Name = "Seezone 25" };
-        WaterRegion see26 = new WaterRegion(){ Id = 26, Name = "Seezone 26" };
-        WaterRegion see27 = new WaterRegion(){ Id = 27, Name = "Seezone 27" };
-        WaterRegion see28 = new WaterRegion(){ Id = 28, Name = "Seezone 28" };
-        WaterRegion see29 = new WaterRegion(){ Id = 29, Name = "Seezone 29" };
-        WaterRegion see30 = new WaterRegion(){ Id = 30, Name = "Seezone 30" };
-        WaterRegion see31 = new WaterRegion(){ Id = 31, Name = "Seezone 31" };
-        WaterRegion see32 = new WaterRegion(){ Id = 32, Name = "Seezone 32" };
-        WaterRegion see33 = new WaterRegion(){ Id = 33, Name = "Seezone 33" };
-        WaterRegion see34 = new WaterRegion(){ Id = 34, Name = "Seezone 34" };
-        WaterRegion see35 = new WaterRegion(){ Id = 35, Name = "Seezone 35" };
-        WaterRegion see36 = new WaterRegion(){ Id = 36, Name = "Seezone 36" };
-        WaterRegion see37 = new WaterRegion(){ Id = 37, Name = "Seezone 37" };
-        WaterRegion see38 = new WaterRegion(){ Id = 38, Name = "Seezone 38" };
-        WaterRegion see39 = new WaterRegion(){ Id = 39, Name = "Seezone 39" };
-        WaterRegion see40 = new WaterRegion(){ Id = 40, Name = "Seezone 40" };
-        WaterRegion see41 = new WaterRegion(){ Id = 41, Name = "Seezone 41" };
-        WaterRegion see42 = new WaterRegion(){ Id = 42, Name = "Seezone 42" };
-        WaterRegion see43 = new WaterRegion(){ Id = 43, Name = "Seezone 43" };
-        WaterRegion see44 = new WaterRegion(){ Id = 44, Name = "Seezone 44" };
-        WaterRegion see45 = new WaterRegion(){ Id = 45, Name = "Seezone 45" };
-        WaterRegion see46 = new WaterRegion(){ Id = 46, Name = "Seezone 46" };
-        WaterRegion see47 = new WaterRegion(){ Id = 47, Name = "Seezone 47" };
-        WaterRegion see48 = new WaterRegion(){ Id = 48, Name = "Seezone 48" };
-        WaterRegion see49 = new WaterRegion(){ Id = 49, Name = "Seezone 49" };
-        WaterRegion see50 = new WaterRegion(){ Id = 50, Name = "Seezone 50" };
-        WaterRegion see51 = new WaterRegion(){ Id = 51, Name = "Seezone 51" };
-        WaterRegion see52 = new WaterRegion(){ Id = 52, Name = "Seezone 52" };
-        WaterRegion see53 = new WaterRegion(){ Id = 53, Name = "Seezone 53" };
-        WaterRegion see54 = new WaterRegion(){ Id = 54, Name = "Seezone 54" };
-        WaterRegion see55 = new WaterRegion(){ Id = 55, Name = "Seezone 55" };
-        WaterRegion see56 = new WaterRegion(){ Id = 56, Name = "Seezone 56" };
-        WaterRegion see57 = new WaterRegion(){ Id = 57, Name = "Seezone 57" };
-        WaterRegion see58 = new WaterRegion(){ Id = 58, Name = "Seezone 58" };
-        WaterRegion see59 = new WaterRegion(){ Id = 59, Name = "Seezone 59" };
-        WaterRegion see60 = new WaterRegion(){ Id = 60, Name = "Seezone 60" };
-        WaterRegion see61 = new WaterRegion(){ Id = 61, Name = "Seezone 61" };
-        WaterRegion see62 = new WaterRegion(){ Id = 62, Name = "Seezone 62" };
-        WaterRegion see63 = new WaterRegion(){ Id = 63, Name = "Seezone 63" };
-        WaterRegion see64 = new WaterRegion(){ Id = 64, Name = "Seezone 64" };
-        WaterRegion see65 = new WaterRegion(){ Id = 65, Name = "Seezone 65" };
-
+        WaterRegion see1 = new WaterRegion(){ Id = 1, Name = "Seezone 1", Identifier = ERegion.SeeZone1};
+        WaterRegion see2 = new WaterRegion(){ Id = 2, Name = "Seezone 2", Identifier = ERegion.SeeZone2 };
+        WaterRegion see3 = new WaterRegion(){ Id = 3, Name = "Seezone 3", Identifier = ERegion.SeeZone3 };
+        WaterRegion see4 = new WaterRegion(){ Id = 4, Name = "Seezone 4", Identifier = ERegion.SeeZone4 };
+        WaterRegion see5 = new WaterRegion(){ Id = 5, Name = "Seezone 5", Identifier = ERegion.SeeZone5 };
+        WaterRegion see6 = new WaterRegion(){ Id = 6, Name = "Seezone 6", Identifier = ERegion.SeeZone6 };
+        WaterRegion see7 = new WaterRegion(){ Id = 7, Name = "Seezone 7", Identifier = ERegion.SeeZone7 };
+        WaterRegion see8 = new WaterRegion(){ Id = 8, Name = "Seezone 8", Identifier = ERegion.SeeZone8 };
+        WaterRegion see9 = new WaterRegion(){ Id = 9, Name = "Seezone 9", Identifier = ERegion.SeeZone9 };
+        WaterRegion see10 = new WaterRegion(){ Id = 10, Name = "Seezone 10", Identifier = ERegion.SeeZone10 };
+        WaterRegion see11 = new WaterRegion(){ Id = 11, Name = "Seezone 11", Identifier = ERegion.SeeZone11 };
+        WaterRegion see12 = new WaterRegion(){ Id = 12, Name = "Seezone 12", Identifier = ERegion.SeeZone12 };
+        WaterRegion see13 = new WaterRegion(){ Id = 13, Name = "Seezone 13", Identifier = ERegion.SeeZone13 };
+        WaterRegion see14 = new WaterRegion(){ Id = 14, Name = "Seezone 14", Identifier = ERegion.SeeZone14 };
+        WaterRegion see15 = new WaterRegion(){ Id = 15, Name = "Seezone 15", Identifier = ERegion.SeeZone15 };
+        WaterRegion see16 = new WaterRegion(){ Id = 16, Name = "Seezone 16", Identifier = ERegion.SeeZone16 };
+        WaterRegion see17 = new WaterRegion(){ Id = 17, Name = "Seezone 17", Identifier = ERegion.SeeZone17 };
+        WaterRegion see18 = new WaterRegion(){ Id = 18, Name = "Seezone 18", Identifier = ERegion.SeeZone18 };
+        WaterRegion see19 = new WaterRegion(){ Id = 19, Name = "Seezone 19", Identifier = ERegion.SeeZone19 };
+        WaterRegion see20 = new WaterRegion(){ Id = 20, Name = "Seezone 20", Identifier = ERegion.SeeZone20 };
+        WaterRegion see21 = new WaterRegion(){ Id = 21, Name = "Seezone 21", Identifier = ERegion.SeeZone21 };
+        WaterRegion see22 = new WaterRegion(){ Id = 22, Name = "Seezone 22", Identifier = ERegion.SeeZone22 };
+        WaterRegion see23 = new WaterRegion(){ Id = 23, Name = "Seezone 23", Identifier = ERegion.SeeZone23 };
+        WaterRegion see24 = new WaterRegion(){ Id = 24, Name = "Seezone 24", Identifier = ERegion.SeeZone24 };
+        WaterRegion see25 = new WaterRegion(){ Id = 25, Name = "Seezone 25", Identifier = ERegion.SeeZone25 };
+        WaterRegion see26 = new WaterRegion(){ Id = 26, Name = "Seezone 26", Identifier = ERegion.SeeZone26 };
+        WaterRegion see27 = new WaterRegion(){ Id = 27, Name = "Seezone 27", Identifier = ERegion.SeeZone27 };
+        WaterRegion see28 = new WaterRegion(){ Id = 28, Name = "Seezone 28", Identifier = ERegion.SeeZone28 };
+        WaterRegion see29 = new WaterRegion(){ Id = 29, Name = "Seezone 29", Identifier = ERegion.SeeZone29 };
+        WaterRegion see30 = new WaterRegion(){ Id = 30, Name = "Seezone 30", Identifier = ERegion.SeeZone30 };
+        WaterRegion see31 = new WaterRegion(){ Id = 31, Name = "Seezone 31", Identifier = ERegion.SeeZone31 };
+        WaterRegion see32 = new WaterRegion(){ Id = 32, Name = "Seezone 32", Identifier = ERegion.SeeZone32 };
+        WaterRegion see33 = new WaterRegion(){ Id = 33, Name = "Seezone 33", Identifier = ERegion.SeeZone33 };
+        WaterRegion see34 = new WaterRegion(){ Id = 34, Name = "Seezone 34", Identifier = ERegion.SeeZone34 };
+        WaterRegion see35 = new WaterRegion(){ Id = 35, Name = "Seezone 35", Identifier = ERegion.SeeZone35 };
+        WaterRegion see36 = new WaterRegion(){ Id = 36, Name = "Seezone 36", Identifier = ERegion.SeeZone36 };
+        WaterRegion see37 = new WaterRegion(){ Id = 37, Name = "Seezone 37", Identifier = ERegion.SeeZone37 };
+        WaterRegion see38 = new WaterRegion(){ Id = 38, Name = "Seezone 38", Identifier = ERegion.SeeZone38 };
+        WaterRegion see39 = new WaterRegion(){ Id = 39, Name = "Seezone 39", Identifier = ERegion.SeeZone39 };
+        WaterRegion see40 = new WaterRegion(){ Id = 40, Name = "Seezone 40", Identifier = ERegion.SeeZone40 };
+        WaterRegion see41 = new WaterRegion(){ Id = 41, Name = "Seezone 41", Identifier = ERegion.SeeZone41 };
+        WaterRegion see42 = new WaterRegion(){ Id = 42, Name = "Seezone 42", Identifier = ERegion.SeeZone42 };
+        WaterRegion see43 = new WaterRegion(){ Id = 43, Name = "Seezone 43", Identifier = ERegion.SeeZone43 };
+        WaterRegion see44 = new WaterRegion(){ Id = 44, Name = "Seezone 44", Identifier = ERegion.SeeZone44 };
+        WaterRegion see45 = new WaterRegion(){ Id = 45, Name = "Seezone 45", Identifier = ERegion.SeeZone45 };
+        WaterRegion see46 = new WaterRegion(){ Id = 46, Name = "Seezone 46", Identifier = ERegion.SeeZone46 };
+        WaterRegion see47 = new WaterRegion(){ Id = 47, Name = "Seezone 47", Identifier = ERegion.SeeZone47 };
+        WaterRegion see48 = new WaterRegion(){ Id = 48, Name = "Seezone 48", Identifier = ERegion.SeeZone48 };
+        WaterRegion see49 = new WaterRegion(){ Id = 49, Name = "Seezone 49", Identifier = ERegion.SeeZone49 };
+        WaterRegion see50 = new WaterRegion(){ Id = 50, Name = "Seezone 50", Identifier = ERegion.SeeZone50 };
+        WaterRegion see51 = new WaterRegion(){ Id = 51, Name = "Seezone 51", Identifier = ERegion.SeeZone51 };
+        WaterRegion see52 = new WaterRegion(){ Id = 52, Name = "Seezone 52", Identifier = ERegion.SeeZone52 };
+        WaterRegion see53 = new WaterRegion(){ Id = 53, Name = "Seezone 53", Identifier = ERegion.SeeZone53 };
+        WaterRegion see54 = new WaterRegion(){ Id = 54, Name = "Seezone 54", Identifier = ERegion.SeeZone54 };
+        WaterRegion see55 = new WaterRegion(){ Id = 55, Name = "Seezone 55", Identifier = ERegion.SeeZone55 };
+        WaterRegion see56 = new WaterRegion(){ Id = 56, Name = "Seezone 56", Identifier = ERegion.SeeZone56 };
+        WaterRegion see57 = new WaterRegion(){ Id = 57, Name = "Seezone 57", Identifier = ERegion.SeeZone57 };
+        WaterRegion see58 = new WaterRegion(){ Id = 58, Name = "Seezone 58", Identifier = ERegion.SeeZone58 };
+        WaterRegion see59 = new WaterRegion(){ Id = 59, Name = "Seezone 59", Identifier = ERegion.SeeZone59 };
+        WaterRegion see60 = new WaterRegion(){ Id = 60, Name = "Seezone 60", Identifier = ERegion.SeeZone60 };
+        WaterRegion see61 = new WaterRegion(){ Id = 61, Name = "Seezone 61", Identifier = ERegion.SeeZone61 };
+        WaterRegion see62 = new WaterRegion(){ Id = 62, Name = "Seezone 62", Identifier = ERegion.SeeZone62 };
+        WaterRegion see63 = new WaterRegion(){ Id = 63, Name = "Seezone 63", Identifier = ERegion.SeeZone63 };
+        WaterRegion see64 = new WaterRegion(){ Id = 64, Name = "Seezone 64", Identifier = ERegion.SeeZone64 };
+        WaterRegion see65 = new WaterRegion(){ Id = 65, Name = "Seezone 65", Identifier = ERegion.SeeZone65 };
         #endregion
 
         builder.Entity<WaterRegion>().HasData(new List<WaterRegion>(){
