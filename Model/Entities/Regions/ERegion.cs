@@ -103,7 +103,7 @@ public enum ERegion{
     #endregion
     #region Neutral
     
-    Mogolei,
+    Mongolia,
     Himalaya,
     Afghanistan,
     SaudiArabia,

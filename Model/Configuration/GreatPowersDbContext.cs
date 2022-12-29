@@ -993,97 +993,113 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
                 Id = 146,
                 Income = 0,
                 Name = "Mogolei",
-                NationId = 6
+                NationId = 6,
+                Identifier = ERegion.Mongolia
             },
             new LandRegion(){
                 Id = 147,
                 Income = 0,
                 Name = "Himalaya",
-                NationId = 6
+                NationId = 6,
+                Identifier = ERegion.Himalaya
             },
             new LandRegion(){
                 Id = 148,
                 Income = 0,
                 Name = "Afghanistan",
-                NationId = 6
+                NationId = 6,
+                Identifier = ERegion.Afghanistan
             },
             new LandRegion(){
                 Id = 149,
                 Income = 0,
                 Name = "Saudi Arabien",
-                NationId = 6
+                NationId = 6,
+                Identifier = ERegion.SaudiArabia
             },
             new LandRegion(){
                 Id = 150,
                 Income = 0,
                 Name = "Türkei",
-                NationId = 6
+                NationId = 6,
+                Identifier = ERegion.Turkey
             },
             new LandRegion(){
                 Id = 151,
                 Income = 0,
                 Name = "Schweden",
-                NationId = 6
+                NationId = 6,
+                Identifier = ERegion.Sweden
             },
             new LandRegion(){
                 Id = 152,
                 Income = 0,
                 Name = "Irland",
-                NationId = 6
+                NationId = 6,
+                Identifier = ERegion.Ireland
             },
             new LandRegion(){
                 Id = 153,
                 Income = 0,
                 Name = "Spanien Portugal",
-                NationId = 6
+                NationId = 6,
+                Identifier = ERegion.SpainPortugal
             },
             new LandRegion(){
                 Id = 154,
                 Income = 0,
                 Name = "Sahara",
-                NationId = 6
+                NationId = 6,
+                Identifier = ERegion.Sahara
             },
             new LandRegion(){
                 Id = 155,
                 Income = 0,
                 Name = "Angola",
-                NationId = 6
+                NationId = 6,
+                Identifier = ERegion.Angola
             },
             new LandRegion(){
                 Id = 156,
                 Income = 0,
                 Name = "Mosambik",
-                NationId = 6
+                NationId = 6,
+                Identifier = ERegion.Mozambique
             },
             new LandRegion(){
                 Id = 157,
                 Income = 0,
                 Name = "Schweiz",
-                NationId = 6
+                NationId = 6,
+                Identifier = ERegion.Switzerland
             },
             new LandRegion(){
                 Id = 158,
                 Income = 0,
                 Name = "Venezuela",
-                NationId = 6
+                NationId = 6,
+                Identifier = ERegion.Venezuela
             },
             new LandRegion(){
                 Id = 159,
                 Income = 0,
                 Name = "Kolumbien Ecuador",
-                NationId = 6
+                NationId = 6,
+                Identifier = ERegion.ColombiaEcuador
             },
             new LandRegion(){
                 Id = 160,
                 Income = 0,
                 Name = "Peru Argentinien",
-                NationId = 6
+                NationId = 6,
+                Identifier = ERegion.PeruArgentina
             },
             new LandRegion(){
                 Id = 161,
                 Income = 0,
                 Name = "Chile",
-                NationId = 6
+                NationId = 6,
+                Identifier = ERegion.Chile
             }
 
             #endregion
