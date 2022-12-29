@@ -4587,8 +4587,8 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         transinf153.TransportId = 225;
         transinf154.TransportId = 226;
         
-        Ship a3 = ShipFactory.Create(EUnitType.TRANSPORT, see50, Japan, true);
-        Ship a4 = ShipFactory.Create(EUnitType.TRANSPORT, see37, Japan, true);
+        Ship a3 = ShipFactory.Create(EUnitType.AIRCRAFT_CARRIER, see50, Japan, true);
+        Ship a4 = ShipFactory.Create(EUnitType.AIRCRAFT_CARRIER, see37, Japan, true);
 
         AircraftCarrier air227 = (AircraftCarrier)a3;
         AircraftCarrier air228 = (AircraftCarrier)a4;
