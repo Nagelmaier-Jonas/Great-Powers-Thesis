@@ -63,7 +63,17 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazorPanzoomServices();
 //Register repositories
+builder.Services.AddScoped<AircraftCarrierRepository>();
+builder.Services.AddScoped<FactoryRepository>();
+builder.Services.AddScoped<LandRegionRepository>();
+builder.Services.AddScoped<LandUnitRepository>();
+builder.Services.AddScoped<NationRepository>();
+builder.Services.AddScoped<NeighbourRepository>();
+builder.Services.AddScoped<PlaneRepository>();
+builder.Services.AddScoped<ShipRepository>();
+builder.Services.AddScoped<TransportRepository>();
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<WaterRegionRepository>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
