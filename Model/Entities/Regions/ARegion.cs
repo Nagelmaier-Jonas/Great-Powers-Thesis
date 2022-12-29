@@ -22,8 +22,12 @@ public abstract class ARegion{
     public ERegionType Type{ get; set; }
 
     [Column("IDENTIFIER")] public ERegion Identifier{ get; set; }
-
-    [NotMapped] public Point Position{ get; set; }
+    
+    [Column("POSITION_X")]
+    public int? PositionX{ get; set; }
+    
+    [Column("POSITION_Y")]
+    public int? PositionY{ get; set; }
 
     public List<Plane> StationedPlanes{ get; set; } = new List<Plane>();
     public List<Plane> IncomingPlanes{ get; set; } = new List<Plane>();

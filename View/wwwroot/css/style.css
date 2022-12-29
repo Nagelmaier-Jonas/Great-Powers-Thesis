@@ -204,3 +204,38 @@ span.logo {
     stroke-linecap: round !important;
     stroke-linejoin: round !important;
 }
+
+/* -- -------------------------------------------------- -- */
+/*                  Style: Troop Style                      */
+/* -- -------------------------------------------------- -- */
+
+.Germany .troopbadge-medal{
+    fill: #353535;
+}
+.Germany .troopbadge-symbol{
+    fill: #b5b7b6;
+}
+.Soviet_Union .troopbadge-medal{
+    fill: #5d1e13;
+}
+.Soviet_Union .troopbadge-symbol{
+    fill: #f39d89;
+}
+.United_States .troopbadge-medal{
+    fill: #6e8037;
+}
+.United_States .troopbadge-symbol{
+    fill: #c9db36;
+}
+.United_Kingdom .troopbadge-medal{
+    fill: #a8865f;
+}
+.United_Kingdom .troopbadge-symbol{
+    fill: #52352a;
+}
+.Japan .troopbadge-medal{
+    fill: #c1702d;
+}
+.Japan .troopbadge-symbol{
+    fill: #ffca81;
+}

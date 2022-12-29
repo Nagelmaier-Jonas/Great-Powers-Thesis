@@ -3,40 +3,8 @@
 @using System.Drawing
 @inject UnitPaths UnitPaths
 
-<style>
-    .Germany .troopbadge-medal{
-        fill: #353535;
-    }
-    .Germany .troopbadge-symbol{
-        fill: #b5b7b6;
-    }
-    .Soviet_Union .troopbadge-medal{
-        fill: #5d1e13;
-    }
-    .Soviet_Union .troopbadge-symbol{
-        fill: #f39d89;
-    }
-    .United_States .troopbadge-medal{
-        fill: #6e8037;
-    }
-    .United_States .troopbadge-symbol{
-        fill: #c9db36;
-    }
-    .United_Kingdom .troopbadge-medal{
-        fill: #a8865f;
-    }
-    .United_Kingdom .troopbadge-symbol{
-        fill: #52352a;
-    }
-    .Japan .troopbadge-medal{
-        fill: #c1702d;
-    }
-    .Japan .troopbadge-symbol{
-        fill: #ffca81;
-    }
-</style>
-@if (Troop is not null){
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@Troop.Nation.Name @Class" width="20" height="20" x="@(Troop.GetLocation().Position.X + TroopPositioning[Troop.Type].X)" y="@(Troop.GetLocation().Position.Y + TroopPositioning[Troop.Type].Y)">
+@if (Troop?.GetLocation().PositionX != null && Troop.GetLocation().PositionY is not null){
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@Troop.Nation.Name @Class" width="20" height="20" x="@(Troop.GetLocation().PositionX + TroopPositioning[Troop.Type].X)" y="@(Troop.GetLocation().PositionY + TroopPositioning[Troop.Type].Y)">
         <g>
             <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
             <path class="troopbadge-medal"

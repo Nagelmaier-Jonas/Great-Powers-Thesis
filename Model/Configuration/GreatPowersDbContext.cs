@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System.Drawing;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities;
 using Model.Entities.Regions;
@@ -663,7 +664,9 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Income = 6,
             Name = "Zentrale Vereinigte Staaten",
             NationId = 4,
-            Identifier = ERegion.CentralUnitedStates
+            Identifier = ERegion.CentralUnitedStates,
+            PositionX = 30,
+            PositionY = 350
         };
         LandRegion östliche_vereinigte_staaten = new LandRegion(){
             Id = 117,
@@ -671,7 +674,9 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Name = "Östliche Vereinigte Staaten",
             CapitalId = 12,
             NationId = 4,
-            Identifier = ERegion.EasternUnitedStates
+            Identifier = ERegion.EasternUnitedStates,
+            PositionX = 125,
+            PositionY = 370
         };
         LandRegion westindien = new LandRegion(){
             Id = 118,
