@@ -9,4 +9,8 @@ public class AircraftCarrier : Ship{
 
     public AircraftCarrier(int movement, int cost, int attack, int defense) : base(movement, cost, attack, defense){
     }
+
+    public override List<AUnit> GetSubUnits(){
+        return Planes.Cast<AUnit>().ToList();
+    }
 }

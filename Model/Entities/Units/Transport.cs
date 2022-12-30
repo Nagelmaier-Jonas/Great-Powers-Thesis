@@ -8,4 +8,8 @@ public class Transport : Ship{
 
     public Transport(int movement, int cost, int attack, int defense) : base(movement, cost, attack, defense){
     }
+    
+    public override List<AUnit> GetSubUnits(){
+        return Units.Cast<AUnit>().ToList();
+    }
 }

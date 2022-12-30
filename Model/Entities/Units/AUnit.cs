@@ -36,7 +36,8 @@ public abstract class AUnit{
     public abstract List<ARegion> GetPathToCurrentTarget();
     public abstract bool MoveToTarget();
     protected abstract bool CanTarget(ARegion target);
-    
+    public virtual List<AUnit> GetSubUnits() => new ();
+
 
 
 }
