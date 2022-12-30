@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Model.Configuration;
 using Model.Entities.Regions;
+using Model.Entities.Units;
 
 namespace Domain.Repositories.Implementations;
 
@@ -12,6 +13,23 @@ public class WaterRegionRepository : ARepository<WaterRegion>, IWaterRegionRepos
     public async Task<WaterRegion?> ReadGraphAsync(int Id){
         return await _set
             .Include(w => w.Neighbours)
+            .Include(t => t.StationedShips)
+            .ThenInclude(s => ((Transport)s).Units)
+            .Include(t => t.StationedShips)
+            .ThenInclude(s => ((AircraftCarrier)s).Planes)
+            .Include(t => t.StationedPlanes)
             .FirstOrDefaultAsync(w => w.Id == Id);
+    }
+
+    public async Task<List<WaterRegion>> ReadAllGraphAsync(){
+        return await _set
+            .Include(w => w.Neighbours)
+            .Include(t => t.StationedShips)
+            .ThenInclude(s => ((Transport)s).Units)
+            .Include(t => t.StationedShips)
+            .ThenInclude(s => ((AircraftCarrier)s).Planes)
+            .Include(t => t.StationedPlanes)
+            .AsSplitQuery()
+            .ToListAsync();
     }
 }
