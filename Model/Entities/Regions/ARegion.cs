@@ -21,7 +21,7 @@ public abstract class ARegion{
     [Column("REGION_TYPE", TypeName = "VARCHAR(45)")]
     public ERegionType Type{ get; set; }
 
-    [Column("IDENTIFIER")] public ERegion Identifier{ get; set; }
+    [Column("IDENTIFIER", TypeName = "VARCHAR(45)")] public ERegion Identifier{ get; set; }
     
     [Column("POSITION_X")]
     public int? PositionX{ get; set; }
@@ -280,10 +280,12 @@ public abstract class ARegion{
 
     public List<AUnit> GetOneStationedUnitPerType(){
         List<AUnit> oneUnitPerType = new List<AUnit>();
-        foreach (var unit in GetStationedUnits().Where(unit => oneUnitPerType.All(u => u.Type != unit.Type))){
+        //make an exception for units with type EUnitType.TRANSPORT and EUnitType.AIRCRAFT_CARRIER
+        foreach (var unit in GetStationedUnits()){
+            if (oneUnitPerType.Any(u => u.Type == unit.Type && u.Type != EUnitType.TRANSPORT &&
+                                        u.Type != EUnitType.AIRCRAFT_CARRIER)) continue;
             oneUnitPerType.Add(unit);
         }
-
         return oneUnitPerType;
     }
     public virtual List<AUnit> GetStationedUnits() => null;

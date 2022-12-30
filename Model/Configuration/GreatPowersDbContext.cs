@@ -744,7 +744,9 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Name = "Ostmexiko",
             NationId = 4,
             Identifier = ERegion.EastMexico,
-            Type = ERegionType.LAND
+            Type = ERegionType.LAND,
+            PositionX = 30,
+            PositionY = 525
         };
         LandRegion zentralamerika = new LandRegion(){
             Id = 120,
@@ -752,7 +754,9 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Name = "Zentralamerika",
             NationId = 4,
             Identifier = ERegion.CentralAmerica,
-            Type = ERegionType.LAND
+            Type = ERegionType.LAND,
+            PositionX = 95,
+            PositionY = 600
         };
         LandRegion mexiko = new LandRegion(){
             Id = 121,
@@ -768,7 +772,9 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Name = "Brasilien",
             NationId = 4,
             Identifier = ERegion.Brazil,
-            Type = ERegionType.LAND
+            Type = ERegionType.LAND,
+            PositionX = 205,
+            PositionY = 780
         };
         LandRegion grönland = new LandRegion(){
             Id = 123,
@@ -1175,7 +1181,9 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
                 Name = "Venezuela",
                 NationId = 6,
                 Identifier = ERegion.Venezuela,
-                Type = ERegionType.LAND
+                Type = ERegionType.LAND,
+                PositionX = 165,
+                PositionY = 670
             },
             new LandRegion(){
                 Id = 159,
@@ -1183,7 +1191,9 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
                 Name = "Kolumbien Ecuador",
                 NationId = 6,
                 Identifier = ERegion.ColombiaEcuador,
-                Type = ERegionType.LAND
+                Type = ERegionType.LAND,
+                PositionX = 105,
+                PositionY = 675
             },
             new LandRegion(){
                 Id = 160,
@@ -4591,7 +4601,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         bat203.Id = 203;
         
-        Ship t3 = ShipFactory.Create(EUnitType.TRANSPORT, see10, Germany, true);
+        Ship t3 = ShipFactory.Create(EUnitType.TRANSPORT, see10, United_Kingdom, true);
         Ship t4 = ShipFactory.Create(EUnitType.TRANSPORT, see7, Germany, true);
         Ship t5 = ShipFactory.Create(EUnitType.TRANSPORT, see35, Germany, true);
         Ship t6 = ShipFactory.Create(EUnitType.TRANSPORT, see39, Germany, true);

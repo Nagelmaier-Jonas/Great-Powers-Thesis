@@ -26,7 +26,7 @@ public class Nation{
     [Column("COLOR", TypeName = "VARCHAR(7)")]
     public string Color{ get; set; }
 
-    [Column("TYPE")]
+    [Column("TYPE", TypeName = "VARCHAR(45)")]
     public ENation Type{ get; set; }
 
     public List<LandRegion> Regions{ get; set; } = new List<LandRegion>();
