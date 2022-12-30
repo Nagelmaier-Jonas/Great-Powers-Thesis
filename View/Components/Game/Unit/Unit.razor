@@ -1,9 +1,14 @@
 ﻿@using Model.Entities.Units
 @using Model.Entities
 @using System.Drawing
+@using Domain.Repositories.Implementations
+@using Model.Entities.Regions
 @inject UnitPaths UnitPaths
+@inject ILogger<Unit> Logger
+@inject AircraftCarrierRepository AircraftCarrierRepository
+@inject TransportRepository TransportRepository
 
-@if (Troop?.GetLocation().PositionX != null && Troop.GetLocation().PositionY is not null){
+@if (Troop?.GetLocation().PositionX is not null && Troop.GetLocation().PositionY is not null){
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@Troop.Nation.Name @Class" width="20" height="20" x="@(Troop.GetLocation().PositionX + TroopPositioning[Troop.Type].X)" y="@(Troop.GetLocation().PositionY + TroopPositioning[Troop.Type].Y)">
         <g>
             <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
@@ -12,11 +17,16 @@
         </g>
         <path class="troopbadge-symbol"
               d="@UnitPaths[Troop.Type]"/>
-        @if (Troop.GetType() == typeof(Ship)){
+        @if (Troop.GetType() == typeof(Ship) || Troop.GetType() == typeof(Transport) || Troop.GetType() == typeof(AircraftCarrier)){
             <text>
-                <text style="font-size: 19px; font-weight: bold; fill: grey;" transform="translate(39.87 31.56)">
+                <text style="font-size: 19px; font-weight: bold; fill: white;" transform="translate(39.87 31.56)">
                     <tspan x="0" y="0">@Troop.Type.ToString()[0]</tspan>
                 </text></text>
+            @if (RenderSubTroops){
+                @foreach (var troop in Troop.GetSubUnits()){
+                    <SubUnit Troop="troop"/>
+                }
+            }
         }
         <circle fill="#ffc107" cx="78.26" cy="78.01" r="16.74"/>
         @if (Amount > 9){
@@ -40,25 +50,30 @@
     public AUnit? Troop { get; set; }
 
     [Parameter]
+    public ARegion? Region { get; set; }
+
+    [Parameter]
     public int? Amount { get; set; }
-    
+
     [Parameter]
     public string? Class { get; set; }
 
-    private Dictionary<EUnitType, Point> TroopPositioning { get; set; } = new (){
-        {EUnitType.INFANTRY, new Point(0, -25)},
-        {EUnitType.TANK, new Point(0, 25)},
-        {EUnitType.ANTI_AIR, new Point(-25, -15)},
-        {EUnitType.ARTILLERY, new Point(-25, 15)},
-        {EUnitType.BOMBER, new Point(25, -15)},
-        {EUnitType.FIGHTER, new Point(25, 15)},
-        
-        {EUnitType.CRUISER, new Point(0, -25)},
-        {EUnitType.DESTROYER, new Point(0, 25)},
-        {EUnitType.SUBMARINE, new Point(-25, -15)},
-        {EUnitType.TRANSPORT, new Point(-25, 15)},
-        {EUnitType.BATTLESHIP, new Point(25, -15)},
-        {EUnitType.AIRCRAFT_CARRIER, new Point(25, 15)},
+    [Parameter]
+    public bool RenderSubTroops { get; set; }
+
+    private Dictionary<EUnitType, Point> TroopPositioning { get; set; } = new(){
+        { EUnitType.INFANTRY, new Point(0, -25) },
+        { EUnitType.TANK, new Point(0, 25) },
+        { EUnitType.ANTI_AIR, new Point(-25, -15) },
+        { EUnitType.ARTILLERY, new Point(-25, 15) },
+        { EUnitType.BOMBER, new Point(25, -15) },
+        { EUnitType.FIGHTER, new Point(25, 15) },
+        { EUnitType.CRUISER, new Point(0, -25) },
+        { EUnitType.DESTROYER, new Point(0, 25) },
+        { EUnitType.SUBMARINE, new Point(-25, -15) },
+        { EUnitType.TRANSPORT, new Point(-25, 15) },
+        { EUnitType.BATTLESHIP, new Point(25, -15) },
+        { EUnitType.AIRCRAFT_CARRIER, new Point(25, 15) },
     };
 
 }

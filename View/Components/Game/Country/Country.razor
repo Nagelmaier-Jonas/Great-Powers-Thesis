@@ -6,13 +6,39 @@
 @inject ActiveRegion ActiveRegion
 
 @if (Region is not null){
-    @if (ActiveRegion.Region == Region){
-        <path d="@CountryPaths[Region.Identifier]" class="active_country svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="args => UpdateRegion(args)"/>
+    @if (CountryPaths.ContainsKey(Region.Identifier)){
+        @if (Region.Type == ERegionType.LAND){
+            @if (Owner.Type == ENation.Neutral){
+                <defs>
+                    <pattern id="neutral" patternUnits="userSpaceOnUse" width="10" height="10">
+                        <image xlink:href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyNy4wLjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCAxMCAxMCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTAgMTA7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+DQoJLnN0MHtmaWxsOiNBM0EzQTM7fQ0KCS5zdDF7ZmlsbDojRkZGRkZGO3N0cm9rZTojOEM4QzhDO3N0cm9rZS13aWR0aDozO30NCjwvc3R5bGU+DQo8cmVjdCBjbGFzcz0ic3QwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiLz4NCjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0tMSwxbDItMiBNMCwxMEwxMCwwIE05LDExbDItMiIvPg0KPC9zdmc+DQo=" x="0" y="0" width="10" height="10"> </image>
+                    </pattern>
+                </defs>
+                <path d="@CountryPaths[Region.Identifier]" class="svg_country @Owner.Name" style="fill: url(#neutral)" stroke="grey" stroke-width="2"/>
+            }
+            else{
+                @if (ActiveRegion.Region == Region){
+                    <path d="@CountryPaths[Region.Identifier]" class="active_country svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="args => UpdateRegion(args)"/>
+                }
+                else{
+                    <path d="@CountryPaths[Region.Identifier]" class="svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="args => UpdateRegion(args)"/>
+                }
+            }
+        }
+        else{
+            <defs>
+                <pattern id="water" patternUnits="userSpaceOnUse" width="10" height="10">
+                    <image xlink:href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyNy4wLjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCAxMCAxMCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTAgMTA7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+DQoJLnN0MHtmaWxsOiNEMEUwRTU7fQ0KCS5zdDF7ZmlsbDojRkZGRkZGO3N0cm9rZTojQURCN0JCO3N0cm9rZS13aWR0aDozO30NCjwvc3R5bGU+DQo8cmVjdCBjbGFzcz0ic3QwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiLz4NCjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0tMSwxbDItMiBNMCwxMEwxMCwwIE05LDExbDItMiIvPg0KPC9zdmc+DQo=" x="0" y="0" width="10" height="10"> </image>
+                </pattern>
+            </defs>
+            @if (ActiveRegion.Region == Region){
+                <path d="@CountryPaths[Region.Identifier]" class="active_country svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="2" @onclick="args => UpdateRegion(args)"/>
+            }
+            else{
+                <path d="@CountryPaths[Region.Identifier]" class="svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="2" @onclick="args => UpdateRegion(args)"/>
+            }
+        }
     }
-    else{
-        <path d="@CountryPaths[Region.Identifier]" class="svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="args => UpdateRegion(args)"/>
-    }
-
 }
 
 @code {

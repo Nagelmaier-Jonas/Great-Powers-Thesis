@@ -1,5 +1,4 @@
 ﻿@using System.Globalization
-@using Domain.Factories
 @using Domain.Repositories
 @using Domain.Services
 @using Model.Entities
@@ -7,23 +6,30 @@
 @using Model.Entities.Units
 @using System.Drawing
 @using BlazorPanzoom
+@using Domain.Repositories.Implementations
 @using View.Services
 @inject ActiveRegion ActiveRegion
+@inject NationRepository NationRepository
+@inject WaterRegionRepository WaterRegionRepository
 
 <div class="panzoom-parent" style="height: 1080px">
     <Panzoom @ref="_panzoom" PanzoomOptions="@(new PanzoomOptions(){ Contain = Contain.Outside, Cursor = Cursor.Auto })" WheelMode="WheelMode.Custom" OnWheel="OnWheel">
         <svg viewBox="0 0 1920 1080" @ref="context.ElementReference" class="panzoom">
             @foreach (var nation in Nations){
-                @if (nation.Regions is null){
-                    continue;
-                }
-                foreach (var region in nation.Regions){
-                    <Country Region="@region" Owner="@nation"/>
-                    foreach (var unit in region.GetOneStationedUnitPerType()){
-                        <Unit Troop="@unit" Amount="@region.GetStationedUnitCounts()[unit.Type]"/>
+                foreach (var land in nation.Regions){
+                    <Country Region="@land" Owner="@nation"/>
+                    foreach (var unit in land.GetOneStationedUnitPerType()){
+                        <Unit Troop="@unit" Amount="@land.GetStationedUnitCounts()[unit.Type]" Region="@land"/>
                     }
                 }
             }
+            @foreach (var sea in SeeZones){
+                <Country Region="@sea"/>
+                foreach (var unit in sea.GetOneStationedUnitPerType()){
+                    <Unit Troop="@unit" Amount="@sea.GetStationedUnitCounts()[unit.Type]" Region="@sea"/>
+                }
+            }
+            <Channel/>
         </svg>
     </Panzoom>
 </div>
@@ -35,6 +41,7 @@
 @code{
 
     private List<Nation> Nations { get; set; } = new();
+    private List<WaterRegion> SeeZones { get; set; } = new();
     private Panzoom _panzoom = new();
 
     private async Task OnWheel(CustomWheelEventArgs args){
@@ -50,47 +57,8 @@
 
     protected override async Task OnInitializedAsync(){
         ActiveRegion.HandleRegionChange += HandleRegionChange;
-        Nations.Add(new Nation(){
-            Name = "Germany",
-            Regions = new List<LandRegion>(){
-                new LandRegion(){
-                    Identifier = ERegion.CentralAmerica,
-                    Name = "Central America",
-                    Income = 2,
-                    Position = new Point(){ X = 30, Y = 350 }
-                }
-            },
-            Treasury = 1,
-            Color = "#8ea39e",
-        });
-        Nations.Add(new Nation(){
-            Name = "Soviet_Union",
-            Regions = new List<LandRegion>(){
-                new LandRegion(){
-                    Identifier = ERegion.WestAmerica,
-                    Name = "West America",
-                    Income = 2,
-                    Position = new Point(){ X = 120, Y = 350 },
-                }
-            },
-            Treasury = 1,
-            Color = "#ba8772",
-        });
-
-        var u1 = LandUnitFactory.Create(EUnitType.TANK, Nations[0].Regions[0], Nations[0]);
-        var u5 = LandUnitFactory.Create(EUnitType.ANTI_AIR, Nations[0].Regions[0], Nations[0]);
-        var u2 = LandUnitFactory.Create(EUnitType.INFANTRY, Nations[1].Regions[0], Nations[1]);
-        var u3 = LandUnitFactory.Create(EUnitType.INFANTRY, Nations[1].Regions[0], Nations[1]);
-        var u4 = LandUnitFactory.Create(EUnitType.INFANTRY, Nations[1].Regions[0], Nations[1]);
-
-        Nations[0].Regions[0].Nation = Nations[0];
-        Nations[1].Regions[0].Nation = Nations[1];
-
-        Nations[0].Regions[0].StationedUnits.Add(u1);
-        Nations[0].Regions[0].StationedUnits.Add(u5);
-        Nations[1].Regions[0].StationedUnits.Add(u2);
-        Nations[1].Regions[0].StationedUnits.Add(u3);
-        Nations[1].Regions[0].StationedUnits.Add(u4);
+        Nations = await NationRepository.ReadAllGraphAsync();
+        SeeZones = await WaterRegionRepository.ReadAllGraphAsync();
     }
 
 }
