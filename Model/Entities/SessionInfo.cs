@@ -9,12 +9,12 @@ public class SessionInfo{
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Key]
     public int Id{ get; set; }
+
+    [Column("STANDARD_VICTORY", TypeName = "TINYINT")]
+    public bool StandardVictory{ get; set; } = true;
     
-    [Column("STANDARD_VICTORY")]
-    public int StandardVictory{ get; set; }
-    
-    [Column("TOTAL_VICTORY")]
-    public int TotalVictory{ get; set; }
+    [Column("TOTAL_VICTORY", TypeName = "TINYINT")]
+    public bool TotalVictory{ get; set; }
 
     [Column("DICE_MODE")]
     public EDiceMode DiceMode{ get; set; }
@@ -23,10 +23,16 @@ public class SessionInfo{
     public int Round{ get; set; }
     
     [Column("PHASE")]
-    public int Phase{ get; set; }
+    public EPhase Phase{ get; set; }
 
     [Column("CURRENT_NATION_ID")]
     public int CurrentNationId{ get; set; }
     
     public Nation Nation{ get; set; }
+
+    [Column("AXIS_CAPITALS")]
+    public int AxisCapitals{ get; set; }
+    
+    [Column("ALLIES_CAPITALS")]
+    public int AlliesCapitals{ get; set; }
 }
