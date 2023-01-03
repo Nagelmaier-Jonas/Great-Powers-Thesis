@@ -31,6 +31,7 @@ public class LandRegion : ARegion{
     }
 
     public override Nation GetOwner() => Nation;
+    public override int GetIncome() => Income;
 
     public List<ARegion> GetAllFriendlyNeighbours(int distance) =>
         GetFriendlyNeighbours(distance, Nation);
