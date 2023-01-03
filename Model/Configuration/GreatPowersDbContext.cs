@@ -32,6 +32,8 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
     public DbSet<Capital> Capitals{ get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder){
+        builder.UseCollation("utf8_general_ci").HasCharSet("utf8");
+        
         builder.Entity<User>().HasIndex(u => new{ u.UserName, u.Email }).IsUnique();
 
         builder.Entity<Nation>().HasOne(n => n.User)
@@ -746,7 +748,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Identifier = ERegion.EastMexico,
             Type = ERegionType.LAND,
             PositionX = 30,
-            PositionY = 525
+            PositionY = 490
         };
         LandRegion zentralamerika = new LandRegion(){
             Id = 120,
@@ -4969,6 +4971,18 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             figh185,
             figh186,
             bomb187
+        });
+
+        builder.Entity<SessionInfo>().HasData(new SessionInfo(){
+            Id = 1,
+            CurrentNationId = 3,
+            StandardVictory = true,
+            TotalVictory = false,
+            Phase = EPhase.PurchaseUnits,
+            Round = 1,
+            DiceMode = EDiceMode.STANDARD,
+            AxisCapitals = 6,
+            AlliesCapitals = 6,
         });
 
         base.OnModelCreating(builder);
