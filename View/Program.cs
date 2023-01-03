@@ -11,7 +11,11 @@ using MudBlazor.Services;
 using View.Components.Game.Country;
 using View.Components.Game.Unit;
 using BlazorPanzoom;
+using Domain.Repositories;
+using Microsoft.Extensions.Logging.Abstractions;
+using View.Components.Game.Channel;
 using View.Services;
+using Microsoft.AspNetCore.Identity;
 
 //setup firewall
 IPAddress ipAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList[0];
@@ -36,12 +40,14 @@ process.WaitForExit();
 //configure builder
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<GreatPowersDbContext>(
-    options => options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 27)),
-        retry => retry.EnableRetryOnFailure()
-    )
-);
+    options => {
+        options.UseMySql(
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            new MySqlServerVersion(new Version(8, 0, 27)),
+            retry => retry.EnableRetryOnFailure()
+        );
+        options.UseLoggerFactory(new NullLoggerFactory());
+    });
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
@@ -74,6 +80,7 @@ builder.Services.AddScoped<ShipRepository>();
 builder.Services.AddScoped<TransportRepository>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<WaterRegionRepository>();
+builder.Services.AddScoped<SessionInfoRepository>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -84,6 +91,7 @@ builder.Services.AddScoped<DockerService>();
 
 builder.Services.AddScoped<CountryPaths>();
 builder.Services.AddScoped<UnitPaths>();
+builder.Services.AddScoped<ChannelPaths>();
 
 builder.Services.AddScoped<ActiveRegion>();
 

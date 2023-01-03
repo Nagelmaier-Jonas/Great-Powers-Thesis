@@ -34,7 +34,7 @@
         var user = authState.User;
 
         if (user.Identity.IsAuthenticated){
-            CurrentUser = Task.Run(() => UserRepository.GetByUsername(user.Identity.Name)).Result;
+            CurrentUser = await UserRepository.GetByUsername(user.Identity.Name);
             if (CurrentUser is null){
                 Console.WriteLine("User not found");
             }
