@@ -9,6 +9,9 @@
         background-image: url('img/menu/paper-bg.jpg')
     }
 </style>
+<MudContainer Class="d-flex justify-content-center">
+    <MudImage Class="menuImage" Src="img/menu/tank.jpg"/> 
+</MudContainer>
 @code {
 
     protected override void OnInitialized(){
@@ -26,7 +29,7 @@
         });
         Items.Add(new SidebarItem(){
             Name = "MainMenu",
-            Link = "/MainMenu"
+            Link = "/"
         });
         base.OnInitialized();
     }
