@@ -11,6 +11,7 @@
                     @if (Region.Type == ERegionType.LAND){
                         @if (Owner is not null){
                             <MudImage Src=@($"img/flags/{Owner.Name}.svg") Width="150" Height="150" Elevation="25" Style="border-radius: 50%"/>
+                            <MudChip Icon="@Icons.Material.Filled.Adjust" IconColor="Color.Error">Income: @Region.GetIncome()</MudChip>
                         }
                         else{
                             <MudImage Src="img/flags/Neutral.svg" Width="150" Height="150" Elevation="25" Style="border-radius: 50%"/>

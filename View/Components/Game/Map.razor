@@ -9,12 +9,21 @@
 @using Domain.Repositories.Implementations
 @using View.Services
 @inject ActiveRegion ActiveRegion
-@inject NationRepository NationRepository
-@inject WaterRegionRepository WaterRegionRepository
 
-<div class="panzoom-parent" style="height: 1080px">
+<div class="panzoom-parent" style="height: 100vh; width: 100vw;">
     <Panzoom @ref="_panzoom" PanzoomOptions="@(new PanzoomOptions(){ Contain = Contain.Outside, Cursor = Cursor.Auto })" WheelMode="WheelMode.Custom" OnWheel="OnWheel">
-        <svg viewBox="0 0 1920 1080" @ref="context.ElementReference" class="panzoom">
+        <svg viewBox="0 0 1920 1080" @ref="context.ElementReference" class="panzoom" style="fill: url(#water)">
+            <defs>
+                <pattern id="neutral" patternUnits="userSpaceOnUse" width="10" height="10">
+                    <image xlink:href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyNy4wLjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCAxMCAxMCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTAgMTA7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+DQoJLnN0MHtmaWxsOiNBM0EzQTM7fQ0KCS5zdDF7ZmlsbDojRkZGRkZGO3N0cm9rZTojOEM4QzhDO3N0cm9rZS13aWR0aDozO30NCjwvc3R5bGU+DQo8cmVjdCBjbGFzcz0ic3QwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiLz4NCjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0tMSwxbDItMiBNMCwxMEwxMCwwIE05LDExbDItMiIvPg0KPC9zdmc+DQo=" x="0" y="0" width="10" height="10"> </image>
+                </pattern>
+            </defs>
+            <defs>
+                <pattern id="water" patternUnits="userSpaceOnUse" width="10" height="10">
+                    <image xlink:href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyNy4wLjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCAxMCAxMCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTAgMTA7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+DQoJLnN0MHtmaWxsOiNEMEUwRTU7fQ0KCS5zdDF7ZmlsbDojRkZGRkZGO3N0cm9rZTojQURCN0JCO3N0cm9rZS13aWR0aDozO30NCjwvc3R5bGU+DQo8cmVjdCBjbGFzcz0ic3QwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiLz4NCjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0tMSwxbDItMiBNMCwxMEwxMCwwIE05LDExbDItMiIvPg0KPC9zdmc+DQo=" x="0" y="0" width="10" height="10"> </image>
+                </pattern>
+            </defs>
+            @*<rect x="0" y="0" width="1920" height="1080" fill="url(#water)" />*@
             @foreach (var nation in Nations){
                 foreach (var land in nation.Regions){
                     <Country Region="@land" Owner="@nation"/>
@@ -40,8 +49,12 @@
 
 @code{
 
-    private List<Nation> Nations { get; set; } = new();
-    private List<WaterRegion> SeeZones { get; set; } = new();
+    [Parameter]
+    public List<Nation> Nations { get; set; } = new();
+
+    [Parameter]
+    public List<WaterRegion> SeeZones { get; set; } = new();
+
     private Panzoom _panzoom = new();
 
     private async Task OnWheel(CustomWheelEventArgs args){
@@ -57,8 +70,6 @@
 
     protected override async Task OnInitializedAsync(){
         ActiveRegion.HandleRegionChange += HandleRegionChange;
-        Nations = await NationRepository.ReadAllGraphAsync();
-        SeeZones = await WaterRegionRepository.ReadAllGraphAsync();
     }
 
 }
