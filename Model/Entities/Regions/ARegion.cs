@@ -292,4 +292,5 @@ public abstract class ARegion{
 
     public virtual Nation GetOwner() => null;
     public virtual int GetIncome() => 0;
+    public virtual Capital GetCapital() => null;
 }

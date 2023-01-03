@@ -14,7 +14,7 @@ public class SessionInfoRepository{
         _set = _context.Set<SessionInfo>();
     }
 
-    public async Task<SessionInfo?> ReadAsync() => await _set.Where(i => i.Id == 1).Include(n => n.Nation).FirstOrDefaultAsync();
+    public async Task<SessionInfo?> ReadAsync() => await _set.FirstOrDefaultAsync();
     
     public async Task UpdateAsync(SessionInfo entity)
     {

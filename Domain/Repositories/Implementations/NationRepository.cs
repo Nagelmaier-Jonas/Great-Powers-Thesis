@@ -15,6 +15,8 @@ public class NationRepository : ARepository<Nation>, INationRepository{
             .ThenInclude(t => t.StationedUnits)
             .Include(n => n.Regions)
             .ThenInclude(t => t.StationedPlanes)
+            .Include(n => n.Regions)
+            .ThenInclude(t => t.Capital)
             .AsSplitQuery()
             .FirstOrDefaultAsync(n => n.Id == Id);
     }
@@ -25,6 +27,8 @@ public class NationRepository : ARepository<Nation>, INationRepository{
             .ThenInclude(t => t.StationedUnits)
             .Include(n => n.Regions)
             .ThenInclude(t => t.StationedPlanes)
+            .Include(n => n.Regions)
+            .ThenInclude(t => t.Capital)
             .AsSplitQuery()
             .ToListAsync();
     }
