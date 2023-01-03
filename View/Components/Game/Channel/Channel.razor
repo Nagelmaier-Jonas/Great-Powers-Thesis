@@ -1,0 +1,9 @@
+﻿@inject ChannelPaths ChannelPaths
+
+@foreach (var channel in ChannelPaths){
+    <path d="@channel.Value" class="@channel.Key.ToString()" fill="lightgrey" stroke="grey" stroke-width="1"/>
+}
+
+@code{
+
+}
