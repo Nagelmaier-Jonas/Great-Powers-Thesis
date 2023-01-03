@@ -1,13 +1,29 @@
 ﻿@page "/Game"
+@using Model.Entities
+@using Domain.Repositories
+@using Domain.Repositories.Implementations
+@using Model.Entities.Regions
+@inject SessionInfoRepository SessionInfoRepository
+@inject NationRepository NationRepository
+@inject WaterRegionRepository WaterRegionRepository
 
 <style>
     .sidebar{
         display: none;
     }
 </style>
-<GameBar/>
-<Map/>
+<GameBar Info="@Info" Nations="@Nations"/>
+<Map Nations="@Nations" SeeZones="@SeeZones"/>
 
 @code {
+    private SessionInfo Info { get; set; } = new();
+    private List<Nation> Nations { get; set; } = new();
+    private List<WaterRegion> SeeZones { get; set; } = new();
     
+    protected override async Task OnInitializedAsync(){
+        Info = await SessionInfoRepository.ReadAsync();
+        Nations = await NationRepository.ReadAllGraphAsync();
+        SeeZones = await WaterRegionRepository.ReadAllGraphAsync();
+    }
+
 }
