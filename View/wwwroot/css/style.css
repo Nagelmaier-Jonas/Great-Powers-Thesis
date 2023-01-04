@@ -239,3 +239,11 @@ span.logo {
 .Japan .troopbadge-symbol{
     fill: #ffca81;
 }
+
+/* -- -------------------------------------------------- -- */
+/*                  Style: Map Style                        */
+/* -- -------------------------------------------------- -- */
+.paper-bg{
+    background-image: url(img/menu/paper-bg.jpg) !important;
+    background-size: cover !important;
+}
