@@ -18,7 +18,7 @@ public class LandRegion : ARegion{
 
     public Nation Nation{ get; set; }
 
-    public List<Factory> Factories{ get; set; } = new List<Factory>();
+    public Factory Factory{ get; set; }
 
     public List<LandUnit> StationedUnits{ get; set; } = new List<LandUnit>();
     public List<LandUnit> IncomingUnits{ get; set; } = new List<LandUnit>();
@@ -33,6 +33,7 @@ public class LandRegion : ARegion{
     public override Nation GetOwner() => Nation;
     public override int GetIncome() => Income;
     public override Capital GetCapital() => Capital;
+    public override Factory GetFactory() => Factory;
 
     public List<ARegion> GetAllFriendlyNeighbours(int distance) =>
         GetFriendlyNeighbours(distance, Nation);

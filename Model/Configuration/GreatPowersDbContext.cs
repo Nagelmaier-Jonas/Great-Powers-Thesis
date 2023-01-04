@@ -53,9 +53,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             .WithMany(u => u.Regions);
         builder.Entity<LandRegion>().HasOne(l => l.Capital).WithOne();
 
-        builder.Entity<Factory>().HasOne(f => f.Region)
-            .WithMany(r => r.Factories);
-
         builder.Entity<Neighbours>().HasOne(n => n.Region)
             .WithMany(r => r.Neighbours);
         builder.Entity<Neighbours>().HasOne(n => n.Neighbour)
@@ -1239,7 +1236,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         WaterRegion see18 = new WaterRegion(){ Id = 18, Name = "Seezone 18", Identifier = ERegion.SeeZone18, Type = ERegionType.WATER };
         WaterRegion see19 = new WaterRegion(){ Id = 19, Name = "Seezone 19", Identifier = ERegion.SeeZone19, Type = ERegionType.WATER };
         WaterRegion see20 = new WaterRegion(){ Id = 20, Name = "Seezone 20", Identifier = ERegion.SeeZone20, Type = ERegionType.WATER };
-        WaterRegion see21 = new WaterRegion(){ Id = 21, Name = "Seezone 21", Identifier = ERegion.SeeZone21, Type = ERegionType.WATER };
+        WaterRegion see21 = new WaterRegion(){ Id = 21, Name = "Seezone 21", Identifier = ERegion.SeeZone21, Type = ERegionType.WATER, PositionX = 110, PositionY = 1050};
         WaterRegion see22 = new WaterRegion(){ Id = 22, Name = "Seezone 22", Identifier = ERegion.SeeZone22, Type = ERegionType.WATER };
         WaterRegion see23 = new WaterRegion(){ Id = 23, Name = "Seezone 23", Identifier = ERegion.SeeZone23, Type = ERegionType.WATER };
         WaterRegion see24 = new WaterRegion(){ Id = 24, Name = "Seezone 24", Identifier = ERegion.SeeZone24, Type = ERegionType.WATER };

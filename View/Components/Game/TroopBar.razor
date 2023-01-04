@@ -24,8 +24,11 @@
                 </MudBadge>
                 @if (Capital is not null){
                     <MudBadge Bordered="true" Origin="Origin.BottomCenter" Overlap="true" Content="Capital.Name" Class="m-3">
-                        <MudImage Src="img/other/capital.svg" />
+                        <MudImage Src="img/other/capital.svg"/>
                     </MudBadge>
+                }
+                @if (Factory is not null){
+                    <MudImage Src="img/other/factory.svg"/>
                 }
                 @foreach (var unit in Region.GetOneStationedUnitPerType()){
                     <Unit Troop="unit" Amount="Region.GetStationedUnitCounts()[unit.Type]" Class="ml-3" RenderSubTroops="true"/>
@@ -44,10 +47,13 @@
     private Nation? Owner { get; set; }
 
     private Capital? Capital { get; set; }
+    
+    private Factory? Factory { get; set; }
 
     protected override void OnParametersSet(){
         if (Region != null) Owner = Region.GetOwner();
         Capital = Region?.GetCapital();
+        Factory = Region?.GetFactory();
     }
 
     private void Close(){

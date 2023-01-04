@@ -39,14 +39,46 @@
                             </text></text>
                     }
                 }
+                @if (Factory is not null){
+                    <svg id="Ebene_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" width="20" height="20" x="@(Region.PositionX)" y="@(Region.PositionY - 50)">
+                    	<defs>
+                    		<style>
+                    			.cls-1 {
+                    			fill: #828282;
+                    			}
+                    			.cls-2 {
+                    			fill: #C8C8C8;
+                    			}
+                    		</style>
+                    	</defs>
+                    	<g>
+                    		<circle class="cls-1" cx="47.5" cy="47.5" r="47.25"/>
+                    		<path class="cls-1" d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
+                    	</g>
+                    	<path class="cls-2" d="M19.8,71.1h55.4V29.5h-5.5v-5.5h-8.3v5.5v13.9L47.5,29.5v13.9L33.6,29.5v13.9L19.8,29.5V71.1"/>
+                    </svg>
+                }
             }
         }
         else{
             @if (ActiveRegion.Region == Region){
-                <path d="@CountryPaths[Region.Identifier]" class="active_country svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="2" @onclick="args => UpdateRegion(args)"/>
+                <path d="@CountryPaths[Region.Identifier]" class="active_country svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="1" @onclick="args => UpdateRegion(args)"/>
             }
             else{
-                <path d="@CountryPaths[Region.Identifier]" class="svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="2" @onclick="args => UpdateRegion(args)"/>
+                <path d="@CountryPaths[Region.Identifier]" class="svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="1" @onclick="args => UpdateRegion(args)"/>
+            }
+            <circle fill="transparent" stroke="white" stroke-width="1" cx="@(Region.PositionX + 12)" cy="@(Region.PositionY + 12)" r="5"/>
+            @if (Region.Id > 9){
+                <text>
+                    <text style="font-size: 6px; font-weight: bold; fill: white; transform: translate(-4px, 2px);" x="@(Region.PositionX + 12)" y="@(Region.PositionY + 12)">
+                        @Region.Id
+                    </text></text>
+            }
+            else{
+                <text>
+                    <text style="font-size: 7px; font-weight: bold; fill: white; transform: translate(-2px, 2px);" x="@(Region.PositionX + 12)" y="@(Region.PositionY + 12)">
+                        @Region.Id
+                    </text></text>
             }
         }
     }
@@ -61,9 +93,12 @@
     public Nation Owner { get; set; } = new();
 
     private Capital? Capital { get; set; }
+    
+    private Factory? Factory { get; set; }
 
     protected override void OnInitialized(){
         Capital = Region?.GetCapital();
+        Factory = Region?.GetFactory();
     }
 
     private void UpdateRegion(MouseEventArgs args){
