@@ -17,6 +17,7 @@ public abstract class ARegion{
     public string Name{ get; set; }
 
     public List<Neighbours> Neighbours{ get; set; }
+    public List<CanalOwners> Canals{ get; set; }
 
     [Column("REGION_TYPE", TypeName = "VARCHAR(45)")]
     public ERegionType Type{ get; set; }

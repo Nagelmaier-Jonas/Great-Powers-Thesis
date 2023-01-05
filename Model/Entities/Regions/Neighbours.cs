@@ -13,4 +13,6 @@ public class Neighbours{
     public ARegion Region{ get; set; }
     
     public ARegion Neighbour{ get; set; }
+
+    public List<CanalOwners> CanalOwners{ get; set; }
 }

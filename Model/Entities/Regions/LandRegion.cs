@@ -7,10 +7,6 @@ namespace Model.Entities.Regions;
 public class LandRegion : ARegion{
     [Column("INCOME")]
     public int Income{ get; set; }
-
-    [Column("CAPITAL_ID")]
-    public int? CapitalId{ get; set; }
-    
     public Capital? Capital{ get; set; }
     
     [Column("OWNER_ID")]
@@ -18,7 +14,7 @@ public class LandRegion : ARegion{
 
     public Nation Nation{ get; set; }
 
-    public Factory Factory{ get; set; }
+    public Factory? Factory{ get; set; }
 
     public List<LandUnit> StationedUnits{ get; set; } = new List<LandUnit>();
     public List<LandUnit> IncomingUnits{ get; set; } = new List<LandUnit>();

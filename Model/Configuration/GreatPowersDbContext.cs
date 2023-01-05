@@ -18,6 +18,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
     public DbSet<Nation> Nations{ get; set; }
     public DbSet<ARegion> Regions{ get; set; }
     public DbSet<Neighbours> Neighbours{ get; set; }
+    public DbSet<CanalOwners> CanalOwners{ get; set; }
     public DbSet<WaterRegion> WaterRegions{ get; set; }
     public DbSet<LandRegion> LandRegions{ get; set; }
     public DbSet<Factory> Factories{ get; set; }
@@ -46,18 +47,26 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         builder.Entity<Allies>().HasKey(n => new{ n.NationId, n.AllyId });
 
         builder.Entity<Capital>().HasIndex(u => u.Name).IsUnique();
+        builder.Entity<Capital>().HasOne(f => f.Region).WithOne(r => r.Capital);
 
         builder.Entity<ARegion>().Property(a => a.Type).HasConversion<string>();
 
         builder.Entity<LandRegion>().HasOne(n => n.Nation)
             .WithMany(u => u.Regions);
-        builder.Entity<LandRegion>().HasOne(l => l.Capital).WithOne();
+
+        builder.Entity<Factory>().HasOne(f => f.Region).WithOne(r => r.Factory);
 
         builder.Entity<Neighbours>().HasOne(n => n.Region)
             .WithMany(r => r.Neighbours);
         builder.Entity<Neighbours>().HasOne(n => n.Neighbour)
             .WithMany();
         builder.Entity<Neighbours>().HasKey(n => new{ n.NeighbourId, n.RegionId });
+        
+        builder.Entity<CanalOwners>().HasOne(c => c.CanalOwner)
+            .WithMany(r => r.Canals);
+        builder.Entity<CanalOwners>().HasOne(c => c.Neighbours)
+            .WithMany(n => n.CanalOwners);
+        builder.Entity<CanalOwners>().HasKey(c => new{ c.NeighboursNeighbourId, c.NeighboursRegionId, c.CanalOwnerId });
 
         builder.Entity<AUnit>().Property(a => a.Type).HasConversion<string>();
         builder.Entity<AUnit>().HasOne(u => u.Nation).WithMany(n => n.Units);
@@ -231,55 +240,68 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         builder.Entity<Capital>().HasData(new List<Capital>(){
             new Capital(){
                 Id = 1,
-                Name = "Berlin"
+                Name = "Berlin",
+                RegionId = 66
             },
             new Capital(){
                 Id = 2,
-                Name = "Paris"
+                Name = "Paris",
+                RegionId = 78
             },
             new Capital(){
                 Id = 3,
-                Name = "Rom"
+                Name = "Rom",
+                RegionId = 77
             },
             new Capital(){
                 Id = 4,
-                Name = "Leningrad"
+                Name = "Leningrad",
+                RegionId = 84
             },
             new Capital(){
                 Id = 5,
-                Name = "Moskau"
+                Name = "Moskau",
+                RegionId = 86
             },
             new Capital(){
                 Id = 6,
-                Name = "London"
+                Name = "London",
+                RegionId = 110
             },
             new Capital(){
                 Id = 7,
-                Name = "Kalkutta"
+                Name = "Kalkutta",
+                RegionId = 96
             },
             new Capital(){
                 Id = 8,
-                Name = "Shanghai"
+                Name = "Shanghai",
+                RegionId = 132
             },
             new Capital(){
                 Id = 9,
-                Name = "Tokyo"
+                Name = "Tokyo",
+                RegionId = 130
             },
             new Capital(){
                 Id = 10,
-                Name = "Manila"
+                Name = "Manila",
+                RegionId = 140
             },
             new Capital(){
                 Id = 11,
-                Name = "San Francisco"
+                Name = "San Francisco",
+                RegionId = 115
             },
             new Capital(){
                 Id = 12,
-                Name = "Washington"
+                Name = "Washington",
+                RegionId = 117
             },
             new Capital(){
                 Id = 13,
-                Name = "Honululu"
+                Name = "Honululu",
+                RegionId = 125
             }
         });
 
@@ -289,7 +311,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 66,
             Income = 10,
             Name = "Deutschland",
-            CapitalId = 1,
             NationId = 1,
             Identifier = ERegion.Germany,
             Type = ERegionType.LAND
@@ -370,7 +391,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 77,
             Income = 3,
             Name = "Italien",
-            CapitalId = 3,
             NationId = 1,
             Identifier = ERegion.Italy,
             Type = ERegionType.LAND
@@ -379,7 +399,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 78,
             Income = 6,
             Name = "Frankreich",
-            CapitalId = 2,
             NationId = 1,
             Identifier = ERegion.France,
             Type = ERegionType.LAND
@@ -433,7 +452,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 84,
             Income = 2,
             Name = "Karelo-Finnische SSR",
-            CapitalId = 4,
             NationId = 3,
             Identifier = ERegion.Karelia,
             Type = ERegionType.LAND
@@ -450,7 +468,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 86,
             Income = 8,
             Name = "Russland",
-            CapitalId = 5,
             NationId = 3,
             Identifier = ERegion.Russia,
             Type = ERegionType.LAND
@@ -544,7 +561,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 96,
             Income = 3,
             Name = "Indien",
-            CapitalId = 7,
             NationId = 5,
             Identifier = ERegion.India,
             Type = ERegionType.LAND
@@ -657,7 +673,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 110,
             Income = 8,
             Name = "Vereinigtes Königreich",
-            CapitalId = 6,
             NationId = 5,
             Identifier = ERegion.UnitedKingdom,
             Type = ERegionType.LAND
@@ -703,7 +718,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 115,
             Income = 10,
             Name = "Westliche Vereinigte Staaten",
-            CapitalId = 11,
             NationId = 4,
             Identifier = ERegion.WesternUnitedStates,
             Type = ERegionType.LAND
@@ -722,7 +736,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 117,
             Income = 12,
             Name = "Östliche Vereinigte Staaten",
-            CapitalId = 12,
             NationId = 4,
             Identifier = ERegion.EasternUnitedStates,
             Type = ERegionType.LAND,
@@ -795,7 +808,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 125,
             Income = 1,
             Name = "Hawaii-Inseln",
-            CapitalId = 13,
             NationId = 4,
             Identifier = ERegion.HawaiiIslands,
             Type = ERegionType.LAND
@@ -841,7 +853,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 130,
             Income = 8,
             Name = "Japan",
-            CapitalId = 9,
             NationId = 2,
             Identifier = ERegion.Japan,
             Type = ERegionType.LAND
@@ -858,7 +869,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 132,
             Income = 2,
             Name = "Jiangsu",
-            CapitalId = 8,
             NationId = 2,
             Identifier = ERegion.Jiangsu,
             Type = ERegionType.LAND
@@ -923,7 +933,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 140,
             Income = 3,
             Name = "Philippinische Inseln",
-            CapitalId = 10,
             NationId = 2,
             Identifier = ERegion.PhilippineIslands,
             Type = ERegionType.LAND
@@ -4053,6 +4062,39 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             },
 
             #endregion
+        });
+
+        builder.Entity<CanalOwners>().HasData(new List<CanalOwners>(){
+            new CanalOwners(){
+                NeighboursRegionId = 18,
+                NeighboursNeighbourId = 19,
+                CanalOwnerId = 120
+            },
+            new CanalOwners(){
+                NeighboursRegionId = 19,
+                NeighboursNeighbourId = 18,
+                CanalOwnerId = 120
+            },
+            new CanalOwners(){
+                NeighboursRegionId = 17,
+                NeighboursNeighbourId = 34,
+                CanalOwnerId = 83
+            },
+            new CanalOwners(){
+                NeighboursRegionId = 17,
+                NeighboursNeighbourId = 34,
+                CanalOwnerId = 94
+            },
+            new CanalOwners(){
+                NeighboursRegionId = 34,
+                NeighboursNeighbourId = 17,
+                CanalOwnerId = 83
+            },
+            new CanalOwners(){
+                NeighboursRegionId = 34,
+                NeighboursNeighbourId = 17,
+                CanalOwnerId = 94
+            }
         });
 
         #region GermanLand
