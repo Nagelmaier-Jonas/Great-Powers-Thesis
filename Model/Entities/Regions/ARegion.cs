@@ -19,10 +19,8 @@ public abstract class ARegion{
     public List<Neighbours> Neighbours{ get; set; }
     public List<CanalOwners> Canals{ get; set; }
 
-    [Column("REGION_TYPE", TypeName = "VARCHAR(45)")]
-    public ERegionType Type{ get; set; }
-
-    [Column("IDENTIFIER", TypeName = "VARCHAR(45)")] public ERegion Identifier{ get; set; }
+    [Column("IDENTIFIER", TypeName = "VARCHAR(45)")] 
+    public ERegion Identifier{ get; set; }
     
     [Column("POSITION_X")]
     public int? PositionX{ get; set; }
@@ -32,7 +30,40 @@ public abstract class ARegion{
 
     public List<Plane> StationedPlanes{ get; set; } = new List<Plane>();
     public List<Plane> IncomingPlanes{ get; set; } = new List<Plane>();
+    
+    public List<AUnit> GetStationedFriendlyUnits(Nation nation) => GetStationedUnits()
+        .Where(u => u.Nation == nation || u.Nation.Allies.Any(a => a.Ally == nation)).ToList();
 
+    public bool ContainsEnemies(Nation nation) => GetStationedUnits()
+        .Any(u => u.Nation != nation && u.Nation.Allies.All(a => a.Ally != nation) && u.Type != EUnitType.SUBMARINE);
+
+    public Dictionary<EUnitType, int> GetStationedUnitCounts(){
+        Dictionary<EUnitType, int> counts = new Dictionary<EUnitType, int>();
+        foreach (var unit in GetStationedUnits()) counts[unit.Type] = counts.GetValueOrDefault(unit.Type, 0) + 1;
+        return counts;
+    }
+
+    public List<AUnit> GetOneStationedUnitPerType(){
+        List<AUnit> oneUnitPerType = new List<AUnit>();
+        //make an exception for units with type EUnitType.TRANSPORT and EUnitType.AIRCRAFT_CARRIER
+        foreach (var unit in GetStationedUnits()){
+            if (oneUnitPerType.Any(u => u.Type == unit.Type && u.Type != EUnitType.TRANSPORT &&
+                                        u.Type != EUnitType.AIRCRAFT_CARRIER)) continue;
+            oneUnitPerType.Add(unit);
+        }
+        return oneUnitPerType;
+    }
+    public virtual List<AUnit> GetStationedUnits() => null;
+
+    public virtual Nation? GetOwner() => null;
+    public virtual int GetIncome() => 0;
+    public virtual Capital GetCapital() => null;
+    public virtual Factory GetFactory() => null;
+
+    public abstract bool IsLandRegion();
+    public abstract bool IsWaterRegion();
+
+    /*
     #region Neighbours
 
     private List<ARegion> GetNeighbours(int distance, bool excludeSource = true, ERegionType? type = null){
@@ -265,34 +296,5 @@ public abstract class ARegion{
         GetPath(target, nation, ERegionType.WATER, maxDistance);
 
     #endregion
-
-
-    public List<AUnit> GetStationedFriendlyUnits(Nation nation) => GetStationedUnits()
-        .Where(u => u.Nation == nation || u.Nation.Allies.Any(a => a.Ally == nation)).ToList();
-
-    public bool ContainsEnemies(Nation nation) => GetStationedUnits()
-        .Any(u => u.Nation != nation && u.Nation.Allies.All(a => a.Ally != nation));
-
-    public Dictionary<EUnitType, int> GetStationedUnitCounts(){
-        Dictionary<EUnitType, int> counts = new Dictionary<EUnitType, int>();
-        foreach (var unit in GetStationedUnits()) counts[unit.Type] = counts.GetValueOrDefault(unit.Type, 0) + 1;
-        return counts;
-    }
-
-    public List<AUnit> GetOneStationedUnitPerType(){
-        List<AUnit> oneUnitPerType = new List<AUnit>();
-        //make an exception for units with type EUnitType.TRANSPORT and EUnitType.AIRCRAFT_CARRIER
-        foreach (var unit in GetStationedUnits()){
-            if (oneUnitPerType.Any(u => u.Type == unit.Type && u.Type != EUnitType.TRANSPORT &&
-                                        u.Type != EUnitType.AIRCRAFT_CARRIER)) continue;
-            oneUnitPerType.Add(unit);
-        }
-        return oneUnitPerType;
-    }
-    public virtual List<AUnit> GetStationedUnits() => null;
-
-    public virtual Nation GetOwner() => null;
-    public virtual int GetIncome() => 0;
-    public virtual Capital GetCapital() => null;
-    public virtual Factory GetFactory() => null;
+    */
 }

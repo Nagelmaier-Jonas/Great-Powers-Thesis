@@ -30,7 +30,11 @@ public class LandRegion : ARegion{
     public override int GetIncome() => Income;
     public override Capital GetCapital() => Capital;
     public override Factory GetFactory() => Factory;
+    public override bool IsLandRegion() => true;
 
+    public override bool IsWaterRegion() => false;
+    
+    /*
     public List<ARegion> GetAllFriendlyNeighbours(int distance) =>
         GetFriendlyNeighbours(distance, Nation);
 
@@ -54,4 +58,6 @@ public class LandRegion : ARegion{
     public List<ARegion> GetPathToFriendlyTargetWithMax(ARegion target, int maxDistance) => GetPath(target, Nation,null, maxDistance);
     public List<ARegion> GetPathToFriendlyLandTarget(ARegion target) => GetPath(target, Nation, ERegionType.LAND);
     public List<ARegion> GetPathToFriendlyLandTargetWithMax(ARegion target, int maxDistance) => GetPath(target, Nation, ERegionType.LAND,maxDistance);
+    
+    */
 }

@@ -24,8 +24,8 @@ public class Ship : AUnit{
     
     public override ARegion GetLocation() => Region;
 
-    public override bool SetLocation(ARegion target){
-        if (target.Type == Region.Type){
+    protected override bool SetLocation(ARegion target){
+        if (target.IsWaterRegion()){
             Region = (WaterRegion)target;
             return true;
         }
@@ -33,32 +33,43 @@ public class Ship : AUnit{
     }
 
     public override ARegion GetTarget() => Target;
-
-    public override bool SetTarget(ARegion region){
-        if (region == null){
-            Target = null;
-            return true;
-        }
-        if (CanTarget(region)){
+    
+    public override bool CanTarget(EPhase phase,ARegion target) => GetPossibleTargets(phase).Contains(target);
+    
+    public override bool SetTarget(EPhase phase,ARegion region){
+        if (CanTarget(phase,region)){
             Target = (WaterRegion)region;
             return true;
         }
         return false;
     }
 
-    public override List<ARegion> GetPathToCurrentTarget() =>
-        Region.GetPathToFriendlyWaterTargetWithMax(Target,Nation, CurrentMovement);
 
-    protected override bool CanTarget(ARegion target) =>
-        Region.GetPathToFriendlyWaterTargetWithMax(target,Nation, CurrentMovement).Count != 0;
     
-    public override bool MoveToTarget(){
-        if (GetTarget() != null){
-            CurrentMovement -= GetLocation().GetMinimalDistanceByFriendlyWater(Target, Nation);
-            SetLocation(GetTarget());
-            SetTarget(null);
-            return true;
+    public override List<ARegion> GetPossibleTargets(EPhase phase){
+        switch (phase){
+            case EPhase.NonCombatMove:
+                return GetTargetsForNonCombatMove(CurrentMovement, Region);
+            case EPhase.CombatMove:
+                return GetTargetsForCombatMove(CurrentMovement, Region);
         }
-        return false;
+        return new List<ARegion>();
+    }
+
+    protected override List<ARegion> GetTargetsForNonCombatMove(int distance, ARegion region){
+        if (distance <= 0) return new List<ARegion>();
+        HashSet<ARegion> regions = new HashSet<ARegion>();
+        ARegion location = region ?? Region;
+        foreach (var neighbour in location.Neighbours){
+            if (neighbour.Neighbour.IsLandRegion()) continue;
+            if (neighbour.Neighbour.ContainsEnemies(Nation)) continue;
+            regions.Add(neighbour.Neighbour);
+            regions.UnionWith(GetTargetsForNonCombatMove(distance - 1, neighbour.Neighbour));
+        }
+        return regions.ToList();
+    }
+
+    protected override List<ARegion> GetTargetsForCombatMove(int distance, ARegion region){
+        throw new NotImplementedException();
     }
 }

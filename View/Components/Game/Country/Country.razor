@@ -7,7 +7,7 @@
 
 @if (Region is not null){
     @if (CountryPaths.ContainsKey(Region.Identifier)){
-        @if (Region.Type == ERegionType.LAND){
+        @if (Region.IsLandRegion()){
             @if (Owner.Type == ENation.Neutral){
                 <path d="@CountryPaths[Region.Identifier]" class="svg_country @Owner.Name" style="fill: url(#neutral)" stroke="grey" stroke-width="2"/>
             }

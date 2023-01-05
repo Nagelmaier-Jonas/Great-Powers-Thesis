@@ -15,5 +15,9 @@ public class WaterRegion : ARegion{
         return units;
     }
 
-    public override Nation GetOwner() => null;
+    public override Nation? GetOwner() => null;
+    
+    public override bool IsLandRegion() => false;
+
+    public override bool IsWaterRegion() => true;
 }

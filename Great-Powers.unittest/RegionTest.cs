@@ -12,6 +12,7 @@ public class RegionTest{
     public void Setup(){
     }
 
+    /*
     [Test]
     public void GetNeighboursTest(){
         #region Nations
@@ -1748,4 +1749,5 @@ public class RegionTest{
         Assert.IsTrue(d1.GetPathToLandTarget(d5).Count == 3);
         
     }
+    */
 }
