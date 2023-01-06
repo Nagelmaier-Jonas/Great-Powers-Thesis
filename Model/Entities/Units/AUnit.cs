@@ -36,13 +36,14 @@ public abstract class AUnit{
     public abstract bool CanTarget(EPhase phase,ARegion target);
     public virtual List<AUnit> GetSubUnits() => new ();
     
-    public bool MoveToTarget(EPhase phase){
+    public virtual bool MoveToTarget(EPhase phase){
         if (GetTarget() == null) return false;
         CurrentMovement -= GetDistanceToTarget(phase);
         SetLocation(GetTarget());
-        SetTarget(phase,null);
         return true;
     }
+
+    public abstract void ClearTarget();
 
     public abstract List<ARegion> GetPossibleTargets(EPhase phase);
     protected abstract List<ARegion> GetTargetsForNonCombatMove(int distance, ARegion region);

@@ -46,6 +46,8 @@ public class LandUnit : AUnit{
         return false;
     }
 
+    public override void ClearTarget() => Target = null;
+
     public override List<ARegion> GetPossibleTargets(EPhase phase){
         switch (phase){
             case EPhase.NonCombatMove:
@@ -73,6 +75,30 @@ public class LandUnit : AUnit{
     }
 
     protected override List<ARegion> GetTargetsForCombatMove(int distance, ARegion region){
-        throw new NotImplementedException();
+        if (distance <= 0) return new List<ARegion>();
+        //Anti Air can only move in the Non Combat Movement Phase
+        if (Type == EUnitType.ANTI_AIR) return new List<ARegion>();
+        HashSet<ARegion> regions = new HashSet<ARegion>();
+        ARegion location = region ?? Region;
+        foreach (var neighbour in location.Neighbours){
+            
+            if (neighbour.Neighbour.IsWaterRegion()) continue;
+            
+            LandRegion neigh = (LandRegion)neighbour.Neighbour;
+            
+            //Units other than Tanks must end their attack on an enemy Field
+            if (distance == 1 && Type != EUnitType.TANK && !neigh.IsHostile(Nation)) continue;
+            
+            //Units other than Tanks cant move through Hostile Fields to attack
+            if(distance > 1 && Type != EUnitType.TANK && neigh.IsHostile(Nation)) continue;
+            
+            //Tanks can blitz through unoccupied enemy Fields
+            if(distance > 1 && Type == EUnitType.TANK && neigh.ContainsEnemies(Nation) || neigh.Factory != null) continue;
+            
+            regions.Add(neighbour.Neighbour);
+            regions.UnionWith(GetTargetsForCombatMove(distance - 1, neighbour.Neighbour));
+        }
+
+        return regions.ToList();
     }
 }

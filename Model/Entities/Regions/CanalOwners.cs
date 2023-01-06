@@ -13,7 +13,7 @@ public class CanalOwners{
     [Column("CANAL_OWNER_ID")] 
     public int CanalOwnerId{ get; set; }
 
-    public ARegion CanalOwner{ get; set; }
+    public LandRegion CanalOwner{ get; set; }
     
     public Neighbours Neighbours{ get; set; }
 }

@@ -36,25 +36,33 @@ public class Plane : AUnit{
     }
 
     public override ARegion GetTarget() => Target;
-    
-    public override bool CanTarget(EPhase phase,ARegion target) => GetPossibleTargets(phase).Contains(target);
 
-    public override bool SetTarget(EPhase phase,ARegion region){
-        if (CanTarget(phase,region)){
+    public override bool CanTarget(EPhase phase, ARegion target) => GetPossibleTargets(phase).Contains(target);
+
+    public override bool SetTarget(EPhase phase, ARegion region){
+        if (CanTarget(phase, region)){
             Target = region;
             return true;
         }
         return false;
     }
 
+    public override void ClearTarget() => Target = null;
+
     public bool CanLand(ARegion region){
         if (region.GetOwner() != null){
             if (region.GetOwner() == Nation || Nation.Allies.Any(a => a.Ally == region.GetOwner())) return true;
         }
-        if (region.GetStationedUnits().Any(u =>
-                u.Type == EUnitType.AIRCRAFT_CARRIER &&
-                (u.Nation == Nation || Nation.Allies.Any(a => a.Ally == u.Nation)))) return true;
+        if (region.GetOpenAircraftCarriers(Nation).Count != 0) return true;
         return false;
+    }
+
+    public List<ARegion> GetClosestLandingSpots(ARegion region, int movement, int distance = 1){
+        if (distance == movement) return new List<ARegion>();
+        List<ARegion> landingSports = new List<ARegion>();
+        landingSports.AddRange(GetTargetsForNonCombatMove(distance, region));
+        if (landingSports.Count == 0) landingSports.AddRange(GetClosestLandingSpots(region,movement, distance + 1));
+        return landingSports;
     }
 
     public override List<ARegion> GetPossibleTargets(EPhase phase){
@@ -82,9 +90,16 @@ public class Plane : AUnit{
     }
 
     protected override List<ARegion> GetTargetsForCombatMove(int distance, ARegion? region = null){
-        throw new NotImplementedException();
+        if (distance <= 0) return new List<ARegion>();
+        HashSet<ARegion> regions = new HashSet<ARegion>();
+        ARegion location = region ?? Region;
+        foreach (var neighbour in location.Neighbours){
+            //A Plane can only attack a Field if it will still have enough Movement left to land in the Non Combat Movement Phase
+            if(distance == 1 && GetClosestLandingSpots(neighbour.Neighbour, CurrentMovement - GetDistanceToTarget(EPhase.NonCombatMove)).Count == 0) continue;
+            regions.Add(neighbour.Neighbour);
+            regions.UnionWith(GetTargetsForCombatMove(distance - 1, neighbour.Neighbour));
+        }
+
+        return regions.ToList();
     }
-
-
-    
 }
