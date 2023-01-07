@@ -62,18 +62,19 @@
     public bool RenderSubTroops { get; set; }
 
     private Dictionary<EUnitType, Point> TroopPositioning { get; set; } = new(){
-        { EUnitType.INFANTRY, new Point(0, -25) },
-        { EUnitType.TANK, new Point(0, 25) },
-        { EUnitType.ANTI_AIR, new Point(-25, -15) },
-        { EUnitType.ARTILLERY, new Point(-25, 15) },
-        { EUnitType.BOMBER, new Point(25, -15) },
-        { EUnitType.FIGHTER, new Point(25, 15) },
-        { EUnitType.CRUISER, new Point(0, -25) },
-        { EUnitType.DESTROYER, new Point(0, 25) },
-        { EUnitType.SUBMARINE, new Point(-25, -15) },
-        { EUnitType.TRANSPORT, new Point(-25, 15) },
-        { EUnitType.BATTLESHIP, new Point(25, -15) },
-        { EUnitType.AIRCRAFT_CARRIER, new Point(25, 15) },
+        { EUnitType.INFANTRY, new Point(-10, -30) },
+        { EUnitType.TANK, new Point(-10, 10) },
+        { EUnitType.ANTI_AIR, new Point(-30, -20) },
+        { EUnitType.ARTILLERY, new Point(-30, 0) },
+        { EUnitType.BOMBER, new Point(10, -20) },
+        { EUnitType.FIGHTER, new Point(10, 0) },
+        
+        { EUnitType.CRUISER, new Point(-10, -30) },
+        { EUnitType.DESTROYER, new Point(-10, 10) },
+        { EUnitType.SUBMARINE, new Point(-30, -20) },
+        { EUnitType.TRANSPORT, new Point(-30, 20) },
+        { EUnitType.BATTLESHIP, new Point(30, -20) },
+        { EUnitType.AIRCRAFT_CARRIER, new Point(30, 20) },
     };
 
 }

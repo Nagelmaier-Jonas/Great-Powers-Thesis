@@ -20,27 +20,27 @@
                 }
                 @if (Region.GetIncome() is not 0){
                     if (Capital is not null){
-                        <circle fill="transparent" stroke="#FFC107" stroke-width="1" cx="@(Region.PositionX + 12)" cy="@(Region.PositionY + 12)" r="5"/>
-                        <circle fill="transparent" stroke="#FFC107" stroke-width="1" cx="@(Region.PositionX + 12)" cy="@(Region.PositionY + 12)" r="8"/>
+                        <circle fill="transparent" stroke="#FFC107" stroke-width="1" cx="@(Region.PositionX)" cy="@(Region.PositionY)" r="5"/>
+                        <circle fill="transparent" stroke="#FFC107" stroke-width="1" cx="@(Region.PositionX)" cy="@(Region.PositionY)" r="8"/>
                     }
                     else{
-                        <circle fill="transparent" stroke="white" stroke-width="1" cx="@(Region.PositionX + 12)" cy="@(Region.PositionY + 12)" r="5"/>
+                        <circle fill="transparent" stroke="white" stroke-width="1" cx="@(Region.PositionX)" cy="@(Region.PositionY)" r="5"/>
                     }
                     @if (Region.GetIncome() > 9){
                         <text>
-                            <text style="font-size: 6px; font-weight: bold; fill: white; transform: translate(-4px, 2px);" x="@(Region.PositionX + 12)" y="@(Region.PositionY + 12)">
+                            <text style="font-size: 6px; font-weight: bold; fill: white; transform: translate(-4px, 2px);" x="@(Region.PositionX)" y="@(Region.PositionY)">
                                 @Region.GetIncome()
                             </text></text>
                     }
                     else{
                         <text>
-                            <text style="font-size: 7px; font-weight: bold; fill: white; transform: translate(-2px, 2px);" x="@(Region.PositionX + 12)" y="@(Region.PositionY + 12)">
+                            <text style="font-size: 7px; font-weight: bold; fill: white; transform: translate(-2px, 2px);" x="@(Region.PositionX)" y="@(Region.PositionY)">
                                 @Region.GetIncome()
                             </text></text>
                     }
                 }
                 @if (Factory is not null){
-                    <svg id="Ebene_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" width="20" height="20" x="@(Region.PositionX)" y="@(Region.PositionY - 50)">
+                    <svg id="Ebene_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" width="20" height="20" x="@(Region.PositionX - 10)" y="@(Region.PositionY - 55)">
                         <defs>
                             <style>
                     			.cls-1 {
@@ -67,16 +67,16 @@
             else{
                 <path d="@CountryPaths[Region.Identifier]" class="svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="1" @onclick="args => UpdateRegion(args)"/>
             }
-            <circle fill="transparent" stroke="white" stroke-width="1" cx="@(Region.PositionX + 12)" cy="@(Region.PositionY + 12)" r="5"/>
+            <circle fill="transparent" stroke="white" stroke-width="1" cx="@(Region.PositionX)" cy="@(Region.PositionY)" r="5"/>
             @if (Region.Id > 9){
                 <text>
-                    <text style="font-size: 6px; font-weight: bold; fill: white; transform: translate(-4px, 2px);" x="@(Region.PositionX + 12)" y="@(Region.PositionY + 12)">
+                    <text style="font-size: 6px; font-weight: bold; fill: white; transform: translate(-4px, 2px);" x="@(Region.PositionX)" y="@(Region.PositionY)">
                         @Region.Id
                     </text></text>
             }
             else{
                 <text>
-                    <text style="font-size: 7px; font-weight: bold; fill: white; transform: translate(-2px, 2px);" x="@(Region.PositionX + 12)" y="@(Region.PositionY + 12)">
+                    <text style="font-size: 7px; font-weight: bold; fill: white; transform: translate(-2px, 2px);" x="@(Region.PositionX)" y="@(Region.PositionY)">
                         @Region.Id
                     </text></text>
             }
