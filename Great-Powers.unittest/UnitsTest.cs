@@ -13,7 +13,7 @@ public class UnitsTest{
     }
 
     [Test]
-    public void CheckGetPathToCurrentTarget(){
+    public void CheckNonCombatMovement(){
         #region Nations
 
         Nation deutsch = new Nation(){
@@ -60,60 +60,48 @@ public class UnitsTest{
 
         LandRegion deutschland = new LandRegion(){
             Name = "deutschland",
-            Type = ERegionType.LAND,
             Nation = deutsch
         };
         LandRegion polen = new LandRegion(){
             Name = "polen",
-            Type = ERegionType.LAND,
             Nation = deutsch
         };
         LandRegion dänemark = new LandRegion(){
             Name = "dänemark",
-            Type = ERegionType.LAND,
             Nation = japan
         };
         LandRegion russland = new LandRegion(){
             Name = "russland",
-            Type = ERegionType.LAND,
             Nation = gb
         };
         LandRegion tschechien = new LandRegion(){
             Name = "tschechien",
-            Type = ERegionType.LAND,
             Nation = usa
         };
         LandRegion china = new LandRegion(){
             Name = "china",
-            Type = ERegionType.LAND,
             Nation = japan
         };
         LandRegion finnland = new LandRegion(){
             Name = "finnland",
-            Type = ERegionType.LAND,
             Nation = deutsch
         };
         LandRegion ukraine = new LandRegion(){
             Name = "ukraine",
-            Type = ERegionType.LAND,
             Nation = deutsch
         };
 
         WaterRegion nordsee = new WaterRegion(){
-            Name = "nordsee",
-            Type = ERegionType.WATER
+            Name = "nordsee"
         };
         WaterRegion ostsee = new WaterRegion(){
-            Name = "ostsee",
-            Type = ERegionType.WATER
+            Name = "ostsee"
         };
         WaterRegion atlantik = new WaterRegion(){
-            Name = "atlantik",
-            Type = ERegionType.WATER
+            Name = "atlantik"
         };
         WaterRegion afrikaUmrundung = new WaterRegion(){
-            Name = "afrikaUmrundung",
-            Type = ERegionType.WATER
+            Name = "afrikaUmrundung"
         };
         #endregion
 
@@ -320,31 +308,31 @@ public class UnitsTest{
         atlantik.StationedShips = new List<Ship>(){
             submarine
         };
+        
+        #endregion
 
         Assert.AreEqual(ostsee,aircraftCarrier.GetLocation());
-        Assert.IsFalse(aircraftCarrier.SetTarget(atlantik));
-        Assert.IsTrue(aircraftCarrier.SetTarget(nordsee));
-        Assert.AreEqual(2,aircraftCarrier.GetPathToCurrentTarget().Count);
-        Assert.IsTrue(aircraftCarrier.MoveToTarget());
+        Assert.IsFalse(aircraftCarrier.SetTarget(EPhase.NonCombatMove,afrikaUmrundung));
+        Assert.IsTrue(aircraftCarrier.SetTarget(EPhase.NonCombatMove,nordsee));
+        Assert.AreEqual(2,aircraftCarrier.GetPathToTarget(EPhase.NonCombatMove).Count);
+        Assert.IsTrue(aircraftCarrier.MoveToTarget(EPhase.NonCombatMove));
         Assert.AreEqual(nordsee,aircraftCarrier.GetLocation());
         
         Assert.AreEqual(deutschland,infantrie.GetLocation());
-        Assert.IsFalse(infantrie.SetTarget(tschechien));
-        Assert.IsFalse(infantrie.SetTarget(ukraine));
-        Assert.IsTrue(infantrie.SetTarget(polen));
-        Assert.AreEqual(2,infantrie.GetPathToCurrentTarget().Count);
-        Assert.IsTrue(infantrie.MoveToTarget());
+        Assert.IsFalse(infantrie.SetTarget(EPhase.NonCombatMove, tschechien));
+        Assert.IsFalse(infantrie.SetTarget(EPhase.NonCombatMove, ukraine));
+        Assert.IsTrue(infantrie.SetTarget(EPhase.NonCombatMove, polen));
+        Assert.AreEqual(2,infantrie.GetPathToTarget(EPhase.NonCombatMove).Count);
+        Assert.IsTrue(infantrie.MoveToTarget(EPhase.NonCombatMove));
         Assert.AreEqual(polen,infantrie.GetLocation());
         Assert.AreEqual(0,infantrie.CurrentMovement);
 
         LandRegion filler = new LandRegion(){
             Name = "filler",
-            Type = ERegionType.LAND,
             Nation = deutsch
         };
         LandRegion filler2 = new LandRegion(){
             Name = "filler2",
-            Type = ERegionType.LAND,
             Nation = gb
         };
         
@@ -370,22 +358,20 @@ public class UnitsTest{
         };
         
         Assert.AreEqual(deutschland, jäger.GetLocation());
-        Assert.IsFalse(jäger.SetTarget(filler2));
+        Assert.IsFalse(jäger.SetTarget(EPhase.NonCombatMove,filler2));
         Assert.AreEqual(null,jäger.GetTarget());
-        Assert.IsTrue(jäger.SetTarget(china));
-        Assert.AreEqual(4,jäger.GetPathToCurrentTarget().Count);
-        Assert.IsTrue(jäger.MoveToTarget());
+        Assert.IsTrue(jäger.SetTarget(EPhase.NonCombatMove,china));
+        Assert.AreEqual(4,jäger.GetPathToTarget(EPhase.NonCombatMove).Count);
+        Assert.IsTrue(jäger.MoveToTarget(EPhase.NonCombatMove));
         Assert.AreEqual(china,jäger.GetLocation());
         Assert.AreEqual(1,jäger.CurrentMovement);
         
         Assert.AreEqual(deutschland,panzer.GetLocation());
-        Assert.IsFalse(panzer.SetTarget(tschechien));
-        Assert.IsTrue(panzer.SetTarget(ukraine));
-        Assert.AreEqual(3,panzer.GetPathToCurrentTarget().Count);
-        Assert.IsTrue(panzer.MoveToTarget());
+        Assert.IsFalse(panzer.SetTarget(EPhase.NonCombatMove,tschechien));
+        Assert.IsTrue(panzer.SetTarget(EPhase.NonCombatMove,ukraine));
+        Assert.AreEqual(3,panzer.GetPathToTarget(EPhase.NonCombatMove).Count);
+        Assert.IsTrue(panzer.MoveToTarget(EPhase.NonCombatMove));
         Assert.AreEqual(ukraine,panzer.GetLocation());
         Assert.AreEqual(0,panzer.CurrentMovement);
-
-        #endregion
     }
 }

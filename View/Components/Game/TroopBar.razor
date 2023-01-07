@@ -9,7 +9,7 @@
             <MudDrawerContainer Class="content">
                 <MudBadge Bordered="true" Origin="Origin.TopCenter" Overlap="true" Content="@Region.Name" Class="m-3">
                     <MudTooltip Text=@($"Income: {Region.GetIncome()}") Duration="1000">
-                        @if (Region.Type == ERegionType.LAND){
+                        @if (Region.IsLandRegion()){
                             @if (Owner is not null){
                                 <MudImage Src=@($"img/flags/{Owner.Name}.svg") Width="150" Height="150" Elevation="25" Style="border-radius: 50%"/>
                             }

@@ -16,13 +16,13 @@ public class SessionInfo{
     [Column("TOTAL_VICTORY", TypeName = "TINYINT")]
     public bool TotalVictory{ get; set; }
 
-    [Column("DICE_MODE")]
+    [Column("DICE_MODE", TypeName = "VARCHAR(45)")]
     public EDiceMode DiceMode{ get; set; }
 
     [Column("ROUND")]
     public int Round{ get; set; }
     
-    [Column("PHASE")]
+    [Column("PHASE", TypeName = "VARCHAR(45)")]
     public EPhase Phase{ get; set; }
 
     [Column("CURRENT_NATION_ID")]

@@ -12,4 +12,9 @@ public class Capital{
 
     [Column("NAME")]
     public string Name{ get; set; }
+
+    [Column("REGION_ID")]
+    public int RegionId{ get; set; }
+
+    public LandRegion Region{ get; set; }
 }
