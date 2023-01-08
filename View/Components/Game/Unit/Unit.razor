@@ -4,12 +4,11 @@
 @using Domain.Repositories.Implementations
 @using Model.Entities.Regions
 @inject UnitPaths UnitPaths
-@inject ILogger<Unit> Logger
 @inject AircraftCarrierRepository AircraftCarrierRepository
 @inject TransportRepository TransportRepository
 
-@if (Troop?.GetLocation().PositionX is not null && Troop.GetLocation().PositionY is not null){
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@Troop.Nation.Name @Class" width="20" height="20" x="@(Troop.GetLocation().PositionX + TroopPositioning[Troop.Type].X)" y="@(Troop.GetLocation().PositionY + TroopPositioning[Troop.Type].Y)">
+@if (Troop is not null && Region is not null){
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@Troop.Nation.Name @Class" width="20" height="20" x="@(Region.PositionX + TroopPositioning[Troop.Type].X)" y="@(Region.PositionY + TroopPositioning[Troop.Type].Y)">
         <g>
             <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
             <path class="troopbadge-medal"
@@ -48,9 +47,6 @@
     public AUnit? Troop { get; set; }
 
     [Parameter]
-    public ARegion? Region { get; set; }
-
-    [Parameter]
     public int? Amount { get; set; }
 
     [Parameter]
@@ -59,6 +55,8 @@
     [Parameter]
     public bool RenderSubTroops { get; set; }
 
+    private ARegion? Region { get; set; }
+
     private Dictionary<EUnitType, Point> TroopPositioning { get; set; } = new(){
         { EUnitType.INFANTRY, new Point(-10, -30) },
         { EUnitType.TANK, new Point(-10, 10) },
@@ -66,7 +64,6 @@
         { EUnitType.ARTILLERY, new Point(-30, 0) },
         { EUnitType.BOMBER, new Point(10, -20) },
         { EUnitType.FIGHTER, new Point(10, 0) },
-        
         { EUnitType.CRUISER, new Point(-10, -30) },
         { EUnitType.DESTROYER, new Point(-10, 10) },
         { EUnitType.SUBMARINE, new Point(-30, -20) },
@@ -74,5 +71,10 @@
         { EUnitType.BATTLESHIP, new Point(30, -20) },
         { EUnitType.AIRCRAFT_CARRIER, new Point(30, 20) },
     };
+
+    protected override void OnInitialized(){
+        if (Troop is null) return;
+        Region = Troop.GetLocation();
+    }
 
 }

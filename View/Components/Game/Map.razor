@@ -12,7 +12,7 @@
 
 <div class="panzoom-parent" style="height: 100vh; width: 100vw; background-image: url(img/menu/paper-bg.jpg); background-size: cover;">
     <Panzoom @ref="_panzoom" PanzoomOptions="@_panzoomOptions" WheelMode="WheelMode.Custom" OnWheel="OnWheel">
-        <svg viewBox="0 -100 1920 1350" @ref="context.ElementReference" class="panzoom" style="fill: url(#water)" x="0" y="100">
+        <svg viewBox="0 -100 1920 1350" @ref="context.ElementReference" class="panzoom" x="0" y="100">
             <defs>
                 <pattern id="neutral" patternUnits="userSpaceOnUse" width="10" height="10">
                     <image xlink:href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyNy4wLjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCAxMCAxMCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTAgMTA7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+DQoJLnN0MHtmaWxsOiNBM0EzQTM7fQ0KCS5zdDF7ZmlsbDojRkZGRkZGO3N0cm9rZTojOEM4QzhDO3N0cm9rZS13aWR0aDozO30NCjwvc3R5bGU+DQo8cmVjdCBjbGFzcz0ic3QwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiLz4NCjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0tMSwxbDItMiBNMCwxMEwxMCwwIE05LDExbDItMiIvPg0KPC9zdmc+DQo=" x="0" y="0" width="10" height="10"> </image>
@@ -33,17 +33,31 @@
                 <Country Region="@sea"/>
             }
             <Channel/>
+            @*Render Income*@
+            @foreach (var land in Nations.SelectMany(nation => nation.Regions)){
+                <CountryIncome Region="@land"/>
+            }
+            @foreach (var sea in SeeZones){
+                <CountryIncome Region="@sea"/>
+            }
+            @*Render Factories*@
+            @foreach (var land in Nations.SelectMany(nation => nation.Regions)){
+                <CountryFactory Region="@land"/>
+            }
+            @foreach (var sea in SeeZones){
+                <CountryFactory Region="@sea"/>
+            }
             @*Render Troops*@
             @foreach (var nation in Nations){
                 foreach (var land in nation.Regions){
                     foreach (var unit in land.GetOneStationedUnitPerType()){
-                        <Unit Troop="@unit" Amount="@land.GetStationedUnitCounts()[unit.Type]" Region="@land"/>
+                        <Unit Troop="@unit" Amount="@land.GetStationedUnitCounts()[unit.Type]"/>
                     }
                 }
             }
             @foreach (var sea in SeeZones){
                 foreach (var unit in sea.GetOneStationedUnitPerType()){
-                    <Unit Troop="@unit" Amount="@sea.GetStationedUnitCounts()[unit.Type]" Region="@sea"/>
+                    <Unit Troop="@unit" Amount="@sea.GetStationedUnitCounts()[unit.Type]"/>
                 }
             }
         </svg>
@@ -77,7 +91,7 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    protected override async Task OnInitializedAsync(){
+    protected override Task OnInitializedAsync(){
         ActiveRegion.HandleRegionChange += HandleRegionChange;
         _panzoomOptions = new PanzoomOptions(){
             Contain = Contain.Outside,
@@ -85,6 +99,7 @@
             StartY = -180,
             Easing = "linear",
         };
+        return Task.CompletedTask;
     }
 
 }
