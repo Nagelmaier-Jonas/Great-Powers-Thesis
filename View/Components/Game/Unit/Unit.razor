@@ -23,9 +23,7 @@
                     <tspan x="0" y="0">@Troop.Type.ToString()[0]</tspan>
                 </text></text>
             @if (RenderSubTroops){
-                @foreach (var troop in Troop.GetSubUnits()){
-                    <SubUnit Troop="troop"/>
-                }
+                <SubUnit Troops="@Troop.GetSubUnits()"/>
             }
         }
         <circle fill="#ffc107" cx="78.26" cy="78.01" r="16.74"/>
