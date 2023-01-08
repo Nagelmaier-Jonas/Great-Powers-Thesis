@@ -3,12 +3,14 @@
 @using System.Drawing
 @using Domain.Repositories.Implementations
 @using Model.Entities.Regions
+@using View.Services
 @inject UnitPaths UnitPaths
 @inject AircraftCarrierRepository AircraftCarrierRepository
 @inject TransportRepository TransportRepository
+@inject ActiveRegion ActiveRegion
 
 @if (Troop is not null && Region is not null){
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@Troop.Nation.Name @Class" width="20" height="20" x="@(Region.PositionX + TroopPositioning[Troop.Type].X)" y="@(Region.PositionY + TroopPositioning[Troop.Type].Y)">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@Troop.Nation.Name @Class" width="20" height="20" x="@(Region.PositionX + TroopPositioning[Troop.Type].X)" y="@(Region.PositionY + TroopPositioning[Troop.Type].Y)" @onclick="args => UpdateRegion(args)">
         <g>
             <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
             <path class="troopbadge-medal"
@@ -75,6 +77,19 @@
     protected override void OnInitialized(){
         if (Troop is null) return;
         Region = Troop.GetLocation();
+    }
+
+    private void UpdateRegion(MouseEventArgs args){
+        if (args.ShiftKey){
+            return;
+        }
+        if (Region is null) return;
+        if (ActiveRegion.Region == Region){
+            ActiveRegion.ClearRegion();
+        }
+        else{
+            ActiveRegion.RefreshRegion(Region);
+        }
     }
 
 }

@@ -1,7 +1,9 @@
 ﻿@using Model.Entities.Regions
+@using View.Services
+@inject ActiveRegion ActiveRegion
 
 @if (Region is not null && Factory is not null){
-    <svg id="Ebene_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" width="20" height="20" x="@(Region.PositionX - 10)" y="@(Region.PositionY - 55)">
+    <svg id="Ebene_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" width="20" height="20" x="@(Region.PositionX - 10)" y="@(Region.PositionY - 55)" @onclick="args => UpdateRegion(args)">
         <defs>
             <style>
                 .cls-1 {
@@ -29,6 +31,19 @@
 
     protected override void OnInitialized(){
         Factory = Region?.GetFactory();
+    }
+    
+    private void UpdateRegion(MouseEventArgs args){
+        if (args.ShiftKey){
+            return;
+        }
+        if (Region is null) return;
+        if (ActiveRegion.Region == Region){
+            ActiveRegion.ClearRegion();
+        }
+        else{
+            ActiveRegion.RefreshRegion(Region);
+        }
     }
 
 }

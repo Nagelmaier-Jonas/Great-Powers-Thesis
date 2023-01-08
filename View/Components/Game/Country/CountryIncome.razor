@@ -1,43 +1,47 @@
 ﻿@using Model.Entities.Regions
+@using View.Services
+@inject ActiveRegion ActiveRegion
 
 @if (Region is not null){
-    @if (Region.IsLandRegion()){
-        @if (Region.GetIncome() is not 0){
-            if (Capital is not null){
-                <circle fill="transparent" stroke="#FFC107" stroke-width="1" cx="@(Region.PositionX)" cy="@(Region.PositionY)" r="5"/>
-                <circle fill="transparent" stroke="#FFC107" stroke-width="1" cx="@(Region.PositionX)" cy="@(Region.PositionY)" r="8"/>
+    <g @onclick="args => UpdateRegion(args)">
+        @if (Region.IsLandRegion()){
+            @if (Region.GetIncome() is not 0){
+                if (Capital is not null){
+                    <circle fill="transparent" stroke="#FFC107" stroke-width="1" cx="@(Region.PositionX)" cy="@(Region.PositionY)" r="5"/>
+                    <circle fill="transparent" stroke="#FFC107" stroke-width="1" cx="@(Region.PositionX)" cy="@(Region.PositionY)" r="8"/>
+                }
+                else{
+                    <circle fill="transparent" stroke="white" stroke-width="1" cx="@(Region.PositionX)" cy="@(Region.PositionY)" r="5"/>
+                }
+                @if (Region.GetIncome() > 9){
+                    <text>
+                        <text style="font-size: 6px; font-weight: bold; fill: white; transform: translate(-4px, 2px);" x="@(Region.PositionX)" y="@(Region.PositionY)">
+                            @Region.GetIncome()
+                        </text></text>
+                }
+                else{
+                    <text>
+                        <text style="font-size: 7px; font-weight: bold; fill: white; transform: translate(-2px, 2px);" x="@(Region.PositionX)" y="@(Region.PositionY)">
+                            @Region.GetIncome()
+                        </text></text>
+                }
             }
-            else{
-                <circle fill="transparent" stroke="white" stroke-width="1" cx="@(Region.PositionX)" cy="@(Region.PositionY)" r="5"/>
-            }
-            @if (Region.GetIncome() > 9){
-                <text>
-                    <text style="font-size: 6px; font-weight: bold; fill: white; transform: translate(-4px, 2px);" x="@(Region.PositionX)" y="@(Region.PositionY)">
-                        @Region.GetIncome()
-                    </text></text>
-            }
-            else{
-                <text>
-                    <text style="font-size: 7px; font-weight: bold; fill: white; transform: translate(-2px, 2px);" x="@(Region.PositionX)" y="@(Region.PositionY)">
-                        @Region.GetIncome()
-                    </text></text>
-            }
-        }
-    }
-    else{
-        @if (Region.Id > 9){
-            <text>
-                <text style="font-size: 10px; fill: black;" x="@(Region.PositionX)" y="@(Region.PositionY)">
-                    @Region.Id
-                </text></text>
         }
         else{
-            <text>
-                <text style="font-size: 10px; fill: black;" x="@(Region.PositionX)" y="@(Region.PositionY)">
-                    @Region.Id
-                </text></text>
+            @if (Region.Id > 9){
+                <text>
+                    <text style="font-size: 10px; fill: black;" x="@(Region.PositionX)" y="@(Region.PositionY)">
+                        @Region.Id
+                    </text></text>
+            }
+            else{
+                <text>
+                    <text style="font-size: 10px; fill: black;" x="@(Region.PositionX)" y="@(Region.PositionY)">
+                        @Region.Id
+                    </text></text>
+            }
         }
-    }
+    </g>
 }
 
 @code {
@@ -49,6 +53,19 @@
 
     protected override void OnInitialized(){
         Capital = Region?.GetCapital();
+    }
+    
+    private void UpdateRegion(MouseEventArgs args){
+        if (args.ShiftKey){
+            return;
+        }
+        if (Region is null) return;
+        if (ActiveRegion.Region == Region){
+            ActiveRegion.ClearRegion();
+        }
+        else{
+            ActiveRegion.RefreshRegion(Region);
+        }
     }
 
 }
