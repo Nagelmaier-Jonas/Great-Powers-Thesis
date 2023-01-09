@@ -5,21 +5,7 @@
 /* -- -------------------------------------------------- -- */
 
 
-a .gold-texture{
-    background: url('../img/menu/gold-texture.jpg') no-repeat center center;
-    background-size: 100%;
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
-}
-button span .gold-texture{
-    background: url('../img/menu/gold-texture.jpg') no-repeat center center;
-    background-size: 100%;
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
-}
-div .gold-texture{
+a .gold-texture {
     background: url('../img/menu/gold-texture.jpg') no-repeat center center;
     background-size: 100%;
     color: transparent;
@@ -27,7 +13,23 @@ div .gold-texture{
     background-clip: text;
 }
 
-span.gold-texture{
+button span .gold-texture {
+    background: url('../img/menu/gold-texture.jpg') no-repeat center center;
+    background-size: 100%;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+div .gold-texture {
+    background: url('../img/menu/gold-texture.jpg') no-repeat center center;
+    background-size: 100%;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+span.gold-texture {
     font-family: 'Bebas Neue', cursive;
     font-size: 48px;
     font-weight: bolder;
@@ -39,18 +41,20 @@ span.gold-texture{
 /* -- -------------------------------------------------- -- */
 /*                  Style: Troop Drawer                     */
 /* -- -------------------------------------------------- -- */
-.troop_drawer{
+.troop_drawer {
     position: fixed !important;
     width: 50vw !important;
     bottom: 0;
     transform: translateX(50%);
-    background-color: rgba(0,0,0,0.6) !important;
+    background-color: rgba(0, 0, 0, 0.6) !important;
     border-radius: 10px 10px 0 0;
 }
-.troop_drawer .content svg{
+
+.troop_drawer .content svg {
     width: 75px !important;
     height: 75px !important;
 }
+
 .drawer_btn {
     position: absolute !important;
     top: 0 !important;
@@ -67,7 +71,8 @@ span.gold-texture{
 span.logo {
     font-size: 55px !important;
 }
-.logo-container{
+
+.logo-container {
     padding: 10px !important;
     background: url(../img/menu/green_leather.jpg) center !important;
     display: inline-grid;
@@ -78,16 +83,18 @@ span.logo {
 /*                  Style: Navigation Buttons               */
 /* -- -------------------------------------------------- -- */
 
-.nav-link:hover span:not(.logo){
+.nav-link:hover span:not(.logo) {
     filter: drop-shadow(0px 0px 0px black) !important;
     transition: filter 0.3s ease-in-out;
 }
-.nav-button:hover span:not(.logo){
+
+.nav-button:hover span:not(.logo) {
     filter: drop-shadow(0px 0px 0px black) !important;
     transition: filter 0.3s ease-in-out;
 }
-.nav-link.nav-link:hover{
-    text-decoration: none !important; 
+
+.nav-link.nav-link:hover {
+    text-decoration: none !important;
 }
 
 .noselect {
@@ -99,10 +106,11 @@ span.logo {
     user-select: none;
 }
 
-.hundredPercent{
+.hundredPercent {
     width: 100% !important;
     height: 100% !important;
 }
+
 .menuImage {
     background-repeat: no-repeat;
     mix-blend-mode: darken;
@@ -114,27 +122,31 @@ span.logo {
 /*                  Style: Game Bar                         */
 /* -- -------------------------------------------------- -- */
 
-.gamebar-btn:hover{
+.gamebar-btn:hover {
     color: white !important;
     border: none !important;
 }
-.gamebar-btn{
+
+.gamebar-btn {
     border: none !important;
 }
-.gamebar-score{
+
+.gamebar-score {
     font-size: 20px;
     width: auto;
     padding: 0 25px;
     color: white !important;
     border: none !important;
 }
-.gamebar-score-point{
+
+.gamebar-score-point {
     width: 1vw;
     height: 3vh;
     border-radius: 0 !important;
     gap: 1px !important;
 }
-.dot-mini{
+
+.dot-mini {
     width: 15px !important;
     height: 15px !important;
 }
@@ -143,49 +155,63 @@ span.logo {
 /*                  Style: Colors                           */
 /* -- -------------------------------------------------- -- */
 
-.bg-red{
+.bg-red {
     background-color: #ff4136 !important;
 }
-.bg-blue{
+
+.bg-blue {
     background-color: #6b8cff !important;
 }
-.border-United_States{
+
+.bg-opacity-60 {
+    background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.border-United_States {
     border: 5px solid #97a95f !important;
 }
-.border-United_Kingdom{
+
+.border-United_Kingdom {
     border: 5px solid #b59b68 !important;
 }
-.border-Germany{
+
+.border-Germany {
     border: 5px solid #8ea39e !important;
 }
-.border-Japan{
+
+.border-Japan {
     border: 5px solid #d29151 !important;
 }
-.border-Soviet_Union{
+
+.border-Soviet_Union {
     border: 5px solid #ba8772 !important;
 }
-.active_country{
+
+.active_country {
     fill: #c8bb52 !important;
 }
 
 /* -- -------------------------------------------------- -- */
 /*                  Style: Setting Dialog                   */
 /* -- -------------------------------------------------- -- */
-.settings-dialog{
+.settings-dialog {
     margin-bottom: 250px !important;
-    background-color: rgba(0,0,0,0.8) !important;
+    background-color: rgba(0, 0, 0, 0.8) !important;
     color: white !important;
 }
-.settings-dialog button.mud-icon-button{
+
+.settings-dialog button.mud-icon-button {
     color: white !important;
 }
-.settings-dialog button.mud-button-text{
+
+.settings-dialog button.mud-button-text {
     color: white !important;
     height: 50px;
     border: 1px solid;
     margin-bottom: 20px;
 }
-.settings-dialog button.mud-button-text:hover{
+
+.settings-dialog button.mud-button-text:hover {
     color: #9e9e9e !important;
 }
 
@@ -193,7 +219,7 @@ span.logo {
 /*                  Style: Phase Button                     */
 /* -- -------------------------------------------------- -- */
 
-.phase-btn{
+.phase-btn {
     width: 7.5vw !important;
     height: 15vh !important;
     margin-bottom: 3vh !important;
@@ -201,7 +227,7 @@ span.logo {
     border-bottom-left-radius: 35px !important;
 }
 
-.svg_country{
+.svg_country {
     stroke-linecap: round !important;
     stroke-linejoin: round !important;
 }
@@ -210,41 +236,73 @@ span.logo {
 /*                  Style: Troop Style                      */
 /* -- -------------------------------------------------- -- */
 
-.Germany .troopbadge-medal{
+.Germany .troopbadge-medal {
     fill: #353535;
 }
-.Germany .troopbadge-symbol{
+
+.Germany .troopbadge-symbol {
     fill: #b5b7b6;
 }
-.Soviet_Union .troopbadge-medal{
+
+.Soviet_Union .troopbadge-medal {
     fill: #5d1e13;
 }
-.Soviet_Union .troopbadge-symbol{
+
+.Soviet_Union .troopbadge-symbol {
     fill: #f39d89;
 }
-.United_States .troopbadge-medal{
+
+.United_States .troopbadge-medal {
     fill: #6e8037;
 }
-.United_States .troopbadge-symbol{
+
+.United_States .troopbadge-symbol {
     fill: #c9db36;
 }
-.United_Kingdom .troopbadge-medal{
+
+.United_Kingdom .troopbadge-medal {
     fill: #a8865f;
 }
-.United_Kingdom .troopbadge-symbol{
+
+.United_Kingdom .troopbadge-symbol {
     fill: #52352a;
 }
-.Japan .troopbadge-medal{
+
+.Japan .troopbadge-medal {
     fill: #c1702d;
 }
-.Japan .troopbadge-symbol{
+
+.Japan .troopbadge-symbol {
     fill: #ffca81;
 }
 
 /* -- -------------------------------------------------- -- */
 /*                  Style: Map Style                        */
 /* -- -------------------------------------------------- -- */
-.paper-bg{
+.paper-bg {
     background-image: url(img/menu/paper-bg.jpg) !important;
     background-size: cover !important;
+}
+
+/* -- -------------------------------------------------- -- */
+/*                  Style: Z-Indexe                         */
+/* -- -------------------------------------------------- -- */
+.z-index-1 {
+    z-index: 1 !important;
+}
+
+.z-index-2 {
+    z-index: 2 !important;
+}
+
+.z-index-3 {
+    z-index: 3 !important;
+}
+
+.z-index-4 {
+    z-index: 4 !important;
+}
+
+.z-index-5 {
+    z-index: 5 !important;
 }

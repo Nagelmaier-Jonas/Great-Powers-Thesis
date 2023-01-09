@@ -12,18 +12,37 @@
         display: none;
     }
 </style>
-<GameBar Info="@Info" Nations="@Nations"/>
-<Map Nations="@Nations" SeeZones="@SeeZones"/>
+<MudLayout>
+    <GameBar Info="@Info" Nations="@Nations"/>
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowLeft" Class="position-fixed top-50 end-0 z-index-1" Style="@($"color:{Colors.Shades.White};")" OnClick="OpenDrawer"/>
+    <MudDrawer @bind-Open="@_open" Anchor="Anchor.End" ClipMode="DrawerClipMode.Always" Class="bg-opacity-60">
+        <MudDrawerHeader>
+            <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" Class="position-absolute top-0 end-0" OnClick="CloseDrawer"/>
+        </MudDrawerHeader>
+        <Purchase/>
+    </MudDrawer>
+    <Map Nations="@Nations" SeeZones="@SeeZones"/>
+</MudLayout>
 
 @code {
     private SessionInfo Info { get; set; } = new();
     private List<Nation> Nations { get; set; } = new();
     private List<WaterRegion> SeeZones { get; set; } = new();
-    
+
+    bool _open = false;
+
     protected override async Task OnInitializedAsync(){
         Info = await SessionInfoRepository.ReadAsync();
         Nations = await NationRepository.ReadAllGraphAsync();
         SeeZones = await WaterRegionRepository.ReadAllGraphAsync();
+    }
+
+    void OpenDrawer(){
+        _open = true;
+    }
+
+    void CloseDrawer(){
+        _open = false;
     }
 
 }

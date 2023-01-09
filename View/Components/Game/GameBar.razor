@@ -4,7 +4,7 @@
 @inject IDialogService DialogService
 
 @if (Info is not null){
-    <MudAppBar Style="background-color: rgba(0,0,0,0.6)" Fixed="true">
+    <MudAppBar Class="bg-opacity-60" Fixed="true">
         <MudAvatar Square="true" Style="@($"color:{Colors.Grey.Default};")" Class="gamebar-btn" Variant="Variant.Outlined" @onclick="OpenSettingsDialog">
             <MudIcon Icon="@Icons.Material.Filled.Settings"/>
         </MudAvatar>
