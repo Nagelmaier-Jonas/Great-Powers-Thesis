@@ -2,6 +2,6 @@
 
 namespace Domain.Repositories.Interfaces;
 
-public interface IShipRepository : ICreatableRepository<AShip>{
+public interface ITankRepository : ICreatableRepository<Tank>{
     
 }

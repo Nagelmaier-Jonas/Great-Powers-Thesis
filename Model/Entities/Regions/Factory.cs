@@ -6,10 +6,6 @@ namespace Model.Entities.Regions;
 
 [Table("FACTORIES")]
 public class Factory : AUnit{
-    [Column("ID")]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    [Key]
-    public int Id{ get; set; }
 
     [Column("DAMAGE")]
     public int Damage{ get; set; }

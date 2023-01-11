@@ -14,5 +14,5 @@ public class Neighbours{
     
     public ARegion Neighbour{ get; set; }
 
-    public List<CanalOwners> CanalOwners{ get; set; }
+    public List<CanalOwners> CanalOwners{ get; set; } = new List<CanalOwners>();
 }

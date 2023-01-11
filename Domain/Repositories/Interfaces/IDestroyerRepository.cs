@@ -2,6 +2,6 @@
 
 namespace Domain.Repositories.Interfaces;
 
-public interface IPlaneRepository : ICreatableRepository<APlane>{
+public interface IDestroyerRepository : ICreatableRepository<Destroyer>{
     
 }

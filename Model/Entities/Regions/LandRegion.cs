@@ -17,8 +17,8 @@ public class LandRegion : ARegion{
     public Factory? Factory{ get; set; }
 
     public List<ALandUnit> StationedUnits{ get; set; } = new List<ALandUnit>();
-    
-    public List<CanalOwners> Canals{ get; set; }
+
+    public List<CanalOwners> Canals{ get; set; } = new List<CanalOwners>();
 
     public override List<AUnit> GetStationedUnits(){
         List<AUnit> units = new List<AUnit>();
