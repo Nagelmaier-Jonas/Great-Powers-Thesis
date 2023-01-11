@@ -23,11 +23,21 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
     public DbSet<LandRegion> LandRegions{ get; set; }
     public DbSet<Factory> Factories{ get; set; }
     public DbSet<AUnit> Units{ get; set; }
-    public DbSet<LandUnit> LandUnits{ get; set; }
-    public DbSet<Ship> Ships{ get; set; }
-    public DbSet<AircraftCarrier> AircraftCarrier{ get; set; }
-    public DbSet<Transport> Transporter{ get; set; }
-    public DbSet<Plane> Planes{ get; set; }
+    public DbSet<ALandUnit> LandUnits{ get; set; }
+    public DbSet<Infantry> Infantry{ get; set; }
+    public DbSet<Tank> Tanks{ get; set; }
+    public DbSet<Artillery> Artillery{ get; set; }
+    public DbSet<AntiAir> AntiAir{ get; set; }
+    public DbSet<AShip> Ships{ get; set; }
+    public DbSet<Submarine> Submarines{ get; set; }
+    public DbSet<Destroyer> Destroyers{ get; set; }
+    public DbSet<Cruiser> Cruisers{ get; set; }
+    public DbSet<Battleship> Battleships{ get; set; }
+    public DbSet<AircraftCarrier> AircraftCarriers{ get; set; }
+    public DbSet<Transport> Transports{ get; set; }
+    public DbSet<APlane> Planes{ get; set; }
+    public DbSet<Fighter> Fighters{ get; set; }
+    public DbSet<Bomber> Bombers{ get; set; }
     public DbSet<SessionInfo> Session{ get; set; }
     public DbSet<Allies> Allies{ get; set; }
     public DbSet<Capital> Capitals{ get; set; }
@@ -68,25 +78,21 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         builder.Entity<AUnit>().Property(a => a.Type).HasConversion<string>();
         builder.Entity<AUnit>().HasOne(u => u.Nation).WithMany(n => n.Units);
-
-        builder.Entity<LandUnit>().HasOne(n => n.Transport)
-            .WithMany(u => u.Units);
-        builder.Entity<LandUnit>().HasOne(n => n.Region)
-            .WithMany(u => u.StationedUnits);
-        builder.Entity<LandUnit>().HasOne(n => n.Target)
+        builder.Entity<AUnit>().HasOne(n => n.Target)
             .WithMany(u => u.IncomingUnits);
 
-        builder.Entity<Plane>().HasOne(n => n.AircraftCarrier)
-            .WithMany(u => u.Planes);
-        builder.Entity<Plane>().HasOne(n => n.Region)
-            .WithMany(u => u.StationedPlanes);
-        builder.Entity<Plane>().HasOne(n => n.Target)
-            .WithMany(u => u.IncomingPlanes);
+        builder.Entity<ALandUnit>().HasOne(n => n.Transport)
+            .WithMany(u => u.Units);
+        builder.Entity<ALandUnit>().HasOne(n => n.Region)
+            .WithMany(u => u.StationedUnits);
 
-        builder.Entity<Ship>().HasOne(s => s.Region)
+        builder.Entity<APlane>().HasOne(n => n.AircraftCarrier)
+            .WithMany(u => u.Planes);
+        builder.Entity<APlane>().HasOne(n => n.Region)
+            .WithMany(u => u.StationedPlanes);
+
+        builder.Entity<AShip>().HasOne(s => s.Region)
             .WithMany(w => w.StationedShips);
-        builder.Entity<Ship>().HasOne(s => s.Target)
-            .WithMany(w => w.IncomingShips);
 
         builder.Entity<SessionInfo>().HasOne(s => s.Nation).WithOne()
             .HasForeignKey<SessionInfo>(s => s.CurrentNationId);
@@ -401,7 +407,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Name = "Italien",
             NationId = 1,
             Identifier = ERegion.Italy,
-            PositionX = 578, 
+            PositionX = 578,
             PositionY = 415
         };
         LandRegion frankreich = new LandRegion(){
@@ -1306,71 +1312,136 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region WaterRegions
 
-        WaterRegion see1 = new WaterRegion(){ Id = 1, Name = "Seezone 1", Identifier = ERegion.SeeZone1, PositionX = 156, PositionY = 105 };
-        WaterRegion see2 = new WaterRegion(){ Id = 2, Name = "Seezone 2", Identifier = ERegion.SeeZone2, PositionX = 331, PositionY = 85 };
-        WaterRegion see3 = new WaterRegion(){ Id = 3, Name = "Seezone 3", Identifier = ERegion.SeeZone3, PositionX = 545, PositionY = 31 };
-        WaterRegion see4 = new WaterRegion(){ Id = 4, Name = "Seezone 4", Identifier = ERegion.SeeZone4, PositionX = 823, PositionY = 0 };
-        WaterRegion see5 = new WaterRegion(){ Id = 5, Name = "Seezone 5", Identifier = ERegion.SeeZone5, PositionX = 654, PositionY = 181 };
-        WaterRegion see6 = new WaterRegion(){ Id = 6, Name = "Seezone 6", Identifier = ERegion.SeeZone6, PositionX = 537, PositionY = 194 };
-        WaterRegion see7 = new WaterRegion(){ Id = 7, Name = "Seezone 7", Identifier = ERegion.SeeZone7, PositionX = 447, PositionY = 151 };
-        WaterRegion see8 = new WaterRegion(){ Id = 8, Name = "Seezone 8", Identifier = ERegion.SeeZone8, PositionX = 442, PositionY = 320 };
-        WaterRegion see9 = new WaterRegion(){ Id = 9, Name = "Seezone 9", Identifier = ERegion.SeeZone9, PositionX = 377, PositionY = 302 };
-        WaterRegion see10 = new WaterRegion(){ Id = 10, Name = "Seezone 10", Identifier = ERegion.SeeZone10, PositionX = 279, PositionY = 309 };
-        WaterRegion see11 = new WaterRegion(){ Id = 11, Name = "Seezone 11", Identifier = ERegion.SeeZone11, PositionX = 188, PositionY = 430 };
-        WaterRegion see12 = new WaterRegion(){ Id = 12, Name = "Seezone 12", Identifier = ERegion.SeeZone12, PositionX = 293, PositionY = 506 };
-        WaterRegion see13 = new WaterRegion(){ Id = 13, Name = "Seezone 13", Identifier = ERegion.SeeZone13, PositionX = 395, PositionY = 534 };
-        WaterRegion see14 = new WaterRegion(){ Id = 14, Name = "Seezone 14", Identifier = ERegion.SeeZone14, PositionX = 517, PositionY = 478 };
-        WaterRegion see15 = new WaterRegion(){ Id = 15, Name = "Seezone 15", Identifier = ERegion.SeeZone15, PositionX = 643, PositionY = 534 };
-        WaterRegion see16 = new WaterRegion(){ Id = 16, Name = "Seezone 16", Identifier = ERegion.SeeZone16, PositionX = 774, PositionY = 444 };
-        WaterRegion see17 = new WaterRegion(){ Id = 17, Name = "Seezone 17", Identifier = ERegion.SeeZone17, PositionX = 738, PositionY = 551 };
-        WaterRegion see18 = new WaterRegion(){ Id = 18, Name = "Seezone 18", Identifier = ERegion.SeeZone18, PositionX = 179, PositionY = 560 };
-        WaterRegion see19 = new WaterRegion(){ Id = 19, Name = "Seezone 19", Identifier = ERegion.SeeZone19, PositionX = 40, PositionY = 645 };
-        WaterRegion see20 = new WaterRegion(){ Id = 20, Name = "Seezone 20", Identifier = ERegion.SeeZone20, PositionX = 49, PositionY = 829 };
-        WaterRegion see21 = new WaterRegion(){ Id = 21, Name = "Seezone 21", Identifier = ERegion.SeeZone21, PositionX = 143, PositionY = 1020 };
-        WaterRegion see22 = new WaterRegion(){ Id = 22, Name = "Seezone 22", Identifier = ERegion.SeeZone22, PositionX = 277, PositionY = 649 };
-        WaterRegion see23 = new WaterRegion(){ Id = 23, Name = "Seezone 23", Identifier = ERegion.SeeZone23, PositionX = 382, PositionY = 741 };
-        WaterRegion see24 = new WaterRegion(){ Id = 24, Name = "Seezone 24", Identifier = ERegion.SeeZone24, PositionX = 565, PositionY = 867 };
-        WaterRegion see25 = new WaterRegion(){ Id = 25, Name = "Seezone 25", Identifier = ERegion.SeeZone25, PositionX = 382, PositionY = 886 };
-        WaterRegion see26 = new WaterRegion(){ Id = 26, Name = "Seezone 26", Identifier = ERegion.SeeZone26, PositionX = 363, PositionY = 1028 };
-        WaterRegion see27 = new WaterRegion(){ Id = 27, Name = "Seezone 27", Identifier = ERegion.SeeZone27, PositionX = 581, PositionY = 1063 };
-        WaterRegion see28 = new WaterRegion(){ Id = 28, Name = "Seezone 28", Identifier = ERegion.SeeZone28, PositionX = 741, PositionY = 1089 };
-        WaterRegion see29 = new WaterRegion(){ Id = 29, Name = "Seezone 29", Identifier = ERegion.SeeZone29, PositionX = 876, PositionY = 1075 };
-        WaterRegion see30 = new WaterRegion(){ Id = 30, Name = "Seezone 30", Identifier = ERegion.SeeZone30, PositionX = 1046, PositionY = 1086 };
-        WaterRegion see31 = new WaterRegion(){ Id = 31, Name = "Seezone 31", Identifier = ERegion.SeeZone31, PositionX = 1003, PositionY = 913 };
-        WaterRegion see32 = new WaterRegion(){ Id = 32, Name = "Seezone 32", Identifier = ERegion.SeeZone32, PositionX = 890, PositionY = 898 };
-        WaterRegion see33 = new WaterRegion(){ Id = 33, Name = "Seezone 33", Identifier = ERegion.SeeZone33, PositionX = 806, PositionY = 882 };
-        WaterRegion see34 = new WaterRegion(){ Id = 34, Name = "Seezone 34", Identifier = ERegion.SeeZone34, PositionX = 919, PositionY = 731 };
-        WaterRegion see35 = new WaterRegion(){ Id = 35, Name = "Seezone 35", Identifier = ERegion.SeeZone35, PositionX = 992, PositionY = 788 };
-        WaterRegion see36 = new WaterRegion(){ Id = 36, Name = "Seezone 36", Identifier = ERegion.SeeZone36, PositionX = 1201, PositionY = 821 };
-        WaterRegion see37 = new WaterRegion(){ Id = 37, Name = "Seezone 37", Identifier = ERegion.SeeZone37, PositionX = 1116, PositionY = 929 };
-        WaterRegion see38 = new WaterRegion(){ Id = 38, Name = "Seezone 38", Identifier = ERegion.SeeZone38, PositionX = 1262, PositionY = 1077 };
-        WaterRegion see39 = new WaterRegion(){ Id = 39, Name = "Seezone 39", Identifier = ERegion.SeeZone39, PositionX = 1477, PositionY = 1098 };
-        WaterRegion see40 = new WaterRegion(){ Id = 40, Name = "Seezone 40", Identifier = ERegion.SeeZone40, PositionX = 1590, PositionY = 996 };
-        WaterRegion see41 = new WaterRegion(){ Id = 41, Name = "Seezone 41", Identifier = ERegion.SeeZone41, PositionX = 1814, PositionY = 1019 };
-        WaterRegion see42 = new WaterRegion(){ Id = 42, Name = "Seezone 42", Identifier = ERegion.SeeZone42, PositionX = 1842, PositionY = 840 };
-        WaterRegion see43 = new WaterRegion(){ Id = 43, Name = "Seezone 43", Identifier = ERegion.SeeZone43, PositionX = 1724, PositionY = 840 };
-        WaterRegion see44 = new WaterRegion(){ Id = 44, Name = "Seezone 44", Identifier = ERegion.SeeZone44, PositionX = 1594, PositionY = 783 };
-        WaterRegion see45 = new WaterRegion(){ Id = 45, Name = "Seezone 45", Identifier = ERegion.SeeZone45, PositionX = 1515, PositionY = 912 };
-        WaterRegion see46 = new WaterRegion(){ Id = 46, Name = "Seezone 46", Identifier = ERegion.SeeZone46, PositionX = 1346, PositionY = 910 };
-        WaterRegion see47 = new WaterRegion(){ Id = 47, Name = "Seezone 47", Identifier = ERegion.SeeZone47, PositionX = 1332, PositionY = 825 };
-        WaterRegion see48 = new WaterRegion(){ Id = 48, Name = "Seezone 48", Identifier = ERegion.SeeZone48, PositionX = 1317, PositionY = 738 };
-        WaterRegion see49 = new WaterRegion(){ Id = 49, Name = "Seezone 49", Identifier = ERegion.SeeZone49, PositionX = 1469, PositionY = 782 };
-        WaterRegion see50 = new WaterRegion(){ Id = 50, Name = "Seezone 50", Identifier = ERegion.SeeZone50, PositionX = 1455, PositionY = 710 };
-        WaterRegion see51 = new WaterRegion(){ Id = 51, Name = "Seezone 51", Identifier = ERegion.SeeZone51, PositionX = 1465, PositionY = 574 };
-        WaterRegion see52 = new WaterRegion(){ Id = 52, Name = "Seezone 52", Identifier = ERegion.SeeZone52, PositionX = 1574, PositionY = 637 };
-        WaterRegion see53 = new WaterRegion(){ Id = 53, Name = "Seezone 53", Identifier = ERegion.SeeZone53, PositionX = 1677, PositionY = 643 };
-        WaterRegion see54 = new WaterRegion(){ Id = 54, Name = "Seezone 54", Identifier = ERegion.SeeZone54, PositionX = 1762, PositionY = 625 };
-        WaterRegion see55 = new WaterRegion(){ Id = 55, Name = "Seezone 55", Identifier = ERegion.SeeZone55, PositionX = 1868, PositionY = 606 };
-        WaterRegion see56 = new WaterRegion(){ Id = 56, Name = "Seezone 56", Identifier = ERegion.SeeZone56, PositionX = 1749, PositionY = 390 };
-        WaterRegion see57 = new WaterRegion(){ Id = 57, Name = "Seezone 57", Identifier = ERegion.SeeZone57, PositionX = 1658, PositionY = 367 };
-        WaterRegion see58 = new WaterRegion(){ Id = 58, Name = "Seezone 58", Identifier = ERegion.SeeZone58, PositionX = 1562, PositionY = 270 };
-        WaterRegion see59 = new WaterRegion(){ Id = 59, Name = "Seezone 59", Identifier = ERegion.SeeZone59, PositionX = 1569, PositionY = 417 };
-        WaterRegion see60 = new WaterRegion(){ Id = 60, Name = "Seezone 60", Identifier = ERegion.SeeZone60, PositionX = 1419, PositionY = 446 };
-        WaterRegion see61 = new WaterRegion(){ Id = 61, Name = "Seezone 61", Identifier = ERegion.SeeZone61, PositionX = 1326, PositionY = 490 };
-        WaterRegion see62 = new WaterRegion(){ Id = 62, Name = "Seezone 62", Identifier = ERegion.SeeZone62, PositionX = 1428, PositionY = 304 };
-        WaterRegion see63 = new WaterRegion(){ Id = 63, Name = "Seezone 63", Identifier = ERegion.SeeZone63, PositionX = 1573, PositionY = 132 };
-        WaterRegion see64 = new WaterRegion(){ Id = 64, Name = "Seezone 64", Identifier = ERegion.SeeZone64, PositionX = 1640, PositionY = 195 };
-        WaterRegion see65 = new WaterRegion(){ Id = 65, Name = "Seezone 65", Identifier = ERegion.SeeZone65, PositionX = 1736, PositionY = 221 };
+        WaterRegion see1 = new WaterRegion()
+            { Id = 1, Name = "Seezone 1", Identifier = ERegion.SeeZone1, PositionX = 156, PositionY = 105 };
+        WaterRegion see2 = new WaterRegion()
+            { Id = 2, Name = "Seezone 2", Identifier = ERegion.SeeZone2, PositionX = 331, PositionY = 85 };
+        WaterRegion see3 = new WaterRegion()
+            { Id = 3, Name = "Seezone 3", Identifier = ERegion.SeeZone3, PositionX = 545, PositionY = 31 };
+        WaterRegion see4 = new WaterRegion()
+            { Id = 4, Name = "Seezone 4", Identifier = ERegion.SeeZone4, PositionX = 823, PositionY = 0 };
+        WaterRegion see5 = new WaterRegion()
+            { Id = 5, Name = "Seezone 5", Identifier = ERegion.SeeZone5, PositionX = 654, PositionY = 181 };
+        WaterRegion see6 = new WaterRegion()
+            { Id = 6, Name = "Seezone 6", Identifier = ERegion.SeeZone6, PositionX = 537, PositionY = 194 };
+        WaterRegion see7 = new WaterRegion()
+            { Id = 7, Name = "Seezone 7", Identifier = ERegion.SeeZone7, PositionX = 447, PositionY = 151 };
+        WaterRegion see8 = new WaterRegion()
+            { Id = 8, Name = "Seezone 8", Identifier = ERegion.SeeZone8, PositionX = 442, PositionY = 320 };
+        WaterRegion see9 = new WaterRegion()
+            { Id = 9, Name = "Seezone 9", Identifier = ERegion.SeeZone9, PositionX = 377, PositionY = 302 };
+        WaterRegion see10 = new WaterRegion()
+            { Id = 10, Name = "Seezone 10", Identifier = ERegion.SeeZone10, PositionX = 279, PositionY = 309 };
+        WaterRegion see11 = new WaterRegion()
+            { Id = 11, Name = "Seezone 11", Identifier = ERegion.SeeZone11, PositionX = 188, PositionY = 430 };
+        WaterRegion see12 = new WaterRegion()
+            { Id = 12, Name = "Seezone 12", Identifier = ERegion.SeeZone12, PositionX = 293, PositionY = 506 };
+        WaterRegion see13 = new WaterRegion()
+            { Id = 13, Name = "Seezone 13", Identifier = ERegion.SeeZone13, PositionX = 395, PositionY = 534 };
+        WaterRegion see14 = new WaterRegion()
+            { Id = 14, Name = "Seezone 14", Identifier = ERegion.SeeZone14, PositionX = 517, PositionY = 478 };
+        WaterRegion see15 = new WaterRegion()
+            { Id = 15, Name = "Seezone 15", Identifier = ERegion.SeeZone15, PositionX = 643, PositionY = 534 };
+        WaterRegion see16 = new WaterRegion()
+            { Id = 16, Name = "Seezone 16", Identifier = ERegion.SeeZone16, PositionX = 774, PositionY = 444 };
+        WaterRegion see17 = new WaterRegion()
+            { Id = 17, Name = "Seezone 17", Identifier = ERegion.SeeZone17, PositionX = 738, PositionY = 551 };
+        WaterRegion see18 = new WaterRegion()
+            { Id = 18, Name = "Seezone 18", Identifier = ERegion.SeeZone18, PositionX = 179, PositionY = 560 };
+        WaterRegion see19 = new WaterRegion()
+            { Id = 19, Name = "Seezone 19", Identifier = ERegion.SeeZone19, PositionX = 40, PositionY = 645 };
+        WaterRegion see20 = new WaterRegion()
+            { Id = 20, Name = "Seezone 20", Identifier = ERegion.SeeZone20, PositionX = 49, PositionY = 829 };
+        WaterRegion see21 = new WaterRegion()
+            { Id = 21, Name = "Seezone 21", Identifier = ERegion.SeeZone21, PositionX = 143, PositionY = 1020 };
+        WaterRegion see22 = new WaterRegion()
+            { Id = 22, Name = "Seezone 22", Identifier = ERegion.SeeZone22, PositionX = 277, PositionY = 649 };
+        WaterRegion see23 = new WaterRegion()
+            { Id = 23, Name = "Seezone 23", Identifier = ERegion.SeeZone23, PositionX = 382, PositionY = 741 };
+        WaterRegion see24 = new WaterRegion()
+            { Id = 24, Name = "Seezone 24", Identifier = ERegion.SeeZone24, PositionX = 565, PositionY = 867 };
+        WaterRegion see25 = new WaterRegion()
+            { Id = 25, Name = "Seezone 25", Identifier = ERegion.SeeZone25, PositionX = 382, PositionY = 886 };
+        WaterRegion see26 = new WaterRegion()
+            { Id = 26, Name = "Seezone 26", Identifier = ERegion.SeeZone26, PositionX = 363, PositionY = 1028 };
+        WaterRegion see27 = new WaterRegion()
+            { Id = 27, Name = "Seezone 27", Identifier = ERegion.SeeZone27, PositionX = 581, PositionY = 1063 };
+        WaterRegion see28 = new WaterRegion()
+            { Id = 28, Name = "Seezone 28", Identifier = ERegion.SeeZone28, PositionX = 741, PositionY = 1089 };
+        WaterRegion see29 = new WaterRegion()
+            { Id = 29, Name = "Seezone 29", Identifier = ERegion.SeeZone29, PositionX = 876, PositionY = 1075 };
+        WaterRegion see30 = new WaterRegion()
+            { Id = 30, Name = "Seezone 30", Identifier = ERegion.SeeZone30, PositionX = 1046, PositionY = 1086 };
+        WaterRegion see31 = new WaterRegion()
+            { Id = 31, Name = "Seezone 31", Identifier = ERegion.SeeZone31, PositionX = 1003, PositionY = 913 };
+        WaterRegion see32 = new WaterRegion()
+            { Id = 32, Name = "Seezone 32", Identifier = ERegion.SeeZone32, PositionX = 890, PositionY = 898 };
+        WaterRegion see33 = new WaterRegion()
+            { Id = 33, Name = "Seezone 33", Identifier = ERegion.SeeZone33, PositionX = 806, PositionY = 882 };
+        WaterRegion see34 = new WaterRegion()
+            { Id = 34, Name = "Seezone 34", Identifier = ERegion.SeeZone34, PositionX = 919, PositionY = 731 };
+        WaterRegion see35 = new WaterRegion()
+            { Id = 35, Name = "Seezone 35", Identifier = ERegion.SeeZone35, PositionX = 992, PositionY = 788 };
+        WaterRegion see36 = new WaterRegion()
+            { Id = 36, Name = "Seezone 36", Identifier = ERegion.SeeZone36, PositionX = 1201, PositionY = 821 };
+        WaterRegion see37 = new WaterRegion()
+            { Id = 37, Name = "Seezone 37", Identifier = ERegion.SeeZone37, PositionX = 1116, PositionY = 929 };
+        WaterRegion see38 = new WaterRegion()
+            { Id = 38, Name = "Seezone 38", Identifier = ERegion.SeeZone38, PositionX = 1262, PositionY = 1077 };
+        WaterRegion see39 = new WaterRegion()
+            { Id = 39, Name = "Seezone 39", Identifier = ERegion.SeeZone39, PositionX = 1477, PositionY = 1098 };
+        WaterRegion see40 = new WaterRegion()
+            { Id = 40, Name = "Seezone 40", Identifier = ERegion.SeeZone40, PositionX = 1590, PositionY = 996 };
+        WaterRegion see41 = new WaterRegion()
+            { Id = 41, Name = "Seezone 41", Identifier = ERegion.SeeZone41, PositionX = 1814, PositionY = 1019 };
+        WaterRegion see42 = new WaterRegion()
+            { Id = 42, Name = "Seezone 42", Identifier = ERegion.SeeZone42, PositionX = 1842, PositionY = 840 };
+        WaterRegion see43 = new WaterRegion()
+            { Id = 43, Name = "Seezone 43", Identifier = ERegion.SeeZone43, PositionX = 1724, PositionY = 840 };
+        WaterRegion see44 = new WaterRegion()
+            { Id = 44, Name = "Seezone 44", Identifier = ERegion.SeeZone44, PositionX = 1594, PositionY = 783 };
+        WaterRegion see45 = new WaterRegion()
+            { Id = 45, Name = "Seezone 45", Identifier = ERegion.SeeZone45, PositionX = 1515, PositionY = 912 };
+        WaterRegion see46 = new WaterRegion()
+            { Id = 46, Name = "Seezone 46", Identifier = ERegion.SeeZone46, PositionX = 1346, PositionY = 910 };
+        WaterRegion see47 = new WaterRegion()
+            { Id = 47, Name = "Seezone 47", Identifier = ERegion.SeeZone47, PositionX = 1332, PositionY = 825 };
+        WaterRegion see48 = new WaterRegion()
+            { Id = 48, Name = "Seezone 48", Identifier = ERegion.SeeZone48, PositionX = 1317, PositionY = 738 };
+        WaterRegion see49 = new WaterRegion()
+            { Id = 49, Name = "Seezone 49", Identifier = ERegion.SeeZone49, PositionX = 1469, PositionY = 782 };
+        WaterRegion see50 = new WaterRegion()
+            { Id = 50, Name = "Seezone 50", Identifier = ERegion.SeeZone50, PositionX = 1455, PositionY = 710 };
+        WaterRegion see51 = new WaterRegion()
+            { Id = 51, Name = "Seezone 51", Identifier = ERegion.SeeZone51, PositionX = 1465, PositionY = 574 };
+        WaterRegion see52 = new WaterRegion()
+            { Id = 52, Name = "Seezone 52", Identifier = ERegion.SeeZone52, PositionX = 1574, PositionY = 637 };
+        WaterRegion see53 = new WaterRegion()
+            { Id = 53, Name = "Seezone 53", Identifier = ERegion.SeeZone53, PositionX = 1677, PositionY = 643 };
+        WaterRegion see54 = new WaterRegion()
+            { Id = 54, Name = "Seezone 54", Identifier = ERegion.SeeZone54, PositionX = 1762, PositionY = 625 };
+        WaterRegion see55 = new WaterRegion()
+            { Id = 55, Name = "Seezone 55", Identifier = ERegion.SeeZone55, PositionX = 1868, PositionY = 606 };
+        WaterRegion see56 = new WaterRegion()
+            { Id = 56, Name = "Seezone 56", Identifier = ERegion.SeeZone56, PositionX = 1749, PositionY = 390 };
+        WaterRegion see57 = new WaterRegion()
+            { Id = 57, Name = "Seezone 57", Identifier = ERegion.SeeZone57, PositionX = 1658, PositionY = 367 };
+        WaterRegion see58 = new WaterRegion()
+            { Id = 58, Name = "Seezone 58", Identifier = ERegion.SeeZone58, PositionX = 1562, PositionY = 270 };
+        WaterRegion see59 = new WaterRegion()
+            { Id = 59, Name = "Seezone 59", Identifier = ERegion.SeeZone59, PositionX = 1569, PositionY = 417 };
+        WaterRegion see60 = new WaterRegion()
+            { Id = 60, Name = "Seezone 60", Identifier = ERegion.SeeZone60, PositionX = 1419, PositionY = 446 };
+        WaterRegion see61 = new WaterRegion()
+            { Id = 61, Name = "Seezone 61", Identifier = ERegion.SeeZone61, PositionX = 1326, PositionY = 490 };
+        WaterRegion see62 = new WaterRegion()
+            { Id = 62, Name = "Seezone 62", Identifier = ERegion.SeeZone62, PositionX = 1428, PositionY = 304 };
+        WaterRegion see63 = new WaterRegion()
+            { Id = 63, Name = "Seezone 63", Identifier = ERegion.SeeZone63, PositionX = 1573, PositionY = 132 };
+        WaterRegion see64 = new WaterRegion()
+            { Id = 64, Name = "Seezone 64", Identifier = ERegion.SeeZone64, PositionX = 1640, PositionY = 195 };
+        WaterRegion see65 = new WaterRegion()
+            { Id = 65, Name = "Seezone 65", Identifier = ERegion.SeeZone65, PositionX = 1736, PositionY = 221 };
 
         #endregion
 
@@ -4181,35 +4252,35 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region GermanLand
 
-        LandUnit inf1 = LandUnitFactory.Create(EUnitType.INFANTRY, deutschland, Germany, true);
-        LandUnit inf2 = LandUnitFactory.Create(EUnitType.INFANTRY, deutschland, Germany, true);
-        LandUnit inf3 = LandUnitFactory.Create(EUnitType.INFANTRY, deutschland, Germany, true);
-        LandUnit inf4 = LandUnitFactory.Create(EUnitType.INFANTRY, polen, Germany, true);
-        LandUnit inf5 = LandUnitFactory.Create(EUnitType.INFANTRY, polen, Germany, true);
-        LandUnit inf6 = LandUnitFactory.Create(EUnitType.INFANTRY, ukrainischessr, Germany, true);
-        LandUnit inf7 = LandUnitFactory.Create(EUnitType.INFANTRY, ukrainischessr, Germany, true);
-        LandUnit inf8 = LandUnitFactory.Create(EUnitType.INFANTRY, ukrainischessr, Germany, true);
-        LandUnit inf9 = LandUnitFactory.Create(EUnitType.INFANTRY, westrussland, Germany, true);
-        LandUnit inf10 = LandUnitFactory.Create(EUnitType.INFANTRY, westrussland, Germany, true);
-        LandUnit inf11 = LandUnitFactory.Create(EUnitType.INFANTRY, westrussland, Germany, true);
-        LandUnit inf12 = LandUnitFactory.Create(EUnitType.INFANTRY, weissrussland, Germany, true);
-        LandUnit inf13 = LandUnitFactory.Create(EUnitType.INFANTRY, weissrussland, Germany, true);
-        LandUnit inf14 = LandUnitFactory.Create(EUnitType.INFANTRY, weissrussland, Germany, true);
-        LandUnit inf15 = LandUnitFactory.Create(EUnitType.INFANTRY, baltische_staaten, Germany, true);
-        LandUnit inf16 = LandUnitFactory.Create(EUnitType.INFANTRY, bulgarien_rumänien, Germany, true);
-        LandUnit inf17 = LandUnitFactory.Create(EUnitType.INFANTRY, bulgarien_rumänien, Germany, true);
-        LandUnit inf18 = LandUnitFactory.Create(EUnitType.INFANTRY, finnland, Germany, true);
-        LandUnit inf19 = LandUnitFactory.Create(EUnitType.INFANTRY, finnland, Germany, true);
-        LandUnit inf20 = LandUnitFactory.Create(EUnitType.INFANTRY, finnland, Germany, true);
-        LandUnit inf21 = LandUnitFactory.Create(EUnitType.INFANTRY, norwegen, Germany, true);
-        LandUnit inf22 = LandUnitFactory.Create(EUnitType.INFANTRY, norwegen, Germany, true);
-        LandUnit inf23 = LandUnitFactory.Create(EUnitType.INFANTRY, nordwesteuropa, Germany, true);
-        LandUnit inf24 = LandUnitFactory.Create(EUnitType.INFANTRY, frankreich, Germany, true);
-        LandUnit inf25 = LandUnitFactory.Create(EUnitType.INFANTRY, italien, Germany, true);
-        LandUnit inf26 = LandUnitFactory.Create(EUnitType.INFANTRY, südeuropa, Germany, true);
-        LandUnit inf27 = LandUnitFactory.Create(EUnitType.INFANTRY, marokko, Germany, true);
-        LandUnit inf28 = LandUnitFactory.Create(EUnitType.INFANTRY, algerien, Germany, true);
-        LandUnit inf29 = LandUnitFactory.Create(EUnitType.INFANTRY, lybien, Germany, true);
+        ALandUnit inf1 = LandUnitFactory.Create(EUnitType.INFANTRY, deutschland, Germany, true);
+        ALandUnit inf2 = LandUnitFactory.Create(EUnitType.INFANTRY, deutschland, Germany, true);
+        ALandUnit inf3 = LandUnitFactory.Create(EUnitType.INFANTRY, deutschland, Germany, true);
+        ALandUnit inf4 = LandUnitFactory.Create(EUnitType.INFANTRY, polen, Germany, true);
+        ALandUnit inf5 = LandUnitFactory.Create(EUnitType.INFANTRY, polen, Germany, true);
+        ALandUnit inf6 = LandUnitFactory.Create(EUnitType.INFANTRY, ukrainischessr, Germany, true);
+        ALandUnit inf7 = LandUnitFactory.Create(EUnitType.INFANTRY, ukrainischessr, Germany, true);
+        ALandUnit inf8 = LandUnitFactory.Create(EUnitType.INFANTRY, ukrainischessr, Germany, true);
+        ALandUnit inf9 = LandUnitFactory.Create(EUnitType.INFANTRY, westrussland, Germany, true);
+        ALandUnit inf10 = LandUnitFactory.Create(EUnitType.INFANTRY, westrussland, Germany, true);
+        ALandUnit inf11 = LandUnitFactory.Create(EUnitType.INFANTRY, westrussland, Germany, true);
+        ALandUnit inf12 = LandUnitFactory.Create(EUnitType.INFANTRY, weissrussland, Germany, true);
+        ALandUnit inf13 = LandUnitFactory.Create(EUnitType.INFANTRY, weissrussland, Germany, true);
+        ALandUnit inf14 = LandUnitFactory.Create(EUnitType.INFANTRY, weissrussland, Germany, true);
+        ALandUnit inf15 = LandUnitFactory.Create(EUnitType.INFANTRY, baltische_staaten, Germany, true);
+        ALandUnit inf16 = LandUnitFactory.Create(EUnitType.INFANTRY, bulgarien_rumänien, Germany, true);
+        ALandUnit inf17 = LandUnitFactory.Create(EUnitType.INFANTRY, bulgarien_rumänien, Germany, true);
+        ALandUnit inf18 = LandUnitFactory.Create(EUnitType.INFANTRY, finnland, Germany, true);
+        ALandUnit inf19 = LandUnitFactory.Create(EUnitType.INFANTRY, finnland, Germany, true);
+        ALandUnit inf20 = LandUnitFactory.Create(EUnitType.INFANTRY, finnland, Germany, true);
+        ALandUnit inf21 = LandUnitFactory.Create(EUnitType.INFANTRY, norwegen, Germany, true);
+        ALandUnit inf22 = LandUnitFactory.Create(EUnitType.INFANTRY, norwegen, Germany, true);
+        ALandUnit inf23 = LandUnitFactory.Create(EUnitType.INFANTRY, nordwesteuropa, Germany, true);
+        ALandUnit inf24 = LandUnitFactory.Create(EUnitType.INFANTRY, frankreich, Germany, true);
+        ALandUnit inf25 = LandUnitFactory.Create(EUnitType.INFANTRY, italien, Germany, true);
+        ALandUnit inf26 = LandUnitFactory.Create(EUnitType.INFANTRY, südeuropa, Germany, true);
+        ALandUnit inf27 = LandUnitFactory.Create(EUnitType.INFANTRY, marokko, Germany, true);
+        ALandUnit inf28 = LandUnitFactory.Create(EUnitType.INFANTRY, algerien, Germany, true);
+        ALandUnit inf29 = LandUnitFactory.Create(EUnitType.INFANTRY, lybien, Germany, true);
 
         inf1.Id = 1;
         inf2.Id = 2;
@@ -4241,24 +4312,24 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         inf28.Id = 28;
         inf29.Id = 29;
 
-        LandUnit transinf30 = LandUnitFactory.Create(EUnitType.INFANTRY, null, Germany, true);
-        LandUnit transinf31 = LandUnitFactory.Create(EUnitType.INFANTRY, null, Germany, true);
+        ALandUnit transinf30 = LandUnitFactory.Create(EUnitType.INFANTRY, null, Germany, true);
+        ALandUnit transinf31 = LandUnitFactory.Create(EUnitType.INFANTRY, null, Germany, true);
 
         transinf30.Id = 30;
         transinf31.Id = 31;
 
-        LandUnit pan32 = LandUnitFactory.Create(EUnitType.TANK, deutschland, Germany, true);
-        LandUnit pan33 = LandUnitFactory.Create(EUnitType.TANK, deutschland, Germany, true);
-        LandUnit pan34 = LandUnitFactory.Create(EUnitType.TANK, polen, Germany, true);
-        LandUnit pan35 = LandUnitFactory.Create(EUnitType.TANK, ukrainischessr, Germany, true);
-        LandUnit pan36 = LandUnitFactory.Create(EUnitType.TANK, westrussland, Germany, true);
-        LandUnit pan37 = LandUnitFactory.Create(EUnitType.TANK, baltische_staaten, Germany, true);
-        LandUnit pan38 = LandUnitFactory.Create(EUnitType.TANK, bulgarien_rumänien, Germany, true);
-        LandUnit pan39 = LandUnitFactory.Create(EUnitType.TANK, nordwesteuropa, Germany, true);
-        LandUnit pan40 = LandUnitFactory.Create(EUnitType.TANK, frankreich, Germany, true);
-        LandUnit pan41 = LandUnitFactory.Create(EUnitType.TANK, frankreich, Germany, true);
-        LandUnit pan42 = LandUnitFactory.Create(EUnitType.TANK, italien, Germany, true);
-        LandUnit pan43 = LandUnitFactory.Create(EUnitType.TANK, lybien, Germany, true);
+        ALandUnit pan32 = LandUnitFactory.Create(EUnitType.TANK, deutschland, Germany, true);
+        ALandUnit pan33 = LandUnitFactory.Create(EUnitType.TANK, deutschland, Germany, true);
+        ALandUnit pan34 = LandUnitFactory.Create(EUnitType.TANK, polen, Germany, true);
+        ALandUnit pan35 = LandUnitFactory.Create(EUnitType.TANK, ukrainischessr, Germany, true);
+        ALandUnit pan36 = LandUnitFactory.Create(EUnitType.TANK, westrussland, Germany, true);
+        ALandUnit pan37 = LandUnitFactory.Create(EUnitType.TANK, baltische_staaten, Germany, true);
+        ALandUnit pan38 = LandUnitFactory.Create(EUnitType.TANK, bulgarien_rumänien, Germany, true);
+        ALandUnit pan39 = LandUnitFactory.Create(EUnitType.TANK, nordwesteuropa, Germany, true);
+        ALandUnit pan40 = LandUnitFactory.Create(EUnitType.TANK, frankreich, Germany, true);
+        ALandUnit pan41 = LandUnitFactory.Create(EUnitType.TANK, frankreich, Germany, true);
+        ALandUnit pan42 = LandUnitFactory.Create(EUnitType.TANK, italien, Germany, true);
+        ALandUnit pan43 = LandUnitFactory.Create(EUnitType.TANK, lybien, Germany, true);
 
         pan32.Id = 32;
         pan33.Id = 33;
@@ -4273,18 +4344,18 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         pan42.Id = 42;
         pan43.Id = 43;
 
-        LandUnit flak44 = LandUnitFactory.Create(EUnitType.ANTI_AIR, deutschland, Germany, true);
-        LandUnit flak45 = LandUnitFactory.Create(EUnitType.ANTI_AIR, frankreich, Germany, true);
-        LandUnit flak46 = LandUnitFactory.Create(EUnitType.ANTI_AIR, italien, Germany, true);
+        ALandUnit flak44 = LandUnitFactory.Create(EUnitType.ANTI_AIR, deutschland, Germany, true);
+        ALandUnit flak45 = LandUnitFactory.Create(EUnitType.ANTI_AIR, frankreich, Germany, true);
+        ALandUnit flak46 = LandUnitFactory.Create(EUnitType.ANTI_AIR, italien, Germany, true);
 
         flak44.Id = 44;
         flak45.Id = 45;
         flak46.Id = 46;
 
-        LandUnit art47 = LandUnitFactory.Create(EUnitType.ARTILLERY, algerien, Germany, true);
-        LandUnit art48 = LandUnitFactory.Create(EUnitType.ARTILLERY, südeuropa, Germany, true);
-        LandUnit art49 = LandUnitFactory.Create(EUnitType.ARTILLERY, ukrainischessr, Germany, true);
-        LandUnit art50 = LandUnitFactory.Create(EUnitType.ARTILLERY, westrussland, Germany, true);
+        ALandUnit art47 = LandUnitFactory.Create(EUnitType.ARTILLERY, algerien, Germany, true);
+        ALandUnit art48 = LandUnitFactory.Create(EUnitType.ARTILLERY, südeuropa, Germany, true);
+        ALandUnit art49 = LandUnitFactory.Create(EUnitType.ARTILLERY, ukrainischessr, Germany, true);
+        ALandUnit art50 = LandUnitFactory.Create(EUnitType.ARTILLERY, westrussland, Germany, true);
 
         art47.Id = 47;
         art48.Id = 48;
@@ -4295,27 +4366,27 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region RussianLand
 
-        LandUnit inf51 = LandUnitFactory.Create(EUnitType.INFANTRY, russland, Soviet_Union, true);
-        LandUnit inf52 = LandUnitFactory.Create(EUnitType.INFANTRY, russland, Soviet_Union, true);
-        LandUnit inf53 = LandUnitFactory.Create(EUnitType.INFANTRY, russland, Soviet_Union, true);
-        LandUnit inf54 = LandUnitFactory.Create(EUnitType.INFANTRY, russland, Soviet_Union, true);
-        LandUnit inf55 = LandUnitFactory.Create(EUnitType.INFANTRY, karelo_finnnischessr, Soviet_Union, true);
-        LandUnit inf56 = LandUnitFactory.Create(EUnitType.INFANTRY, karelo_finnnischessr, Soviet_Union, true);
-        LandUnit inf57 = LandUnitFactory.Create(EUnitType.INFANTRY, karelo_finnnischessr, Soviet_Union, true);
-        LandUnit inf58 = LandUnitFactory.Create(EUnitType.INFANTRY, karelo_finnnischessr, Soviet_Union, true);
-        LandUnit inf59 = LandUnitFactory.Create(EUnitType.INFANTRY, archangelsk, Soviet_Union, true);
-        LandUnit inf60 = LandUnitFactory.Create(EUnitType.INFANTRY, kaukasus, Soviet_Union, true);
-        LandUnit inf61 = LandUnitFactory.Create(EUnitType.INFANTRY, kaukasus, Soviet_Union, true);
-        LandUnit inf62 = LandUnitFactory.Create(EUnitType.INFANTRY, kaukasus, Soviet_Union, true);
-        LandUnit inf63 = LandUnitFactory.Create(EUnitType.INFANTRY, kasachischessr, Soviet_Union, true);
-        LandUnit inf64 = LandUnitFactory.Create(EUnitType.INFANTRY, nowosibirsk, Soviet_Union, true);
-        LandUnit inf65 = LandUnitFactory.Create(EUnitType.INFANTRY, autonomer_kreis_der_ewenken, Soviet_Union, true);
-        LandUnit inf66 = LandUnitFactory.Create(EUnitType.INFANTRY, autonomer_kreis_der_ewenken, Soviet_Union, true);
-        LandUnit inf67 = LandUnitFactory.Create(EUnitType.INFANTRY, jakutischessr, Soviet_Union, true);
-        LandUnit inf68 = LandUnitFactory.Create(EUnitType.INFANTRY, burjatischessr, Soviet_Union, true);
-        LandUnit inf69 = LandUnitFactory.Create(EUnitType.INFANTRY, burjatischessr, Soviet_Union, true);
-        LandUnit inf70 = LandUnitFactory.Create(EUnitType.INFANTRY, sowjetischer_ferner_osten, Soviet_Union, true);
-        LandUnit inf71 = LandUnitFactory.Create(EUnitType.INFANTRY, sowjetischer_ferner_osten, Soviet_Union, true);
+        ALandUnit inf51 = LandUnitFactory.Create(EUnitType.INFANTRY, russland, Soviet_Union, true);
+        ALandUnit inf52 = LandUnitFactory.Create(EUnitType.INFANTRY, russland, Soviet_Union, true);
+        ALandUnit inf53 = LandUnitFactory.Create(EUnitType.INFANTRY, russland, Soviet_Union, true);
+        ALandUnit inf54 = LandUnitFactory.Create(EUnitType.INFANTRY, russland, Soviet_Union, true);
+        ALandUnit inf55 = LandUnitFactory.Create(EUnitType.INFANTRY, karelo_finnnischessr, Soviet_Union, true);
+        ALandUnit inf56 = LandUnitFactory.Create(EUnitType.INFANTRY, karelo_finnnischessr, Soviet_Union, true);
+        ALandUnit inf57 = LandUnitFactory.Create(EUnitType.INFANTRY, karelo_finnnischessr, Soviet_Union, true);
+        ALandUnit inf58 = LandUnitFactory.Create(EUnitType.INFANTRY, karelo_finnnischessr, Soviet_Union, true);
+        ALandUnit inf59 = LandUnitFactory.Create(EUnitType.INFANTRY, archangelsk, Soviet_Union, true);
+        ALandUnit inf60 = LandUnitFactory.Create(EUnitType.INFANTRY, kaukasus, Soviet_Union, true);
+        ALandUnit inf61 = LandUnitFactory.Create(EUnitType.INFANTRY, kaukasus, Soviet_Union, true);
+        ALandUnit inf62 = LandUnitFactory.Create(EUnitType.INFANTRY, kaukasus, Soviet_Union, true);
+        ALandUnit inf63 = LandUnitFactory.Create(EUnitType.INFANTRY, kasachischessr, Soviet_Union, true);
+        ALandUnit inf64 = LandUnitFactory.Create(EUnitType.INFANTRY, nowosibirsk, Soviet_Union, true);
+        ALandUnit inf65 = LandUnitFactory.Create(EUnitType.INFANTRY, autonomer_kreis_der_ewenken, Soviet_Union, true);
+        ALandUnit inf66 = LandUnitFactory.Create(EUnitType.INFANTRY, autonomer_kreis_der_ewenken, Soviet_Union, true);
+        ALandUnit inf67 = LandUnitFactory.Create(EUnitType.INFANTRY, jakutischessr, Soviet_Union, true);
+        ALandUnit inf68 = LandUnitFactory.Create(EUnitType.INFANTRY, burjatischessr, Soviet_Union, true);
+        ALandUnit inf69 = LandUnitFactory.Create(EUnitType.INFANTRY, burjatischessr, Soviet_Union, true);
+        ALandUnit inf70 = LandUnitFactory.Create(EUnitType.INFANTRY, sowjetischer_ferner_osten, Soviet_Union, true);
+        ALandUnit inf71 = LandUnitFactory.Create(EUnitType.INFANTRY, sowjetischer_ferner_osten, Soviet_Union, true);
 
         inf51.Id = 51;
         inf52.Id = 52;
@@ -4339,25 +4410,25 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         inf70.Id = 70;
         inf71.Id = 71;
 
-        LandUnit pan72 = LandUnitFactory.Create(EUnitType.TANK, russland, Soviet_Union, true);
-        LandUnit pan73 = LandUnitFactory.Create(EUnitType.TANK, russland, Soviet_Union, true);
-        LandUnit pan74 = LandUnitFactory.Create(EUnitType.TANK, kaukasus, Soviet_Union, true);
-        LandUnit pan75 = LandUnitFactory.Create(EUnitType.TANK, archangelsk, Soviet_Union, true);
+        ALandUnit pan72 = LandUnitFactory.Create(EUnitType.TANK, russland, Soviet_Union, true);
+        ALandUnit pan73 = LandUnitFactory.Create(EUnitType.TANK, russland, Soviet_Union, true);
+        ALandUnit pan74 = LandUnitFactory.Create(EUnitType.TANK, kaukasus, Soviet_Union, true);
+        ALandUnit pan75 = LandUnitFactory.Create(EUnitType.TANK, archangelsk, Soviet_Union, true);
 
         pan72.Id = 72;
         pan73.Id = 73;
         pan74.Id = 74;
         pan75.Id = 75;
 
-        LandUnit flak76 = LandUnitFactory.Create(EUnitType.ANTI_AIR, russland, Soviet_Union, true);
-        LandUnit flak77 = LandUnitFactory.Create(EUnitType.ANTI_AIR, kaukasus, Soviet_Union, true);
+        ALandUnit flak76 = LandUnitFactory.Create(EUnitType.ANTI_AIR, russland, Soviet_Union, true);
+        ALandUnit flak77 = LandUnitFactory.Create(EUnitType.ANTI_AIR, kaukasus, Soviet_Union, true);
 
         flak76.Id = 76;
         flak77.Id = 77;
 
-        LandUnit art78 = LandUnitFactory.Create(EUnitType.ARTILLERY, russland, Soviet_Union, true);
-        LandUnit art79 = LandUnitFactory.Create(EUnitType.ARTILLERY, karelo_finnnischessr, Soviet_Union, true);
-        LandUnit art80 = LandUnitFactory.Create(EUnitType.ARTILLERY, kaukasus, Soviet_Union, true);
+        ALandUnit art78 = LandUnitFactory.Create(EUnitType.ARTILLERY, russland, Soviet_Union, true);
+        ALandUnit art79 = LandUnitFactory.Create(EUnitType.ARTILLERY, karelo_finnnischessr, Soviet_Union, true);
+        ALandUnit art80 = LandUnitFactory.Create(EUnitType.ARTILLERY, kaukasus, Soviet_Union, true);
 
         art78.Id = 78;
         art79.Id = 79;
@@ -4367,21 +4438,21 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region BritishLand
 
-        LandUnit inf81 = LandUnitFactory.Create(EUnitType.INFANTRY, vereinigtes_königreich, United_Kingdom, true);
-        LandUnit inf82 = LandUnitFactory.Create(EUnitType.INFANTRY, vereinigtes_königreich, United_Kingdom, true);
-        LandUnit inf83 = LandUnitFactory.Create(EUnitType.INFANTRY, ägypten, United_Kingdom, true);
-        LandUnit inf84 = LandUnitFactory.Create(EUnitType.INFANTRY, transjordanien, United_Kingdom, true);
-        LandUnit inf85 = LandUnitFactory.Create(EUnitType.INFANTRY, persien, United_Kingdom, true);
-        LandUnit inf86 = LandUnitFactory.Create(EUnitType.INFANTRY, südafrikanische_union, United_Kingdom, true);
-        LandUnit inf87 = LandUnitFactory.Create(EUnitType.INFANTRY, indien, United_Kingdom, true);
-        LandUnit inf88 = LandUnitFactory.Create(EUnitType.INFANTRY, indien, United_Kingdom, true);
-        LandUnit inf89 = LandUnitFactory.Create(EUnitType.INFANTRY, indien, United_Kingdom, true);
-        LandUnit inf90 = LandUnitFactory.Create(EUnitType.INFANTRY, burma, United_Kingdom, true);
-        LandUnit inf91 = LandUnitFactory.Create(EUnitType.INFANTRY, ostaustralien, United_Kingdom, true);
-        LandUnit inf92 = LandUnitFactory.Create(EUnitType.INFANTRY, ostaustralien, United_Kingdom, true);
-        LandUnit inf93 = LandUnitFactory.Create(EUnitType.INFANTRY, westaustralien, United_Kingdom, true);
-        LandUnit inf94 = LandUnitFactory.Create(EUnitType.INFANTRY, neuseeland, United_Kingdom, true);
-        LandUnit inf95 = LandUnitFactory.Create(EUnitType.INFANTRY, westkanada, United_Kingdom, true);
+        ALandUnit inf81 = LandUnitFactory.Create(EUnitType.INFANTRY, vereinigtes_königreich, United_Kingdom, true);
+        ALandUnit inf82 = LandUnitFactory.Create(EUnitType.INFANTRY, vereinigtes_königreich, United_Kingdom, true);
+        ALandUnit inf83 = LandUnitFactory.Create(EUnitType.INFANTRY, ägypten, United_Kingdom, true);
+        ALandUnit inf84 = LandUnitFactory.Create(EUnitType.INFANTRY, transjordanien, United_Kingdom, true);
+        ALandUnit inf85 = LandUnitFactory.Create(EUnitType.INFANTRY, persien, United_Kingdom, true);
+        ALandUnit inf86 = LandUnitFactory.Create(EUnitType.INFANTRY, südafrikanische_union, United_Kingdom, true);
+        ALandUnit inf87 = LandUnitFactory.Create(EUnitType.INFANTRY, indien, United_Kingdom, true);
+        ALandUnit inf88 = LandUnitFactory.Create(EUnitType.INFANTRY, indien, United_Kingdom, true);
+        ALandUnit inf89 = LandUnitFactory.Create(EUnitType.INFANTRY, indien, United_Kingdom, true);
+        ALandUnit inf90 = LandUnitFactory.Create(EUnitType.INFANTRY, burma, United_Kingdom, true);
+        ALandUnit inf91 = LandUnitFactory.Create(EUnitType.INFANTRY, ostaustralien, United_Kingdom, true);
+        ALandUnit inf92 = LandUnitFactory.Create(EUnitType.INFANTRY, ostaustralien, United_Kingdom, true);
+        ALandUnit inf93 = LandUnitFactory.Create(EUnitType.INFANTRY, westaustralien, United_Kingdom, true);
+        ALandUnit inf94 = LandUnitFactory.Create(EUnitType.INFANTRY, neuseeland, United_Kingdom, true);
+        ALandUnit inf95 = LandUnitFactory.Create(EUnitType.INFANTRY, westkanada, United_Kingdom, true);
 
         inf81.Id = 81;
         inf82.Id = 82;
@@ -4399,32 +4470,32 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         inf94.Id = 94;
         inf95.Id = 95;
 
-        LandUnit transinf96 = LandUnitFactory.Create(EUnitType.INFANTRY, null, United_Kingdom, true);
-        LandUnit transinf97 = LandUnitFactory.Create(EUnitType.INFANTRY, null, United_Kingdom, true);
-        LandUnit transinf98 = LandUnitFactory.Create(EUnitType.INFANTRY, null, United_Kingdom, true);
-        LandUnit transinf99 = LandUnitFactory.Create(EUnitType.INFANTRY, null, United_Kingdom, true);
+        ALandUnit transinf96 = LandUnitFactory.Create(EUnitType.INFANTRY, null, United_Kingdom, true);
+        ALandUnit transinf97 = LandUnitFactory.Create(EUnitType.INFANTRY, null, United_Kingdom, true);
+        ALandUnit transinf98 = LandUnitFactory.Create(EUnitType.INFANTRY, null, United_Kingdom, true);
+        ALandUnit transinf99 = LandUnitFactory.Create(EUnitType.INFANTRY, null, United_Kingdom, true);
 
         transinf96.Id = 96;
         transinf97.Id = 97;
         transinf98.Id = 98;
         transinf99.Id = 99;
 
-        LandUnit pan100 = LandUnitFactory.Create(EUnitType.TANK, vereinigtes_königreich, United_Kingdom, true);
-        LandUnit pan101 = LandUnitFactory.Create(EUnitType.TANK, ostkanada, United_Kingdom, true);
-        LandUnit pan102 = LandUnitFactory.Create(EUnitType.TANK, ägypten, United_Kingdom, true);
+        ALandUnit pan100 = LandUnitFactory.Create(EUnitType.TANK, vereinigtes_königreich, United_Kingdom, true);
+        ALandUnit pan101 = LandUnitFactory.Create(EUnitType.TANK, ostkanada, United_Kingdom, true);
+        ALandUnit pan102 = LandUnitFactory.Create(EUnitType.TANK, ägypten, United_Kingdom, true);
 
         pan100.Id = 100;
         pan101.Id = 101;
         pan102.Id = 102;
 
-        LandUnit flak103 = LandUnitFactory.Create(EUnitType.ANTI_AIR, vereinigtes_königreich, United_Kingdom, true);
-        LandUnit flak104 = LandUnitFactory.Create(EUnitType.ANTI_AIR, indien, United_Kingdom, true);
+        ALandUnit flak103 = LandUnitFactory.Create(EUnitType.ANTI_AIR, vereinigtes_königreich, United_Kingdom, true);
+        ALandUnit flak104 = LandUnitFactory.Create(EUnitType.ANTI_AIR, indien, United_Kingdom, true);
 
         flak103.Id = 103;
         flak104.Id = 104;
 
-        LandUnit art105 = LandUnitFactory.Create(EUnitType.ARTILLERY, vereinigtes_königreich, United_Kingdom, true);
-        LandUnit art106 = LandUnitFactory.Create(EUnitType.ARTILLERY, ägypten, United_Kingdom, true);
+        ALandUnit art105 = LandUnitFactory.Create(EUnitType.ARTILLERY, vereinigtes_königreich, United_Kingdom, true);
+        ALandUnit art106 = LandUnitFactory.Create(EUnitType.ARTILLERY, ägypten, United_Kingdom, true);
 
         art105.Id = 105;
         art106.Id = 106;
@@ -4433,20 +4504,22 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region USALand
 
-        LandUnit inf107 = LandUnitFactory.Create(EUnitType.INFANTRY, östliche_vereinigte_staaten, United_States, true);
-        LandUnit inf108 = LandUnitFactory.Create(EUnitType.INFANTRY, östliche_vereinigte_staaten, United_States, true);
-        LandUnit inf109 = LandUnitFactory.Create(EUnitType.INFANTRY, zentrale_vereinigte_staaten, United_States, true);
-        LandUnit inf110 = LandUnitFactory.Create(EUnitType.INFANTRY, westliche_vereinigte_staaten, United_States, true);
-        LandUnit inf111 = LandUnitFactory.Create(EUnitType.INFANTRY, westliche_vereinigte_staaten, United_States, true);
-        LandUnit inf112 = LandUnitFactory.Create(EUnitType.INFANTRY, alaska, United_States, true);
-        LandUnit inf113 = LandUnitFactory.Create(EUnitType.INFANTRY, midway_atoll, United_States, true);
-        LandUnit inf114 = LandUnitFactory.Create(EUnitType.INFANTRY, hawaii_inseln, United_States, true);
-        LandUnit inf115 = LandUnitFactory.Create(EUnitType.INFANTRY, anhwei, United_States, true);
-        LandUnit inf116 = LandUnitFactory.Create(EUnitType.INFANTRY, anhwei, United_States, true);
-        LandUnit inf117 = LandUnitFactory.Create(EUnitType.INFANTRY, sezuan, United_States, true);
-        LandUnit inf118 = LandUnitFactory.Create(EUnitType.INFANTRY, sezuan, United_States, true);
-        LandUnit inf119 = LandUnitFactory.Create(EUnitType.INFANTRY, yunnan, United_States, true);
-        LandUnit inf120 = LandUnitFactory.Create(EUnitType.INFANTRY, yunnan, United_States, true);
+        ALandUnit inf107 = LandUnitFactory.Create(EUnitType.INFANTRY, östliche_vereinigte_staaten, United_States, true);
+        ALandUnit inf108 = LandUnitFactory.Create(EUnitType.INFANTRY, östliche_vereinigte_staaten, United_States, true);
+        ALandUnit inf109 = LandUnitFactory.Create(EUnitType.INFANTRY, zentrale_vereinigte_staaten, United_States, true);
+        ALandUnit inf110 =
+            LandUnitFactory.Create(EUnitType.INFANTRY, westliche_vereinigte_staaten, United_States, true);
+        ALandUnit inf111 =
+            LandUnitFactory.Create(EUnitType.INFANTRY, westliche_vereinigte_staaten, United_States, true);
+        ALandUnit inf112 = LandUnitFactory.Create(EUnitType.INFANTRY, alaska, United_States, true);
+        ALandUnit inf113 = LandUnitFactory.Create(EUnitType.INFANTRY, midway_atoll, United_States, true);
+        ALandUnit inf114 = LandUnitFactory.Create(EUnitType.INFANTRY, hawaii_inseln, United_States, true);
+        ALandUnit inf115 = LandUnitFactory.Create(EUnitType.INFANTRY, anhwei, United_States, true);
+        ALandUnit inf116 = LandUnitFactory.Create(EUnitType.INFANTRY, anhwei, United_States, true);
+        ALandUnit inf117 = LandUnitFactory.Create(EUnitType.INFANTRY, sezuan, United_States, true);
+        ALandUnit inf118 = LandUnitFactory.Create(EUnitType.INFANTRY, sezuan, United_States, true);
+        ALandUnit inf119 = LandUnitFactory.Create(EUnitType.INFANTRY, yunnan, United_States, true);
+        ALandUnit inf120 = LandUnitFactory.Create(EUnitType.INFANTRY, yunnan, United_States, true);
 
         inf107.Id = 107;
         inf108.Id = 108;
@@ -4463,26 +4536,28 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         inf119.Id = 119;
         inf120.Id = 120;
 
-        LandUnit transinf121 = LandUnitFactory.Create(EUnitType.INFANTRY, null, United_States, true);
-        LandUnit transinf122 = LandUnitFactory.Create(EUnitType.INFANTRY, null, United_States, true);
-        LandUnit transinf123 = LandUnitFactory.Create(EUnitType.INFANTRY, null, United_States, true);
+        ALandUnit transinf121 = LandUnitFactory.Create(EUnitType.INFANTRY, null, United_States, true);
+        ALandUnit transinf122 = LandUnitFactory.Create(EUnitType.INFANTRY, null, United_States, true);
+        ALandUnit transinf123 = LandUnitFactory.Create(EUnitType.INFANTRY, null, United_States, true);
 
         transinf121.Id = 121;
         transinf122.Id = 122;
         transinf123.Id = 123;
 
-        LandUnit pan124 = LandUnitFactory.Create(EUnitType.TANK, östliche_vereinigte_staaten, United_States, true);
+        ALandUnit pan124 = LandUnitFactory.Create(EUnitType.TANK, östliche_vereinigte_staaten, United_States, true);
 
         pan124.Id = 124;
 
-        LandUnit flak125 = LandUnitFactory.Create(EUnitType.ANTI_AIR, östliche_vereinigte_staaten, United_States, true);
-        LandUnit flak126 =
+        ALandUnit flak125 =
+            LandUnitFactory.Create(EUnitType.ANTI_AIR, östliche_vereinigte_staaten, United_States, true);
+        ALandUnit flak126 =
             LandUnitFactory.Create(EUnitType.ANTI_AIR, westliche_vereinigte_staaten, United_States, true);
 
         flak125.Id = 125;
         flak126.Id = 126;
 
-        LandUnit art127 = LandUnitFactory.Create(EUnitType.ARTILLERY, östliche_vereinigte_staaten, United_States, true);
+        ALandUnit art127 =
+            LandUnitFactory.Create(EUnitType.ARTILLERY, östliche_vereinigte_staaten, United_States, true);
 
         art127.Id = 127;
 
@@ -4490,31 +4565,31 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region JapanLand
 
-        LandUnit inf128 = LandUnitFactory.Create(EUnitType.INFANTRY, japan, Japan, true);
-        LandUnit inf129 = LandUnitFactory.Create(EUnitType.INFANTRY, japan, Japan, true);
-        LandUnit inf130 = LandUnitFactory.Create(EUnitType.INFANTRY, japan, Japan, true);
-        LandUnit inf131 = LandUnitFactory.Create(EUnitType.INFANTRY, japan, Japan, true);
-        LandUnit inf132 = LandUnitFactory.Create(EUnitType.INFANTRY, wake, Japan, true);
-        LandUnit inf133 = LandUnitFactory.Create(EUnitType.INFANTRY, iwojima, Japan, true);
-        LandUnit inf134 = LandUnitFactory.Create(EUnitType.INFANTRY, okinawa, Japan, true);
-        LandUnit inf135 = LandUnitFactory.Create(EUnitType.INFANTRY, caroline_atoll, Japan, true);
-        LandUnit inf136 = LandUnitFactory.Create(EUnitType.INFANTRY, philippinische_inseln, Japan, true);
-        LandUnit inf137 = LandUnitFactory.Create(EUnitType.INFANTRY, jiangsu, Japan, true);
-        LandUnit inf138 = LandUnitFactory.Create(EUnitType.INFANTRY, jiangsu, Japan, true);
-        LandUnit inf139 = LandUnitFactory.Create(EUnitType.INFANTRY, jiangsu, Japan, true);
-        LandUnit inf140 = LandUnitFactory.Create(EUnitType.INFANTRY, jiangsu, Japan, true);
-        LandUnit inf141 = LandUnitFactory.Create(EUnitType.INFANTRY, mandschurei, Japan, true);
-        LandUnit inf142 = LandUnitFactory.Create(EUnitType.INFANTRY, mandschurei, Japan, true);
-        LandUnit inf143 = LandUnitFactory.Create(EUnitType.INFANTRY, mandschurei, Japan, true);
-        LandUnit inf144 = LandUnitFactory.Create(EUnitType.INFANTRY, guandong, Japan, true);
-        LandUnit inf145 = LandUnitFactory.Create(EUnitType.INFANTRY, französisch_indochina_thailand, Japan, true);
-        LandUnit inf146 = LandUnitFactory.Create(EUnitType.INFANTRY, französisch_indochina_thailand, Japan, true);
-        LandUnit inf147 = LandUnitFactory.Create(EUnitType.INFANTRY, malaysia, Japan, true);
-        LandUnit inf148 = LandUnitFactory.Create(EUnitType.INFANTRY, ostindien, Japan, true);
-        LandUnit inf149 = LandUnitFactory.Create(EUnitType.INFANTRY, ostindien, Japan, true);
-        LandUnit inf150 = LandUnitFactory.Create(EUnitType.INFANTRY, borneo, Japan, true);
-        LandUnit inf151 = LandUnitFactory.Create(EUnitType.INFANTRY, neuguniea, Japan, true);
-        LandUnit inf152 = LandUnitFactory.Create(EUnitType.INFANTRY, salomon_inseln, Japan, true);
+        ALandUnit inf128 = LandUnitFactory.Create(EUnitType.INFANTRY, japan, Japan, true);
+        ALandUnit inf129 = LandUnitFactory.Create(EUnitType.INFANTRY, japan, Japan, true);
+        ALandUnit inf130 = LandUnitFactory.Create(EUnitType.INFANTRY, japan, Japan, true);
+        ALandUnit inf131 = LandUnitFactory.Create(EUnitType.INFANTRY, japan, Japan, true);
+        ALandUnit inf132 = LandUnitFactory.Create(EUnitType.INFANTRY, wake, Japan, true);
+        ALandUnit inf133 = LandUnitFactory.Create(EUnitType.INFANTRY, iwojima, Japan, true);
+        ALandUnit inf134 = LandUnitFactory.Create(EUnitType.INFANTRY, okinawa, Japan, true);
+        ALandUnit inf135 = LandUnitFactory.Create(EUnitType.INFANTRY, caroline_atoll, Japan, true);
+        ALandUnit inf136 = LandUnitFactory.Create(EUnitType.INFANTRY, philippinische_inseln, Japan, true);
+        ALandUnit inf137 = LandUnitFactory.Create(EUnitType.INFANTRY, jiangsu, Japan, true);
+        ALandUnit inf138 = LandUnitFactory.Create(EUnitType.INFANTRY, jiangsu, Japan, true);
+        ALandUnit inf139 = LandUnitFactory.Create(EUnitType.INFANTRY, jiangsu, Japan, true);
+        ALandUnit inf140 = LandUnitFactory.Create(EUnitType.INFANTRY, jiangsu, Japan, true);
+        ALandUnit inf141 = LandUnitFactory.Create(EUnitType.INFANTRY, mandschurei, Japan, true);
+        ALandUnit inf142 = LandUnitFactory.Create(EUnitType.INFANTRY, mandschurei, Japan, true);
+        ALandUnit inf143 = LandUnitFactory.Create(EUnitType.INFANTRY, mandschurei, Japan, true);
+        ALandUnit inf144 = LandUnitFactory.Create(EUnitType.INFANTRY, guandong, Japan, true);
+        ALandUnit inf145 = LandUnitFactory.Create(EUnitType.INFANTRY, französisch_indochina_thailand, Japan, true);
+        ALandUnit inf146 = LandUnitFactory.Create(EUnitType.INFANTRY, französisch_indochina_thailand, Japan, true);
+        ALandUnit inf147 = LandUnitFactory.Create(EUnitType.INFANTRY, malaysia, Japan, true);
+        ALandUnit inf148 = LandUnitFactory.Create(EUnitType.INFANTRY, ostindien, Japan, true);
+        ALandUnit inf149 = LandUnitFactory.Create(EUnitType.INFANTRY, ostindien, Japan, true);
+        ALandUnit inf150 = LandUnitFactory.Create(EUnitType.INFANTRY, borneo, Japan, true);
+        ALandUnit inf151 = LandUnitFactory.Create(EUnitType.INFANTRY, neuguniea, Japan, true);
+        ALandUnit inf152 = LandUnitFactory.Create(EUnitType.INFANTRY, salomon_inseln, Japan, true);
 
         inf128.Id = 128;
         inf129.Id = 129;
@@ -4542,24 +4617,24 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         inf151.Id = 151;
         inf152.Id = 152;
 
-        LandUnit transinf153 = LandUnitFactory.Create(EUnitType.INFANTRY, null, Japan, true);
-        LandUnit transinf154 = LandUnitFactory.Create(EUnitType.INFANTRY, null, Japan, true);
+        ALandUnit transinf153 = LandUnitFactory.Create(EUnitType.INFANTRY, null, Japan, true);
+        ALandUnit transinf154 = LandUnitFactory.Create(EUnitType.INFANTRY, null, Japan, true);
 
         transinf153.Id = 153;
         transinf154.Id = 154;
 
-        LandUnit pan155 = LandUnitFactory.Create(EUnitType.TANK, japan, Japan, true);
+        ALandUnit pan155 = LandUnitFactory.Create(EUnitType.TANK, japan, Japan, true);
 
         pan155.Id = 155;
 
-        LandUnit flak156 = LandUnitFactory.Create(EUnitType.ANTI_AIR, japan, Japan, true);
+        ALandUnit flak156 = LandUnitFactory.Create(EUnitType.ANTI_AIR, japan, Japan, true);
 
         flak156.Id = 156;
 
-        LandUnit art157 = LandUnitFactory.Create(EUnitType.ARTILLERY, japan, Japan, true);
-        LandUnit art158 = LandUnitFactory.Create(EUnitType.ARTILLERY, guandong, Japan, true);
-        LandUnit art159 = LandUnitFactory.Create(EUnitType.ARTILLERY, französisch_indochina_thailand, Japan, true);
-        LandUnit art160 = LandUnitFactory.Create(EUnitType.ARTILLERY, philippinische_inseln, Japan, true);
+        ALandUnit art157 = LandUnitFactory.Create(EUnitType.ARTILLERY, japan, Japan, true);
+        ALandUnit art158 = LandUnitFactory.Create(EUnitType.ARTILLERY, guandong, Japan, true);
+        ALandUnit art159 = LandUnitFactory.Create(EUnitType.ARTILLERY, französisch_indochina_thailand, Japan, true);
+        ALandUnit art160 = LandUnitFactory.Create(EUnitType.ARTILLERY, philippinische_inseln, Japan, true);
 
         art157.Id = 157;
         art158.Id = 158;
@@ -4570,12 +4645,12 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region GermanPlanes
 
-        Plane figh161 = PlaneFactory.Create(EUnitType.FIGHTER, deutschland, Germany, true);
-        Plane figh162 = PlaneFactory.Create(EUnitType.FIGHTER, nordwesteuropa, Germany, true);
-        Plane figh163 = PlaneFactory.Create(EUnitType.FIGHTER, polen, Germany, true);
-        Plane figh164 = PlaneFactory.Create(EUnitType.FIGHTER, ukrainischessr, Germany, true);
-        Plane figh165 = PlaneFactory.Create(EUnitType.FIGHTER, bulgarien_rumänien, Germany, true);
-        Plane figh166 = PlaneFactory.Create(EUnitType.FIGHTER, norwegen, Germany, true);
+        APlane figh161 = PlaneFactory.Create(EUnitType.FIGHTER, deutschland, Germany, true);
+        APlane figh162 = PlaneFactory.Create(EUnitType.FIGHTER, nordwesteuropa, Germany, true);
+        APlane figh163 = PlaneFactory.Create(EUnitType.FIGHTER, polen, Germany, true);
+        APlane figh164 = PlaneFactory.Create(EUnitType.FIGHTER, ukrainischessr, Germany, true);
+        APlane figh165 = PlaneFactory.Create(EUnitType.FIGHTER, bulgarien_rumänien, Germany, true);
+        APlane figh166 = PlaneFactory.Create(EUnitType.FIGHTER, norwegen, Germany, true);
 
         figh161.Id = 161;
         figh162.Id = 162;
@@ -4584,7 +4659,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         figh165.Id = 165;
         figh166.Id = 166;
 
-        Plane bomb167 = PlaneFactory.Create(EUnitType.BOMBER, deutschland, Germany, true);
+        APlane bomb167 = PlaneFactory.Create(EUnitType.BOMBER, deutschland, Germany, true);
 
         bomb167.Id = 167;
 
@@ -4592,8 +4667,8 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region RussianPlanes
 
-        Plane figh168 = PlaneFactory.Create(EUnitType.FIGHTER, russland, Soviet_Union, true);
-        Plane figh169 = PlaneFactory.Create(EUnitType.FIGHTER, karelo_finnnischessr, Soviet_Union, true);
+        APlane figh168 = PlaneFactory.Create(EUnitType.FIGHTER, russland, Soviet_Union, true);
+        APlane figh169 = PlaneFactory.Create(EUnitType.FIGHTER, karelo_finnnischessr, Soviet_Union, true);
 
         figh168.Id = 168;
         figh169.Id = 169;
@@ -4602,17 +4677,17 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region BritishPlanes
 
-        Plane figh170 = PlaneFactory.Create(EUnitType.FIGHTER, vereinigtes_königreich, United_Kingdom, true);
-        Plane figh171 = PlaneFactory.Create(EUnitType.FIGHTER, vereinigtes_königreich, United_Kingdom, true);
-        Plane figh172 = PlaneFactory.Create(EUnitType.FIGHTER, ägypten, United_Kingdom, true);
-        Plane figh173 = PlaneFactory.Create(EUnitType.FIGHTER, see35, United_Kingdom, true);
+        APlane figh170 = PlaneFactory.Create(EUnitType.FIGHTER, vereinigtes_königreich, United_Kingdom, true);
+        APlane figh171 = PlaneFactory.Create(EUnitType.FIGHTER, vereinigtes_königreich, United_Kingdom, true);
+        APlane figh172 = PlaneFactory.Create(EUnitType.FIGHTER, ägypten, United_Kingdom, true);
+        APlane figh173 = PlaneFactory.Create(EUnitType.FIGHTER, see35, United_Kingdom, true);
 
         figh170.Id = 170;
         figh171.Id = 171;
         figh172.Id = 172;
         figh173.Id = 173;
 
-        Plane bomb174 = PlaneFactory.Create(EUnitType.BOMBER, vereinigtes_königreich, United_Kingdom, true);
+        APlane bomb174 = PlaneFactory.Create(EUnitType.BOMBER, vereinigtes_königreich, United_Kingdom, true);
 
         bomb174.Id = 174;
 
@@ -4620,11 +4695,11 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region USAPlanes
 
-        Plane figh175 = PlaneFactory.Create(EUnitType.FIGHTER, östliche_vereinigte_staaten, United_States, true);
-        Plane figh176 = PlaneFactory.Create(EUnitType.FIGHTER, westliche_vereinigte_staaten, United_States, true);
-        Plane figh177 = PlaneFactory.Create(EUnitType.FIGHTER, hawaii_inseln, United_States, true);
-        Plane figh178 = PlaneFactory.Create(EUnitType.FIGHTER, see53, United_States, true);
-        Plane figh179 = PlaneFactory.Create(EUnitType.FIGHTER, sezuan, United_States, true);
+        APlane figh175 = PlaneFactory.Create(EUnitType.FIGHTER, östliche_vereinigte_staaten, United_States, true);
+        APlane figh176 = PlaneFactory.Create(EUnitType.FIGHTER, westliche_vereinigte_staaten, United_States, true);
+        APlane figh177 = PlaneFactory.Create(EUnitType.FIGHTER, hawaii_inseln, United_States, true);
+        APlane figh178 = PlaneFactory.Create(EUnitType.FIGHTER, see53, United_States, true);
+        APlane figh179 = PlaneFactory.Create(EUnitType.FIGHTER, sezuan, United_States, true);
 
         figh175.Id = 175;
         figh176.Id = 176;
@@ -4632,7 +4707,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         figh178.Id = 178;
         figh179.Id = 179;
 
-        Plane bomb180 = PlaneFactory.Create(EUnitType.BOMBER, östliche_vereinigte_staaten, United_States, true);
+        APlane bomb180 = PlaneFactory.Create(EUnitType.BOMBER, östliche_vereinigte_staaten, United_States, true);
 
         bomb180.Id = 180;
 
@@ -4640,12 +4715,12 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region JapanPlanes
 
-        Plane figh181 = PlaneFactory.Create(EUnitType.FIGHTER, japan, Japan, true);
-        Plane figh182 = PlaneFactory.Create(EUnitType.FIGHTER, mandschurei, Japan, true);
-        Plane figh183 = PlaneFactory.Create(EUnitType.FIGHTER, französisch_indochina_thailand, Japan, true);
-        Plane figh184 = PlaneFactory.Create(EUnitType.FIGHTER, see37, Japan, true);
-        Plane figh185 = PlaneFactory.Create(EUnitType.FIGHTER, see37, Japan, true);
-        Plane figh186 = PlaneFactory.Create(EUnitType.FIGHTER, see50, Japan, true);
+        APlane figh181 = PlaneFactory.Create(EUnitType.FIGHTER, japan, Japan, true);
+        APlane figh182 = PlaneFactory.Create(EUnitType.FIGHTER, mandschurei, Japan, true);
+        APlane figh183 = PlaneFactory.Create(EUnitType.FIGHTER, französisch_indochina_thailand, Japan, true);
+        APlane figh184 = PlaneFactory.Create(EUnitType.FIGHTER, see37, Japan, true);
+        APlane figh185 = PlaneFactory.Create(EUnitType.FIGHTER, see37, Japan, true);
+        APlane figh186 = PlaneFactory.Create(EUnitType.FIGHTER, see50, Japan, true);
 
         figh181.Id = 181;
         figh182.Id = 182;
@@ -4654,7 +4729,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         figh185.Id = 185;
         figh186.Id = 186;
 
-        Plane bomb187 = PlaneFactory.Create(EUnitType.BOMBER, japan, Japan, true);
+        APlane bomb187 = PlaneFactory.Create(EUnitType.BOMBER, japan, Japan, true);
 
         bomb187.Id = 187;
 
@@ -4662,26 +4737,26 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region GermanShips
 
-        Ship sub188 = ShipFactory.Create(EUnitType.SUBMARINE, see9, Germany, true);
-        Ship sub189 = ShipFactory.Create(EUnitType.SUBMARINE, see9, Germany, true);
-        Ship sub190 = ShipFactory.Create(EUnitType.SUBMARINE, see5, Germany, true);
-        Ship sub191 = ShipFactory.Create(EUnitType.SUBMARINE, see5, Germany, true);
+        AShip sub188 = ShipFactory.Create(EUnitType.SUBMARINE, see9, Germany, true);
+        AShip sub189 = ShipFactory.Create(EUnitType.SUBMARINE, see9, Germany, true);
+        AShip sub190 = ShipFactory.Create(EUnitType.SUBMARINE, see5, Germany, true);
+        AShip sub191 = ShipFactory.Create(EUnitType.SUBMARINE, see5, Germany, true);
 
         sub188.Id = 188;
         sub189.Id = 189;
         sub190.Id = 190;
         sub191.Id = 191;
 
-        Ship crs192 = ShipFactory.Create(EUnitType.CRUISER, see5, Germany, true);
+        AShip crs192 = ShipFactory.Create(EUnitType.CRUISER, see5, Germany, true);
 
         crs192.Id = 192;
 
-        Ship bat193 = ShipFactory.Create(EUnitType.BATTLESHIP, see15, Germany, true);
+        AShip bat193 = ShipFactory.Create(EUnitType.BATTLESHIP, see15, Germany, true);
 
         bat193.Id = 193;
 
-        Ship t1 = ShipFactory.Create(EUnitType.TRANSPORT, see5, Germany, true);
-        Ship t2 = ShipFactory.Create(EUnitType.TRANSPORT, see15, Germany, true);
+        AShip t1 = ShipFactory.Create(EUnitType.TRANSPORT, see5, Germany, true);
+        AShip t2 = ShipFactory.Create(EUnitType.TRANSPORT, see15, Germany, true);
 
         Transport tra194 = (Transport)t1;
         Transport tra195 = (Transport)t2;
@@ -4695,7 +4770,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region RussianShips
 
-        Ship sub196 = ShipFactory.Create(EUnitType.SUBMARINE, see4, Soviet_Union, true);
+        AShip sub196 = ShipFactory.Create(EUnitType.SUBMARINE, see4, Soviet_Union, true);
 
         sub196.Id = 196;
 
@@ -4703,32 +4778,32 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region BritishShips
 
-        Ship crs197 = ShipFactory.Create(EUnitType.CRUISER, see14, United_Kingdom, true);
-        Ship crs198 = ShipFactory.Create(EUnitType.CRUISER, see35, United_Kingdom, true);
-        Ship crs199 = ShipFactory.Create(EUnitType.CRUISER, see39, United_Kingdom, true);
+        AShip crs197 = ShipFactory.Create(EUnitType.CRUISER, see14, United_Kingdom, true);
+        AShip crs198 = ShipFactory.Create(EUnitType.CRUISER, see35, United_Kingdom, true);
+        AShip crs199 = ShipFactory.Create(EUnitType.CRUISER, see39, United_Kingdom, true);
 
         crs197.Id = 197;
         crs198.Id = 198;
         crs199.Id = 199;
 
-        Ship des200 = ShipFactory.Create(EUnitType.DESTROYER, see10, United_Kingdom, true);
-        Ship des201 = ShipFactory.Create(EUnitType.DESTROYER, see17, United_Kingdom, true);
+        AShip des200 = ShipFactory.Create(EUnitType.DESTROYER, see10, United_Kingdom, true);
+        AShip des201 = ShipFactory.Create(EUnitType.DESTROYER, see17, United_Kingdom, true);
 
         des200.Id = 200;
         des201.Id = 201;
 
-        Ship sub202 = ShipFactory.Create(EUnitType.SUBMARINE, see39, United_Kingdom, true);
+        AShip sub202 = ShipFactory.Create(EUnitType.SUBMARINE, see39, United_Kingdom, true);
 
         sub202.Id = 202;
 
-        Ship bat203 = ShipFactory.Create(EUnitType.BATTLESHIP, see7, United_Kingdom, true);
+        AShip bat203 = ShipFactory.Create(EUnitType.BATTLESHIP, see7, United_Kingdom, true);
 
         bat203.Id = 203;
 
-        Ship t3 = ShipFactory.Create(EUnitType.TRANSPORT, see10, United_Kingdom, true);
-        Ship t4 = ShipFactory.Create(EUnitType.TRANSPORT, see7, Germany, true);
-        Ship t5 = ShipFactory.Create(EUnitType.TRANSPORT, see35, Germany, true);
-        Ship t6 = ShipFactory.Create(EUnitType.TRANSPORT, see39, Germany, true);
+        AShip t3 = ShipFactory.Create(EUnitType.TRANSPORT, see10, United_Kingdom, true);
+        AShip t4 = ShipFactory.Create(EUnitType.TRANSPORT, see7, United_Kingdom, true);
+        AShip t5 = ShipFactory.Create(EUnitType.TRANSPORT, see35, United_Kingdom, true);
+        AShip t6 = ShipFactory.Create(EUnitType.TRANSPORT, see39, United_Kingdom, true);
 
         Transport tra204 = (Transport)t3;
         Transport tra205 = (Transport)t4;
@@ -4745,7 +4820,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         transinf98.TransportId = 206;
         transinf99.TransportId = 207;
 
-        Ship a1 = ShipFactory.Create(EUnitType.AIRCRAFT_CARRIER, see35, United_Kingdom, true);
+        AShip a1 = ShipFactory.Create(EUnitType.AIRCRAFT_CARRIER, see35, United_Kingdom, true);
 
         AircraftCarrier air208 = (AircraftCarrier)a1;
 
@@ -4757,29 +4832,29 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region USAShips
 
-        Ship sub209 = ShipFactory.Create(EUnitType.SUBMARINE, see53, United_States, true);
+        AShip sub209 = ShipFactory.Create(EUnitType.SUBMARINE, see53, United_States, true);
 
         sub209.Id = 209;
 
-        Ship des210 = ShipFactory.Create(EUnitType.DESTROYER, see53, United_States, true);
-        Ship des211 = ShipFactory.Create(EUnitType.DESTROYER, see56, United_States, true);
-        Ship des212 = ShipFactory.Create(EUnitType.DESTROYER, see11, United_States, true);
+        AShip des210 = ShipFactory.Create(EUnitType.DESTROYER, see53, United_States, true);
+        AShip des211 = ShipFactory.Create(EUnitType.DESTROYER, see56, United_States, true);
+        AShip des212 = ShipFactory.Create(EUnitType.DESTROYER, see11, United_States, true);
 
         des210.Id = 210;
         des211.Id = 211;
         des212.Id = 212;
 
-        Ship crs213 = ShipFactory.Create(EUnitType.CRUISER, see19, United_States, true);
+        AShip crs213 = ShipFactory.Create(EUnitType.CRUISER, see19, United_States, true);
 
         crs213.Id = 213;
 
-        Ship bat214 = ShipFactory.Create(EUnitType.BATTLESHIP, see56, United_States, true);
+        AShip bat214 = ShipFactory.Create(EUnitType.BATTLESHIP, see56, United_States, true);
 
         bat214.Id = 214;
 
-        Ship t7 = ShipFactory.Create(EUnitType.TRANSPORT, see56, United_States, true);
-        Ship t8 = ShipFactory.Create(EUnitType.TRANSPORT, see11, United_States, true);
-        Ship t9 = ShipFactory.Create(EUnitType.TRANSPORT, see11, United_States, true);
+        AShip t7 = ShipFactory.Create(EUnitType.TRANSPORT, see56, United_States, true);
+        AShip t8 = ShipFactory.Create(EUnitType.TRANSPORT, see11, United_States, true);
+        AShip t9 = ShipFactory.Create(EUnitType.TRANSPORT, see11, United_States, true);
 
         Transport tra215 = (Transport)t7;
         Transport tra216 = (Transport)t8;
@@ -4793,7 +4868,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         transinf122.TransportId = 216;
         transinf123.TransportId = 217;
 
-        Ship a2 = ShipFactory.Create(EUnitType.AIRCRAFT_CARRIER, see53, United_States, true);
+        AShip a2 = ShipFactory.Create(EUnitType.AIRCRAFT_CARRIER, see53, United_States, true);
 
         AircraftCarrier air218 = (AircraftCarrier)a2;
 
@@ -4805,28 +4880,28 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region JapanShips
 
-        Ship sub219 = ShipFactory.Create(EUnitType.SUBMARINE, see44, Japan, true);
+        AShip sub219 = ShipFactory.Create(EUnitType.SUBMARINE, see44, Japan, true);
 
         sub219.Id = 219;
 
-        Ship crs220 = ShipFactory.Create(EUnitType.CRUISER, see50, Japan, true);
+        AShip crs220 = ShipFactory.Create(EUnitType.CRUISER, see50, Japan, true);
 
         crs220.Id = 220;
 
-        Ship des221 = ShipFactory.Create(EUnitType.DESTROYER, see60, Japan, true);
-        Ship des222 = ShipFactory.Create(EUnitType.DESTROYER, see61, Japan, true);
+        AShip des221 = ShipFactory.Create(EUnitType.DESTROYER, see60, Japan, true);
+        AShip des222 = ShipFactory.Create(EUnitType.DESTROYER, see61, Japan, true);
 
         des221.Id = 221;
         des222.Id = 222;
 
-        Ship bat223 = ShipFactory.Create(EUnitType.BATTLESHIP, see60, Japan, true);
-        Ship bat224 = ShipFactory.Create(EUnitType.BATTLESHIP, see37, Japan, true);
+        AShip bat223 = ShipFactory.Create(EUnitType.BATTLESHIP, see60, Japan, true);
+        AShip bat224 = ShipFactory.Create(EUnitType.BATTLESHIP, see37, Japan, true);
 
         bat223.Id = 223;
         bat224.Id = 224;
 
-        Ship t10 = ShipFactory.Create(EUnitType.TRANSPORT, see60, Japan, true);
-        Ship t11 = ShipFactory.Create(EUnitType.TRANSPORT, see61, Japan, true);
+        AShip t10 = ShipFactory.Create(EUnitType.TRANSPORT, see60, Japan, true);
+        AShip t11 = ShipFactory.Create(EUnitType.TRANSPORT, see61, Japan, true);
 
         Transport tra225 = (Transport)t10;
         Transport tra226 = (Transport)t11;
@@ -4837,8 +4912,8 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         transinf153.TransportId = 225;
         transinf154.TransportId = 226;
 
-        Ship a3 = ShipFactory.Create(EUnitType.AIRCRAFT_CARRIER, see50, Japan, true);
-        Ship a4 = ShipFactory.Create(EUnitType.AIRCRAFT_CARRIER, see37, Japan, true);
+        AShip a3 = ShipFactory.Create(EUnitType.AIRCRAFT_CARRIER, see50, Japan, true);
+        AShip a4 = ShipFactory.Create(EUnitType.AIRCRAFT_CARRIER, see37, Japan, true);
 
         AircraftCarrier air227 = (AircraftCarrier)a3;
         AircraftCarrier air228 = (AircraftCarrier)a4;
@@ -4852,33 +4927,42 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #endregion
 
-        builder.Entity<Ship>().HasData(new List<Ship>(){
-            sub188,
-            sub189,
-            sub190,
-            sub191,
-            crs192,
-            bat193,
-            sub196,
-            crs197,
-            crs198,
-            crs199,
-            des200,
-            des201,
-            sub202,
-            bat203,
-            sub209,
-            des210,
-            des211,
-            des212,
-            crs213,
-            bat214,
-            sub219,
-            crs220,
-            des221,
-            des222,
-            bat223,
-            bat224
+        builder.Entity<Battleship>().HasData(new List<Battleship>(){
+            (Battleship)bat193,
+            (Battleship)bat203,
+            (Battleship)bat214,
+            (Battleship)bat223,
+            (Battleship)bat224
+        });
+
+        builder.Entity<Cruiser>().HasData(new List<Cruiser>(){
+            (Cruiser)crs192,
+            (Cruiser)crs197,
+            (Cruiser)crs198,
+            (Cruiser)crs199,
+            (Cruiser)crs213,
+            (Cruiser)crs220
+        });
+
+        builder.Entity<Destroyer>().HasData(new List<Destroyer>(){
+            (Destroyer)des200,
+            (Destroyer)des201,
+            (Destroyer)des210,
+            (Destroyer)des211,
+            (Destroyer)des212,
+            (Destroyer)des221,
+            (Destroyer)des222
+        });
+
+        builder.Entity<Submarine>().HasData(new List<Submarine>(){
+            (Submarine)sub188,
+            (Submarine)sub189,
+            (Submarine)sub190,
+            (Submarine)sub191,
+            (Submarine)sub196,
+            (Submarine)sub202,
+            (Submarine)sub209,
+            (Submarine)sub219
         });
 
         builder.Entity<Transport>().HasData(new List<Transport>(){
@@ -4902,197 +4986,209 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             air228
         });
 
-        builder.Entity<LandUnit>().HasData(new List<LandUnit>(){
-            inf1,
-            inf2,
-            inf3,
-            inf4,
-            inf5,
-            inf6,
-            inf7,
-            inf8,
-            inf9,
-            inf10,
-            inf11,
-            inf12,
-            inf13,
-            inf14,
-            inf15,
-            inf16,
-            inf17,
-            inf18,
-            inf19,
-            inf20,
-            inf21,
-            inf22,
-            inf23,
-            inf24,
-            inf25,
-            inf26,
-            inf27,
-            inf28,
-            inf29,
-            transinf30,
-            transinf31,
-            pan32,
-            pan33,
-            pan34,
-            pan35,
-            pan36,
-            pan37,
-            pan38,
-            pan39,
-            pan40,
-            pan41,
-            pan42,
-            pan43,
-            flak44,
-            flak45,
-            flak46,
-            art47,
-            art48,
-            art49,
-            art50,
-            inf51,
-            inf52,
-            inf53,
-            inf54,
-            inf55,
-            inf56,
-            inf57,
-            inf58,
-            inf59,
-            inf60,
-            inf61,
-            inf62,
-            inf63,
-            inf64,
-            inf65,
-            inf66,
-            inf67,
-            inf68,
-            inf69,
-            inf70,
-            inf71,
-            pan72,
-            pan73,
-            pan74,
-            pan75,
-            flak76,
-            flak77,
-            art78,
-            art79,
-            art80,
-            inf81,
-            inf82,
-            inf83,
-            inf84,
-            inf85,
-            inf86,
-            inf87,
-            inf88,
-            inf89,
-            inf90,
-            inf91,
-            inf92,
-            inf93,
-            inf94,
-            inf95,
-            transinf96,
-            transinf97,
-            transinf98,
-            transinf99,
-            pan100,
-            pan101,
-            pan102,
-            flak103,
-            flak104,
-            art105,
-            art106,
-            inf107,
-            inf108,
-            inf109,
-            inf110,
-            inf111,
-            inf112,
-            inf113,
-            inf114,
-            inf115,
-            inf116,
-            inf117,
-            inf118,
-            inf119,
-            inf120,
-            transinf121,
-            transinf122,
-            transinf123,
-            pan124,
-            flak125,
-            flak126,
-            art127,
-            inf128,
-            inf129,
-            inf130,
-            inf131,
-            inf132,
-            inf133,
-            inf134,
-            inf135,
-            inf136,
-            inf137,
-            inf138,
-            inf139,
-            inf140,
-            inf141,
-            inf142,
-            inf143,
-            inf144,
-            inf145,
-            inf146,
-            inf147,
-            inf148,
-            inf149,
-            inf150,
-            inf151,
-            inf152,
-            transinf153,
-            transinf154,
-            pan155,
-            flak156,
-            art157,
-            art158,
-            art159,
-            art160
+        builder.Entity<Infantry>().HasData(new List<Infantry>(){
+            (Infantry)inf1,
+            (Infantry)inf2,
+            (Infantry)inf3,
+            (Infantry)inf4,
+            (Infantry)inf5,
+            (Infantry)inf6,
+            (Infantry)inf7,
+            (Infantry)inf8,
+            (Infantry)inf9,
+            (Infantry)inf10,
+            (Infantry)inf11,
+            (Infantry)inf12,
+            (Infantry)inf13,
+            (Infantry)inf14,
+            (Infantry)inf15,
+            (Infantry)inf16,
+            (Infantry)inf17,
+            (Infantry)inf18,
+            (Infantry)inf19,
+            (Infantry)inf20,
+            (Infantry)inf21,
+            (Infantry)inf22,
+            (Infantry)inf23,
+            (Infantry)inf24,
+            (Infantry)inf25,
+            (Infantry)inf26,
+            (Infantry)inf27,
+            (Infantry)inf28,
+            (Infantry)inf29,
+            (Infantry)transinf30,
+            (Infantry)transinf31,
+            (Infantry)inf51,
+            (Infantry)inf52,
+            (Infantry)inf53,
+            (Infantry)inf54,
+            (Infantry)inf55,
+            (Infantry)inf56,
+            (Infantry)inf57,
+            (Infantry)inf58,
+            (Infantry)inf59,
+            (Infantry)inf60,
+            (Infantry)inf61,
+            (Infantry)inf62,
+            (Infantry)inf63,
+            (Infantry)inf64,
+            (Infantry)inf65,
+            (Infantry)inf66,
+            (Infantry)inf67,
+            (Infantry)inf68,
+            (Infantry)inf69,
+            (Infantry)inf70,
+            (Infantry)inf71,
+            (Infantry)inf81,
+            (Infantry)inf82,
+            (Infantry)inf83,
+            (Infantry)inf84,
+            (Infantry)inf85,
+            (Infantry)inf86,
+            (Infantry)inf87,
+            (Infantry)inf88,
+            (Infantry)inf89,
+            (Infantry)inf90,
+            (Infantry)inf91,
+            (Infantry)inf92,
+            (Infantry)inf93,
+            (Infantry)inf94,
+            (Infantry)inf95,
+            (Infantry)transinf96,
+            (Infantry)transinf97,
+            (Infantry)transinf98,
+            (Infantry)transinf99,
+            (Infantry)inf107,
+            (Infantry)inf108,
+            (Infantry)inf109,
+            (Infantry)inf110,
+            (Infantry)inf111,
+            (Infantry)inf112,
+            (Infantry)inf113,
+            (Infantry)inf114,
+            (Infantry)inf115,
+            (Infantry)inf116,
+            (Infantry)inf117,
+            (Infantry)inf118,
+            (Infantry)inf119,
+            (Infantry)inf120,
+            (Infantry)transinf121,
+            (Infantry)transinf122,
+            (Infantry)transinf123,
+            (Infantry)inf128,
+            (Infantry)inf129,
+            (Infantry)inf130,
+            (Infantry)inf131,
+            (Infantry)inf132,
+            (Infantry)inf133,
+            (Infantry)inf134,
+            (Infantry)inf135,
+            (Infantry)inf136,
+            (Infantry)inf137,
+            (Infantry)inf138,
+            (Infantry)inf139,
+            (Infantry)inf140,
+            (Infantry)inf141,
+            (Infantry)inf142,
+            (Infantry)inf143,
+            (Infantry)inf144,
+            (Infantry)inf145,
+            (Infantry)inf146,
+            (Infantry)inf147,
+            (Infantry)inf148,
+            (Infantry)inf149,
+            (Infantry)inf150,
+            (Infantry)inf151,
+            (Infantry)inf152,
+            (Infantry)transinf153,
+            (Infantry)transinf154
         });
 
-        builder.Entity<Plane>().HasData(new List<Plane>(){
-            figh161,
-            figh162,
-            figh163,
-            figh164,
-            figh165,
-            figh166,
-            bomb167,
-            figh168,
-            figh169,
-            figh170,
-            figh171,
-            figh172,
-            figh173,
-            bomb174,
-            figh175,
-            figh176,
-            figh177,
-            figh178,
-            figh179,
-            bomb180,
-            figh181,
-            figh182,
-            figh183,
-            figh184,
-            figh185,
-            figh186,
-            bomb187
+        builder.Entity<Tank>().HasData(new List<Tank>(){
+            (Tank)pan32,
+            (Tank)pan33,
+            (Tank)pan34,
+            (Tank)pan35,
+            (Tank)pan36,
+            (Tank)pan37,
+            (Tank)pan38,
+            (Tank)pan39,
+            (Tank)pan40,
+            (Tank)pan41,
+            (Tank)pan42,
+            (Tank)pan43,
+            (Tank)pan72,
+            (Tank)pan73,
+            (Tank)pan74,
+            (Tank)pan75,
+            (Tank)pan100,
+            (Tank)pan101,
+            (Tank)pan102,
+            (Tank)pan124,
+            (Tank)pan155
+        });
+
+        builder.Entity<Artillery>().HasData(new List<Artillery>(){
+            (Artillery)art47,
+            (Artillery)art48,
+            (Artillery)art49,
+            (Artillery)art50,
+            (Artillery)art78,
+            (Artillery)art79,
+            (Artillery)art80,
+            (Artillery)art105,
+            (Artillery)art106,
+            (Artillery)art127,
+            (Artillery)art157,
+            (Artillery)art158,
+            (Artillery)art159,
+            (Artillery)art160
+        });
+
+        builder.Entity<AntiAir>().HasData(new List<AntiAir>(){
+            (AntiAir)flak44,
+            (AntiAir)flak45,
+            (AntiAir)flak46,
+            (AntiAir)flak76,
+            (AntiAir)flak77,
+            (AntiAir)flak103,
+            (AntiAir)flak104,
+            (AntiAir)flak125,
+            (AntiAir)flak126,
+            (AntiAir)flak156
+        });
+
+        builder.Entity<Fighter>().HasData(new List<Fighter>(){
+            (Fighter)figh161,
+            (Fighter)figh162,
+            (Fighter)figh163,
+            (Fighter)figh164,
+            (Fighter)figh165,
+            (Fighter)figh166,
+            (Fighter)figh168,
+            (Fighter)figh169,
+            (Fighter)figh170,
+            (Fighter)figh171,
+            (Fighter)figh172,
+            (Fighter)figh173,
+            (Fighter)figh175,
+            (Fighter)figh176,
+            (Fighter)figh177,
+            (Fighter)figh178,
+            (Fighter)figh179,
+            (Fighter)figh181,
+            (Fighter)figh182,
+            (Fighter)figh183,
+            (Fighter)figh184,
+            (Fighter)figh185,
+            (Fighter)figh186
+        });
+
+        builder.Entity<Bomber>().HasData(new List<Bomber>(){
+            (Bomber)bomb167,
+            (Bomber)bomb174,
+            (Bomber)bomb180,
+            (Bomber)bomb187
         });
 
         builder.Entity<SessionInfo>().HasData(new SessionInfo(){

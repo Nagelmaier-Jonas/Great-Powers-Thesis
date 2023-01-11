@@ -16,7 +16,7 @@ public abstract class ARegion{
     [Column("NAME", TypeName = "VARCHAR(45)")]
     public string Name{ get; set; }
 
-    public List<Neighbours> Neighbours{ get; set; }
+    public List<Neighbours> Neighbours{ get; set; } = new List<Neighbours>();
 
     [Column("IDENTIFIER", TypeName = "VARCHAR(45)")] 
     public ERegion Identifier{ get; set; }
@@ -27,11 +27,10 @@ public abstract class ARegion{
     [Column("POSITION_Y")]
     public int? PositionY{ get; set; }
 
-    public List<Plane> StationedPlanes{ get; set; } = new List<Plane>();
-    public List<Plane> IncomingPlanes{ get; set; } = new List<Plane>();
+    public List<APlane> StationedPlanes{ get; set; } = new List<APlane>();
     
-    public List<Ship> IncomingShips{ get; set; } = new List<Ship>();
-    
+    public List<AUnit> IncomingUnits{ get; set; } = new List<AUnit>();
+
     public List<AUnit> GetStationedFriendlyUnits(Nation nation) => GetStationedUnits()
         .Where(u => u.Nation == nation || u.Nation.Allies.Any(a => a.Ally == nation)).ToList();
 
@@ -43,35 +42,53 @@ public abstract class ARegion{
 
     public bool IsHostile(Nation nation){
         if (IsWaterRegion()) return ContainsEnemies(nation);
-        return GetOwner() != nation || GetOwner().Allies.All(a => a.Ally != nation);
+        return GetOwner() != nation && GetOwner().Allies.All(a => a.Ally != nation);
     }
 
     public List<AircraftCarrier> GetOpenAircraftCarriers(Nation nation){
         List<AUnit> carriers = GetStationedUnits().Where(u =>
             u.Type == EUnitType.AIRCRAFT_CARRIER &&
-            (u.Nation == nation || nation.Allies.Any(a => a.Ally == u.Nation)) && u.GetTarget() == null).ToList();
+            (u.Nation == nation || nation.Allies.Any(a => a.Ally == u.Nation)) && u.Target == null).ToList();
         
-        carriers.AddRange(IncomingShips.Where(u =>
+        carriers.AddRange(IncomingUnits.Where(u =>
                 u.Type == EUnitType.AIRCRAFT_CARRIER &&
                 (u.Nation == nation || nation.Allies.Any(a => a.Ally == u.Nation))).ToList());
         
         List<AircraftCarrier> result = carriers.Cast<AircraftCarrier>().ToList();
-        result.RemoveAll(c => c.Planes.Count >= 2);
-        return result;
+        
+        int incomingUnits = IncomingUnits.Where(u => u.Type is EUnitType.FIGHTER or EUnitType.BOMBER).ToList().Count;
+        
+        List<AircraftCarrier> openCarriers = new List<AircraftCarrier>();
+        
+        foreach (var aircraftCarrier in result){
+            incomingUnits += aircraftCarrier.Planes.Count - 2;
+            if (incomingUnits < 0) openCarriers.Add(aircraftCarrier);
+        }
+        
+        return openCarriers;
     }
     
-    public List<Transport> GetOpenTransports(Nation nation){
-        List<AUnit> carriers = GetStationedUnits().Where(u =>
+    public List<Transport> GetOpenTransports(Nation nation, EPhase phase){
+        List<AUnit> transports = GetStationedUnits().Where(u =>
             u.Type == EUnitType.TRANSPORT &&
-            (u.Nation == nation || nation.Allies.Any(a => a.Ally == u.Nation))).ToList();
+            (u.Nation == nation || nation.Allies.Any(a => a.Ally == u.Nation) && ((u.Target != null && u.Target.IsLandRegion()) || phase == EPhase.NonCombatMove))).ToList();
         
-        carriers.AddRange(IncomingShips.Where(u =>
+        transports.AddRange(IncomingUnits.Where(u =>
             u.Type == EUnitType.TRANSPORT &&
             (u.Nation == nation || nation.Allies.Any(a => a.Ally == u.Nation))).ToList());
         
-        List<Transport> result = carriers.Cast<Transport>().ToList();
-        result.RemoveAll(c => c.Units.Count >= 2);
-        return result;
+        List<Transport> result = transports.Cast<Transport>().ToList();
+        
+        int incomingUnits = IncomingUnits.Where(u => u.Type is EUnitType.TANK or EUnitType.INFANTRY or EUnitType.ARTILLERY or EUnitType.ANTI_AIR).ToList().Count;
+
+        List<Transport> openTransports = new List<Transport>();
+
+        foreach (var transporter in result){
+            incomingUnits += transporter.Units.Count - 2;
+            if (incomingUnits < 0) openTransports.Add(transporter);
+        }
+        
+        return openTransports;
     }
 
     public Dictionary<EUnitType, int> GetStationedUnitCounts(){

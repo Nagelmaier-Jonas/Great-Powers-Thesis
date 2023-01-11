@@ -5,7 +5,7 @@ namespace Model.Entities.Regions;
 
 [Table("WATER_REGIONS")]
 public class WaterRegion : ARegion{
-    public List<Ship> StationedShips{ get; set; } = new List<Ship>();
+    public List<AShip> StationedShips{ get; set; } = new List<AShip>();
 
     public override List<AUnit> GetStationedUnits(){
         List<AUnit> units = new List<AUnit>();

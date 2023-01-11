@@ -5,14 +5,14 @@ using Model.Entities.Units;
 namespace Model.Factories;
 
 public static class ShipFactory{
-    public static Ship Create(EUnitType type, WaterRegion region, Nation nation, bool seeding = false){
-        Ship unit = type switch{
-            EUnitType.DESTROYER => new(2, 8, 2, 2),
-            EUnitType.CRUISER => new(2, 12, 3, 3),
-            EUnitType.SUBMARINE => new(2, 6, 2, 1),
-            EUnitType.AIRCRAFT_CARRIER => new AircraftCarrier(2, 14, 1, 2),
-            EUnitType.TRANSPORT => new Transport(2, 7, 0, 0),
-            EUnitType.BATTLESHIP => new(2, 20, 4, 4),
+    public static AShip Create(EUnitType type, WaterRegion region, Nation nation, bool seeding = false){
+        AShip unit = type switch{
+            EUnitType.DESTROYER => new Destroyer(),
+            EUnitType.CRUISER => new Cruiser(),
+            EUnitType.SUBMARINE => new Submarine(),
+            EUnitType.AIRCRAFT_CARRIER => new AircraftCarrier(),
+            EUnitType.TRANSPORT => new Transport(),
+            EUnitType.BATTLESHIP => new Battleship()
         };
         if (seeding){
             unit.RegionId = region.Id;

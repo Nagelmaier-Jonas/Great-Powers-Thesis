@@ -5,12 +5,12 @@ using Model.Entities.Units;
 namespace Model.Factories;
 
 public static class LandUnitFactory{
-    public static LandUnit Create(EUnitType type, LandRegion region, Nation nation, bool seeding = false){
-        LandUnit unit = type switch{
-            EUnitType.INFANTRY => new(1,3,1,2),
-            EUnitType.TANK => new(2,6,3,3),
-            EUnitType.ANTI_AIR => new(1,5,0,0),
-            EUnitType.ARTILLERY => new(1,4,2,2)
+    public static ALandUnit Create(EUnitType type, LandRegion region, Nation nation, bool seeding = false){
+        ALandUnit unit = type switch{
+            EUnitType.INFANTRY => new Infantry(),
+            EUnitType.TANK => new Tank(),
+            EUnitType.ANTI_AIR => new AntiAir(),
+            EUnitType.ARTILLERY => new Artillery()
         };
         if (seeding){
             if(region != null)unit.RegionId = region.Id;
