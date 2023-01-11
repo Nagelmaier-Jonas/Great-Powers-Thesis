@@ -34,4 +34,8 @@ public class Artillery : ALandUnit{
         }
         return false;
     }
+    
+    public override bool IsArtillery() => true;
+    
+    public override bool IsSameType(AUnit unit) => unit.IsArtillery();
 }

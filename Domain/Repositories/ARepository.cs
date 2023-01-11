@@ -15,16 +15,16 @@ public abstract class ARepository<TEntity> : IRepository<TEntity> where TEntity 
         _set = _context.Set<TEntity>();
     }
 
-    public async Task<TEntity?> ReadAsync(int id) => await _set.FindAsync(id);
+    public virtual async Task<TEntity?> ReadAsync(int id) => await _set.FindAsync(id);
     
 
-    public async Task<List<TEntity>> ReadAsync(Expression<Func<TEntity, bool>> filter)=> await _set.Where(filter).ToListAsync();
+    public virtual async Task<List<TEntity>> ReadAsync(Expression<Func<TEntity, bool>> filter)=> await _set.Where(filter).ToListAsync();
     
 
-    public async Task<List<TEntity>> ReadAllAsync()=> await _set.ToListAsync();
+    public virtual async Task<List<TEntity>> ReadAllAsync()=> await _set.ToListAsync();
     
 
-    public async Task<List<TEntity>> ReadAsync(int start, int count)=> await _set.Skip(start).Take(count).ToListAsync();
+    public virtual async Task<List<TEntity>> ReadAsync(int start, int count)=> await _set.Skip(start).Take(count).ToListAsync();
     
 
     public async Task UpdateAsync(TEntity entity)

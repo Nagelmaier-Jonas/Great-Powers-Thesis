@@ -9,4 +9,8 @@ public class Bomber : APlane{
     public override int Cost{ get; protected set; } = 12;
     public override int Attack{ get; protected set; } = 4;
     public override int Defense{ get; protected set; } = 1;
+    
+    public override bool IsBomber() => true;
+    
+    public override bool IsSameType(AUnit unit) => unit.IsBomber();
 }

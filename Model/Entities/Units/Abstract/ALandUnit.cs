@@ -15,7 +15,7 @@ public abstract class ALandUnit : AUnit{
 
     public override ARegion? GetLocation() => Region;
 
-    protected override bool SetLocation(ARegion region){
+    public override bool SetLocation(ARegion region){
         if (region.IsLandRegion()){
             Region = (LandRegion)region;
             return true;
@@ -24,4 +24,6 @@ public abstract class ALandUnit : AUnit{
     }
 
     public override List<AUnit> GetSubUnits() => null;
+    
+    public override bool IsLandUnit() => true;
 }

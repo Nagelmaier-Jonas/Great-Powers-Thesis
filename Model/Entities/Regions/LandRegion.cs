@@ -32,6 +32,4 @@ public class LandRegion : ARegion{
     public override Capital GetCapital() => Capital;
     public override Factory GetFactory() => Factory;
     public override bool IsLandRegion() => true;
-
-    public override bool IsWaterRegion() => false;
 }

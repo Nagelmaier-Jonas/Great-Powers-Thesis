@@ -15,8 +15,6 @@ public class WaterRegion : ARegion{
     }
 
     public override Nation? GetOwner() => null;
-    
-    public override bool IsLandRegion() => false;
 
     public override bool IsWaterRegion() => true;
 }

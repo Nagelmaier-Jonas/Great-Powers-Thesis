@@ -5,26 +5,22 @@ using Model.Entities.Units;
 namespace Model.Factories;
 
 public static class ShipFactory{
-    public static AShip Create(EUnitType type, WaterRegion region, Nation nation, bool seeding = false){
-        AShip unit = type switch{
-            EUnitType.DESTROYER => new Destroyer(),
-            EUnitType.CRUISER => new Cruiser(),
-            EUnitType.SUBMARINE => new Submarine(),
-            EUnitType.AIRCRAFT_CARRIER => new AircraftCarrier(),
-            EUnitType.TRANSPORT => new Transport(),
-            EUnitType.BATTLESHIP => new Battleship()
-        };
+    private static AShip Create(AShip unit,WaterRegion region, Nation nation, bool seeding = false){
         if (seeding){
-            unit.RegionId = region.Id;
+            if (region != null) unit.SetLocation(region);
             unit.NationId = nation.Id;
         }
         else{
-            unit.Region = region;
+            unit.SetLocation(region);
             unit.Nation = nation;
         }
-
-        unit.Type = type;
         unit.CurrentMovement = unit.Movement;
         return unit;
     }
+    public static AShip CreateSubmarine(WaterRegion region, Nation nation, bool seeding = false) => Create(new Submarine(),region,nation,seeding);
+    public static AShip CreateDestroyer(WaterRegion region, Nation nation, bool seeding = false) => Create(new Destroyer(),region,nation,seeding);
+    public static AShip CreateCruiser(WaterRegion region, Nation nation, bool seeding = false) => Create(new Cruiser(),region,nation,seeding);
+    public static AShip CreateBattleship(WaterRegion region, Nation nation, bool seeding = false) => Create(new Battleship(),region,nation,seeding);
+    public static AShip CreateTransport(WaterRegion region, Nation nation, bool seeding = false) => Create(new Transport(),region,nation,seeding);
+    public static AShip CreateAircraftCarrier(WaterRegion region, Nation nation, bool seeding = false) => Create(new AircraftCarrier(),region,nation,seeding);
 }

@@ -9,4 +9,8 @@ public class Fighter : APlane{
     public override int Cost{ get; protected set; } = 10;
     public override int Attack{ get; protected set; } = 3;
     public override int Defense{ get; protected set; } = 4;
+    
+    public override bool IsFighter() => true;
+    
+    public override bool IsSameType(AUnit unit) => unit.IsFighter();
 }

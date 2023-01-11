@@ -22,9 +22,11 @@ public class Factory : AUnit{
     public int GetCost() => Cost;
     public override ARegion? GetLocation() => Region;
 
-    protected override bool SetLocation(ARegion region) => false;
+    public override bool SetLocation(ARegion region) => false;
 
     public override List<AUnit> GetSubUnits() => null;
 
     protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase) => false;
+    
+    public override bool IsFactory() => true;
 }

@@ -88,6 +88,10 @@ builder.Services.AddScoped<TransportRepository>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<WaterRegionRepository>();
 builder.Services.AddScoped<SessionInfoRepository>();
+builder.Services.AddScoped<UnitRepository>();
+builder.Services.AddScoped<LandUnitRepository>();
+builder.Services.AddScoped<PlaneRepository>();
+builder.Services.AddScoped<ShipRepository>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();

@@ -5,23 +5,20 @@ using Model.Entities.Units;
 namespace Model.Factories;
 
 public static class LandUnitFactory{
-    public static ALandUnit Create(EUnitType type, LandRegion region, Nation nation, bool seeding = false){
-        ALandUnit unit = type switch{
-            EUnitType.INFANTRY => new Infantry(),
-            EUnitType.TANK => new Tank(),
-            EUnitType.ANTI_AIR => new AntiAir(),
-            EUnitType.ARTILLERY => new Artillery()
-        };
+    private static ALandUnit Create(ALandUnit unit,LandRegion region, Nation nation, bool seeding = false){
         if (seeding){
-            if(region != null)unit.RegionId = region.Id;
+            if (region != null) unit.SetLocation(region);
             unit.NationId = nation.Id;
         }
         else{
-            unit.Region = region;
+            unit.SetLocation(region);
             unit.Nation = nation;
         }
-        unit.Type = type;
         unit.CurrentMovement = unit.Movement;
         return unit;
     }
+    public static ALandUnit CreateInfantry(LandRegion region, Nation nation, bool seeding = false) => Create(new Infantry(),region,nation,seeding);
+    public static ALandUnit CreateTank(LandRegion region, Nation nation, bool seeding = false) => Create(new Tank(),region,nation,seeding);
+    public static ALandUnit CreateArtillery(LandRegion region, Nation nation, bool seeding = false) => Create(new Artillery(),region,nation,seeding);
+    public static ALandUnit CreateAntiAir(LandRegion region, Nation nation, bool seeding = false) => Create(new AntiAir(),region,nation,seeding);
 }

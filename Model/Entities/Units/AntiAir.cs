@@ -28,4 +28,8 @@ public class AntiAir : ALandUnit{
         }
         return false;
     }
+    
+    public override bool IsAntiAir() => true;
+    
+    public override bool IsSameType(AUnit unit) => unit.IsAntiAir();
 }

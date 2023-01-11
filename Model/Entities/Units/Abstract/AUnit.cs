@@ -43,7 +43,7 @@ public abstract class AUnit{
     public int GetCost() => Cost;
 
     public abstract ARegion? GetLocation();
-    protected abstract bool SetLocation(ARegion region);
+    public abstract bool SetLocation(ARegion region);
     public abstract List<AUnit> GetSubUnits();
 
     public bool CanTarget(EPhase phase, ARegion target){
@@ -71,7 +71,6 @@ public abstract class AUnit{
         return true;
     }
 
-
     public List<ARegion> GetPossibleTargets(EPhase phase){
         List<ARegion> regions = GetTargetsForMovement(CurrentMovement, GetLocation(), phase);
         List<ARegion> targets = new List<ARegion>();
@@ -86,31 +85,32 @@ public abstract class AUnit{
         return targets;
     } 
     
-    protected List<ARegion> GetTargetsForMovement(int distance, ARegion region, EPhase phase){
+    protected abstract bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase);
+    
+    protected List<ARegion> GetTargetsForMovement(int distance, ARegion region, EPhase phase, bool planeCheck = false){
         if (distance <= 0) return new List<ARegion>();
         if (region == null) return new List<ARegion>();
         HashSet<ARegion> regions = new HashSet<ARegion>();
         foreach (var neighbour in region.Neighbours){
-            if(!CheckForMovementRestrictions(distance,neighbour,phase)) continue;
+            if(!CheckForMovementRestrictions(distance,neighbour,phase) && !planeCheck) continue;
             regions.Add(neighbour.Neighbour);
-            regions.UnionWith(GetTargetsForMovement(distance - 1, neighbour.Neighbour, phase));
+            regions.UnionWith(GetTargetsForMovement(distance - 1, neighbour.Neighbour, phase, planeCheck));
         }
         regions.Remove(GetLocation());
         return regions.ToList();
     }
 
-    protected abstract bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase);
     
-    public int GetDistanceToTarget(EPhase phase,int distance = 1, ARegion? region = null){
+    public int GetDistanceToTarget(EPhase phase,int distance = 1, ARegion? region = null, bool planeCheck = false){
         if (Target == null) return 0;
         if (distance > CurrentMovement) return 0;
         if (GetLocation() == null) return 0;
 
         ARegion location = region ?? GetLocation();
         
-        if (GetTargetsForMovement(distance,location, phase).Contains(Target)) return distance;
+        if (GetTargetsForMovement(distance,location, phase, planeCheck).Contains(Target)) return distance;
                 
-        return GetDistanceToTarget(phase,distance + 1, location);
+        return GetDistanceToTarget(phase,distance + 1, location, planeCheck);
     }
 
     public List<ARegion> GetPathToTarget(EPhase phase, ARegion? region = null){
@@ -146,4 +146,22 @@ public abstract class AUnit{
 
         return path;
     }
+
+    public virtual bool IsLandUnit() => false; 
+    public virtual bool IsPlane() => false;
+    public virtual bool IsShip() => false;
+    public virtual bool IsInfantry() => false;
+    public virtual bool IsTank() => false;
+    public virtual bool IsArtillery() => false;
+    public virtual bool IsAntiAir() => false;
+    public virtual bool IsFighter() => false;
+    public virtual bool IsBomber() => false;
+    public virtual bool IsSubmarine() => false;
+    public virtual bool IsDestroyer() => false;
+    public virtual bool IsCruiser() => false;
+    public virtual bool IsBattleship() => false;
+    public virtual bool IsAircraftCarrier() => false;
+    public virtual bool IsTransport() => false;
+    public virtual bool IsFactory() => false;
+    public virtual bool IsSameType(AUnit unit) => false;
 }

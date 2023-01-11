@@ -5,21 +5,18 @@ using Model.Entities.Units;
 namespace Model.Factories;
 
 public static class PlaneFactory{
-    public static APlane Create(EUnitType type, ARegion region, Nation nation, bool seeding = false){
-        APlane unit = type switch{
-            EUnitType.FIGHTER => new Fighter(),
-            EUnitType.BOMBER => new Bomber()
-        };
+    private static APlane Create(APlane unit,ARegion region, Nation nation, bool seeding = false){
         if (seeding){
-            unit.RegionId = region.Id;
+            if (region != null) unit.SetLocation(region);
             unit.NationId = nation.Id;
         }
         else{
-            unit.Region = region;
+            unit.SetLocation(region);
             unit.Nation = nation;
         }
-        unit.Type = type;
         unit.CurrentMovement = unit.Movement;
         return unit;
     }
+    public static APlane CreateFighter(ARegion region, Nation nation, bool seeding = false) => Create(new Fighter(),region,nation,seeding);
+    public static APlane CreateBomber(ARegion region, Nation nation, bool seeding = false) => Create(new Bomber(),region,nation,seeding);
 }

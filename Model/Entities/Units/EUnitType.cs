@@ -12,5 +12,6 @@ public enum EUnitType{
     SUBMARINE,
     DESTROYER,
     CRUISER,
-    BATTLESHIP
+    BATTLESHIP,
+    FACTORY
 }
