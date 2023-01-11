@@ -5,7 +5,7 @@ using Model.Entities.Regions;
 namespace Model.Entities.Units;
 
 [Table("UNITS_BT")]
-public abstract class AUnit : IBuyable{
+public abstract class AUnit{
 
     [Column("ID")]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
