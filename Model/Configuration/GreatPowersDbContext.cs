@@ -190,52 +190,52 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         builder.Entity<Factory>().HasData(new List<Factory>(){
             new Factory(){
-                Id = 1,
+                Id = 229,
                 Damage = 0,
                 RegionId = 66
             },
             new Factory(){
-                Id = 2,
+                Id = 230,
                 Damage = 0,
                 RegionId = 74
             },
             new Factory(){
-                Id = 3,
+                Id = 231,
                 Damage = 0,
                 RegionId = 77
             },
             new Factory(){
-                Id = 4,
+                Id = 232,
                 Damage = 0,
                 RegionId = 84
             },
             new Factory(){
-                Id = 5,
+                Id = 233,
                 Damage = 0,
                 RegionId = 110
             },
             new Factory(){
-                Id = 6,
+                Id = 234,
                 Damage = 0,
                 RegionId = 115
             },
             new Factory(){
-                Id = 7,
+                Id = 235,
                 Damage = 0,
                 RegionId = 117
             },
             new Factory(){
-                Id = 8,
+                Id = 236,
                 Damage = 0,
                 RegionId = 86
             },
             new Factory(){
-                Id = 9,
+                Id = 237,
                 Damage = 0,
                 RegionId = 96
             },
             new Factory(){
-                Id = 10,
+                Id = 238,
                 Damage = 0,
                 RegionId = 130
             }

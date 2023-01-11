@@ -284,28 +284,28 @@ public class UnitsTest{
         
         #region Units
 
-        LandUnit panzer = LandUnitFactory.Create(EUnitType.TANK, deutschland, deutsch);
-        LandUnit infantrie = LandUnitFactory.Create(EUnitType.INFANTRY, deutschland, japan);
-        Plane jäger = PlaneFactory.Create(EUnitType.FIGHTER, deutschland, deutsch);
-        Plane jäger2 = PlaneFactory.Create(EUnitType.FIGHTER, ostsee, japan);
-        Ship aircraftCarrier = ShipFactory.Create(EUnitType.AIRCRAFT_CARRIER, ostsee, deutsch);
+        ALandUnit panzer = LandUnitFactory.Create(EUnitType.TANK, deutschland, deutsch);
+        ALandUnit infantrie = LandUnitFactory.Create(EUnitType.INFANTRY, deutschland, japan);
+        APlane jäger = PlaneFactory.Create(EUnitType.FIGHTER, deutschland, deutsch);
+        APlane jäger2 = PlaneFactory.Create(EUnitType.FIGHTER, ostsee, japan);
+        AShip aircraftCarrier = ShipFactory.Create(EUnitType.AIRCRAFT_CARRIER, ostsee, deutsch);
         
-        Ship submarine = ShipFactory.Create(EUnitType.SUBMARINE, atlantik, usa);
+        AShip submarine = ShipFactory.Create(EUnitType.SUBMARINE, atlantik, usa);
 
-        deutschland.StationedUnits = new List<LandUnit>(){
+        deutschland.StationedUnits = new List<ALandUnit>(){
             panzer,
             infantrie
         };
-        deutschland.StationedPlanes = new List<Plane>(){
+        deutschland.StationedPlanes = new List<APlane>(){
             jäger
         };
-        ostsee.StationedShips = new List<Ship>(){
+        ostsee.StationedShips = new List<AShip>(){
             aircraftCarrier
         };
-        ostsee.StationedPlanes = new List<Plane>(){
+        ostsee.StationedPlanes = new List<APlane>(){
             jäger2
         };
-        atlantik.StationedShips = new List<Ship>(){
+        atlantik.StationedShips = new List<AShip>(){
             submarine
         };
         
