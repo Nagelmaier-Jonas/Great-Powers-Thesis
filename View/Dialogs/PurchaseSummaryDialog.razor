@@ -2,6 +2,7 @@
 @using Model.Entities.Units.Abstract
 @using Domain.Repositories
 @inject SessionInfoRepository SessionInfoRepository
+@inject GameEngine GameEngine
 
 <MudDialog>
     <DialogContent>
@@ -68,11 +69,10 @@
     async void Submit(){
         foreach (var unit in Checkout){
             for (var i = 0; i < unit.Value; i++){
-                GameEngine.CreateUnit(unit.Key, CurrentNation);
+                 await GameEngine.CreateUnit(unit.Key, CurrentNation);
             }
         }
-        SessionInfo.Phase = EPhase.CombatMove;
-        await SessionInfoRepository.UpdateAsync(SessionInfo);
+        await GameEngine.EndPhase();
         MudDialog.Close(DialogResult.Ok(true));
     }
 
