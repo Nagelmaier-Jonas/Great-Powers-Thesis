@@ -36,4 +36,15 @@ public class NationRepository : ARepository<Nation>, INationRepository{
             .AsSplitQuery()
             .ToListAsync();
     }
+    
+    public async Task<int> GetFactoryPower(Nation nation){
+        return await _set
+            .Include(n => n.Regions)
+            .ThenInclude(t => t.Factory)
+            .Where(n => n.Id == nation.Id)
+            .SelectMany(n => n.Regions)
+            .Where(r => r.Factory != null)
+            .Select(r => r.Income)
+            .SumAsync();
+    }
 }
