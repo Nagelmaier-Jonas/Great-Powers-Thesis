@@ -38,4 +38,6 @@ public class Artillery : ALandUnit{
     public override bool IsArtillery() => true;
     
     public override bool IsSameType(AUnit unit) => unit.IsArtillery();
+    
+    public override string ToString() => "Artillery";
 }

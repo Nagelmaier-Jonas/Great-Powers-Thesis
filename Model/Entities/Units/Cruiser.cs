@@ -48,4 +48,6 @@ public class Cruiser : AShip{
     public override bool IsCruiser() => true;
     
     public override bool IsSameType(AUnit unit) => unit.IsCruiser();
+    
+    public override string ToString() => "Cruiser";
 }

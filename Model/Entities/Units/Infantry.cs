@@ -36,4 +36,6 @@ public class Infantry : ALandUnit{
     public override bool IsInfantry() => true;
     
     public override bool IsSameType(AUnit unit) => unit.IsInfantry();
+    
+    public override string ToString() => "Infantry";
 }

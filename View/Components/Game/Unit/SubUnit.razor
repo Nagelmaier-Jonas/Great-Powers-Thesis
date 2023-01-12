@@ -2,7 +2,7 @@
 @using Model.Entities
 @using System.Drawing
 @using Model.Entities.Regions
-@inject UnitPaths UnitPaths
+@using Model.Factories
 
 @if (Troops is not null){
     @foreach (var t in Troops.Select((unit, index) => ( unit, index ))){
@@ -11,7 +11,7 @@
                 <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25" stroke="white" stroke-width="2"/>
                 <path class="troopbadge-medal" d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
             </g>
-            <path class="troopbadge-symbol" d="@UnitPaths[t.unit.Type]"/>
+            <path class="troopbadge-symbol" d="@t.unit.GetStringFromDictionary(UnitPaths.Paths)"/>
         </svg>
     }
 }
@@ -21,19 +21,19 @@
     [Parameter]
     public List<AUnit>? Troops { get; set; }
 
-    private Dictionary<EUnitType, Point> TroopPositioning { get; set; } = new(){
-        { EUnitType.INFANTRY, new Point(0, -25) },
-        { EUnitType.TANK, new Point(0, 25) },
-        { EUnitType.ANTI_AIR, new Point(-25, -15) },
-        { EUnitType.ARTILLERY, new Point(-25, 15) },
-        { EUnitType.BOMBER, new Point(25, -15) },
-        { EUnitType.FIGHTER, new Point(25, 15) },
-        { EUnitType.CRUISER, new Point(0, -25) },
-        { EUnitType.DESTROYER, new Point(0, 25) },
-        { EUnitType.SUBMARINE, new Point(-25, -15) },
-        { EUnitType.TRANSPORT, new Point(-25, 15) },
-        { EUnitType.BATTLESHIP, new Point(25, -15) },
-        { EUnitType.AIRCRAFT_CARRIER, new Point(25, 15) },
+    private Dictionary<AUnit, Point> TroopPositioning { get; set; } = new(){
+        { UnitPaths.Units[0], new Point(0, -25) },
+        { UnitPaths.Units[1], new Point(0, 25) },
+        { UnitPaths.Units[2], new Point(-25, -15) },
+        { UnitPaths.Units[3], new Point(-25, 15) },
+        { UnitPaths.Units[4], new Point(25, -15) },
+        { UnitPaths.Units[5], new Point(25, 15) },
+        { UnitPaths.Units[6], new Point(0, -25) },
+        { UnitPaths.Units[7], new Point(0, 25) },
+        { UnitPaths.Units[8], new Point(-25, -15) },
+        { UnitPaths.Units[9], new Point(-25, 15) },
+        { UnitPaths.Units[10], new Point(25, -15) },
+        { UnitPaths.Units[11], new Point(25, 15) },
     };
 
 }

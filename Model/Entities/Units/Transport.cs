@@ -45,4 +45,6 @@ public class Transport : AShip{
     public override bool IsTransport() => true;
     
     public override bool IsSameType(AUnit unit) => unit.IsTransport();
+    
+    public override string ToString() => "Transport";
 }

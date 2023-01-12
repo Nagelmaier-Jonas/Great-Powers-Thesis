@@ -44,4 +44,6 @@ public class Submarine : AShip{
     public override bool IsSubmarine() => true;
     
     public override bool IsSameType(AUnit unit) => unit.IsSubmarine();
+    
+    public override string ToString() => "Submarine";
 }
