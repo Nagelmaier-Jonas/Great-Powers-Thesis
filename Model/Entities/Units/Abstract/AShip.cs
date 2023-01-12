@@ -5,11 +5,11 @@ namespace Model.Entities.Units;
 
 [Table("SHIPS_BT")]
 public abstract class AShip : AUnit{
-    [Column("LOCATION_ID")] public int RegionId{ get; set; }
+    [Column("LOCATION_ID")] public int? RegionId{ get; set; }
 
-    public WaterRegion Region{ get; set; }
+    public WaterRegion? Region{ get; set; }
 
-    public override ARegion GetLocation() => Region;
+    public override ARegion? GetLocation() => Region;
  
     public override bool SetLocation(ARegion target){
         if (target.IsWaterRegion()){

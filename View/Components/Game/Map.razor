@@ -51,13 +51,13 @@
             @foreach (var nation in Nations){
                 foreach (var land in nation.Regions){
                     foreach (var unit in land.GetOneStationedUnitPerType()){
-                        <Unit Troop="@unit" Amount="@land.GetStationedUnitCounts()[unit.Type]"/>
+                        <Unit Troop="@unit" Amount="@land.GetUnitCount(unit)"/>
                     }
                 }
             }
             @foreach (var sea in SeeZones){
                 foreach (var unit in sea.GetOneStationedUnitPerType()){
-                    <Unit Troop="@unit" Amount="@sea.GetStationedUnitCounts()[unit.Type]"/>
+                    <Unit Troop="@unit" Amount="@sea.GetUnitCount(unit)"/>
                 }
             }
         </svg>

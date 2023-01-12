@@ -11,9 +11,9 @@ public class Factory : AUnit{
     public int Damage{ get; set; }
 
     [Column("REGION_ID")]
-    public int RegionId{ get; set; }
+    public int? RegionId{ get; set; }
 
-    public LandRegion Region{ get; set; }
+    public LandRegion? Region{ get; set; }
 
     public override int Movement{ get; protected set; } = 0;
     public override int Cost{ get; protected set; } = 15;

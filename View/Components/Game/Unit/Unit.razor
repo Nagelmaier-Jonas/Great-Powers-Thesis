@@ -18,7 +18,7 @@
         </g>
         <path class="troopbadge-symbol"
               d="@UnitPaths[Troop.Type]"/>
-        @if (Troop.GetType() == typeof(Ship) || Troop.GetType() == typeof(Transport) || Troop.GetType() == typeof(AircraftCarrier)){
+        @if (Troop.GetType() == typeof(AShip) || Troop.GetType() == typeof(Transport) || Troop.GetType() == typeof(AircraftCarrier)){
             <text>
                 <text style="font-size: 19px; font-weight: bold; fill: white;" transform="translate(39.87 31.56)">
                     <tspan x="0" y="0">@Troop.Type.ToString()[0]</tspan>

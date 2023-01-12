@@ -14,7 +14,7 @@ public abstract class ARegion{
     public int Id{ get; set; }
 
     [Column("NAME", TypeName = "VARCHAR(45)")]
-    public string Name{ get; set; }
+    public string Name{ get; set; } = String.Empty;
 
     public List<Neighbours> Neighbours{ get; set; } = new List<Neighbours>();
 
@@ -91,20 +91,23 @@ public abstract class ARegion{
         return openTransports;
     }
 
-    public Dictionary<EUnitType, int> GetStationedUnitCounts(){
-        Dictionary<EUnitType, int> counts = new Dictionary<EUnitType, int>();
-        foreach (var unit in GetStationedUnits()){
-            counts[unit.Type] = counts.GetValueOrDefault(unit.Type, 0) + 1;
+    public int GetUnitCount(AUnit unit) => GetStationedUnitCounts().Where(d => d.Key.IsSameType(unit))
+        .ToDictionary(p => unit).Values.First().Value;
+
+    public Dictionary<AUnit, int> GetStationedUnitCounts(){
+        Dictionary<AUnit, int> counts = new Dictionary<AUnit, int>();
+        foreach (var type in GetOneStationedUnitPerType()){
+            if(counts.Keys.Any(u => u.IsSameType(type))) continue;
+            int count = GetStationedUnits().Count(unit => unit.IsSameType(type));
+           counts[type] = count;
         }
         return counts;
     }
 
     public List<AUnit> GetOneStationedUnitPerType(){
         List<AUnit> oneUnitPerType = new List<AUnit>();
-        //make an exception for units with type EUnitType.TRANSPORT and EUnitType.AIRCRAFT_CARRIER
         foreach (var unit in GetStationedUnits()){
-            if (oneUnitPerType.Any(u => u.IsSameType(unit) && !u.IsTransport() &&
-                                        !u.IsAircraftCarrier())) continue;
+            if (oneUnitPerType.Any(u => unit.IsSameType(u))) continue;
             oneUnitPerType.Add(unit);
         }
         return oneUnitPerType;

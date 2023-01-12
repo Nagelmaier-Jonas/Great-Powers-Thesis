@@ -187,59 +187,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             }
         });
 
-        builder.Entity<Factory>().HasData(new List<Factory>(){
-            new Factory(){
-                Id = 229,
-                Damage = 0,
-                RegionId = 66
-            },
-            new Factory(){
-                Id = 230,
-                Damage = 0,
-                RegionId = 74
-            },
-            new Factory(){
-                Id = 231,
-                Damage = 0,
-                RegionId = 77
-            },
-            new Factory(){
-                Id = 232,
-                Damage = 0,
-                RegionId = 84
-            },
-            new Factory(){
-                Id = 233,
-                Damage = 0,
-                RegionId = 110
-            },
-            new Factory(){
-                Id = 234,
-                Damage = 0,
-                RegionId = 115
-            },
-            new Factory(){
-                Id = 235,
-                Damage = 0,
-                RegionId = 117
-            },
-            new Factory(){
-                Id = 236,
-                Damage = 0,
-                RegionId = 86
-            },
-            new Factory(){
-                Id = 237,
-                Damage = 0,
-                RegionId = 96
-            },
-            new Factory(){
-                Id = 238,
-                Damage = 0,
-                RegionId = 130
-            }
-        });
-
         builder.Entity<Capital>().HasData(new List<Capital>(){
             new Capital(){
                 Id = 1,
@@ -1307,6 +1254,19 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             }
 
             #endregion
+        });
+
+        builder.Entity<Factory>().HasData(new List<Factory>(){
+            IndustryFactory.Create(deutschland, true, 229),
+            IndustryFactory.Create(kaukasus, true, 230),
+            IndustryFactory.Create(italien, true, 231),
+            IndustryFactory.Create(karelo_finnnischessr, true, 232),
+            IndustryFactory.Create(vereinigtes_königreich, true, 233),
+            IndustryFactory.Create(westliche_vereinigte_staaten, true, 234),
+            IndustryFactory.Create(östliche_vereinigte_staaten, true, 235),
+            IndustryFactory.Create(russland, true, 236),
+            IndustryFactory.Create(indien, true, 237),
+            IndustryFactory.Create(japan, true, 238)
         });
 
         #region WaterRegions
