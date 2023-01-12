@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unittests", "Unittests\Unit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorPanzoom", "BlazorPanzoom\BlazorPanzoom.csproj", "{33109D07-34E6-48E8-A8ED-C4BFFEFBF070}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus", "EventBus\EventBus.csproj", "{C86ADB5D-56E0-4C14-B5FF-D9957A1E3424}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{33109D07-34E6-48E8-A8ED-C4BFFEFBF070}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33109D07-34E6-48E8-A8ED-C4BFFEFBF070}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33109D07-34E6-48E8-A8ED-C4BFFEFBF070}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C86ADB5D-56E0-4C14-B5FF-D9957A1E3424}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C86ADB5D-56E0-4C14-B5FF-D9957A1E3424}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C86ADB5D-56E0-4C14-B5FF-D9957A1E3424}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C86ADB5D-56E0-4C14-B5FF-D9957A1E3424}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
