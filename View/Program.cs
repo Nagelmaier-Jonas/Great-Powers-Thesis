@@ -12,10 +12,12 @@ using View.Components.Game.Country;
 using View.Components.Game.Unit;
 using BlazorPanzoom;
 using Domain.Repositories;
+using Eventbus.Client;
+using Eventbus.Events;
 using Microsoft.Extensions.Logging.Abstractions;
 using View.Components.Game.Channel;
+using View.Components.Game.Drawer.CombatMove;
 using View.Services;
-using Microsoft.AspNetCore.Identity;
 
 //setup firewall
 IPAddress ipAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList[0];
@@ -105,6 +107,8 @@ builder.Services.AddScoped<UnitPaths>();
 builder.Services.AddScoped<ChannelPaths>();
 
 builder.Services.AddScoped<ActiveRegion>();
+builder.Services.AddScoped<ViewRefreshService>();
+builder.Services.AddScoped<CombatTargets>();
 
 var app = builder.Build();
 
