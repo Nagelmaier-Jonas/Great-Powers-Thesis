@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using BlazorPanzoom.Events;
+using BlazorPanzoom.Extensions;
+using BlazorPanzoom.Options;
 using Microsoft.JSInterop;
 
 namespace BlazorPanzoom

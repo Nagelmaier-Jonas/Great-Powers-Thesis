@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace BlazorPanzoom
+namespace BlazorPanzoom.Extensions
 {
     public static class ElementReferenceExtensions
     {

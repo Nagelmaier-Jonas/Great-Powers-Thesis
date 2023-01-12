@@ -1,4 +1,4 @@
-﻿namespace BlazorPanzoom
+﻿namespace BlazorPanzoom.Events
 {
     public interface IBlazorPanzoomEvent
     {

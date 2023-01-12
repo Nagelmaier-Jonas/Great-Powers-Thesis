@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Model.Entities.Units;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Model.Entities.Regions;
+using Model.Entities.Units.Abstract;
 
-namespace Model.Entities.Regions;
+namespace Model.Entities.Units;
 
 [Table("FACTORIES")]
 public class Factory : AUnit{

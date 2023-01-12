@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
 using Model.Entities.Regions;
 
-namespace Model.Entities.Units;
+namespace Model.Entities.Units.Abstract;
 
 [Table("UNITS_BT")]
 public abstract class AUnit{
 
     [Column("ID")]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    [Key]
+    [Key] 
     public int Id{ get; set; }
 
     [Column("NATION_ID")]

@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using BlazorPanzoom.Options.Enums;
 using Microsoft.AspNetCore.Components;
 
-namespace BlazorPanzoom
+namespace BlazorPanzoom.Options
 {
     public interface IMiscOnlyOptions
     {

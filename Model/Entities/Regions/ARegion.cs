@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
 using System.Diagnostics;
 using Model.Entities.Units;
+using Model.Entities.Units.Abstract;
 
 namespace Model.Entities.Regions;
 

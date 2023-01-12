@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using BlazorPanzoom.Events;
+using BlazorPanzoom.Options;
 
 namespace BlazorPanzoom
 {

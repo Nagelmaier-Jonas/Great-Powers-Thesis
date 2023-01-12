@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BlazorPanzoom.Events;
+using BlazorPanzoom.Extensions;
+using BlazorPanzoom.Options;
+using BlazorPanzoom.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
-namespace BlazorPanzoom
+namespace BlazorPanzoom.Components
 {
     public class Panzoom : ComponentBase, IPanzoom, IAsyncDisposable
     {

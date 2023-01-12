@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Model.Entities.Regions;
 
-namespace Model.Entities.Units;
+namespace Model.Entities.Units.Abstract;
 
 [Table("SHIPS_BT")]
 public abstract class AShip : AUnit{

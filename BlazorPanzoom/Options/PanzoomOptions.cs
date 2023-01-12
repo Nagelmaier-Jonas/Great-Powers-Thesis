@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using BlazorPanzoom.Options.Enums;
 using Microsoft.AspNetCore.Components;
 
-namespace BlazorPanzoom
+namespace BlazorPanzoom.Options
 {
     public record PanzoomOptions : IZoomOnlyOptions, IPanOnlyOptions, IMiscOnlyOptions
     {
@@ -14,7 +15,7 @@ namespace BlazorPanzoom
         public const double DefaultDuration = 200;
         public const string DefaultEasing = "ease-in-out";
         public const string DefaultOrigin = "50% 50%";
-        public const Overflow DefaultOverflow = BlazorPanzoom.Overflow.Hidden;
+        public const Overflow DefaultOverflow = Enums.Overflow.Hidden;
         public const string DefaultExcludeClass = "panzoom-exclude";
 
         private static readonly ElementReference[] EmptyExcludedReferences = Array.Empty<ElementReference>();
@@ -109,7 +110,7 @@ namespace BlazorPanzoom
         public Contain? Contain
         {
             private get => _contain;
-            init => _contain = value is not null && value.Equals(BlazorPanzoom.Contain.None) ? null : value;
+            init => _contain = value is not null && value.Equals(Enums.Contain.None) ? null : value;
         }
 
         [JsonInclude]
@@ -187,7 +188,7 @@ namespace BlazorPanzoom
             return StartY ?? startY;
         }
 
-        public TouchAction GetTouchActionOrDefault(TouchAction touchAction = BlazorPanzoom.TouchAction.None)
+        public TouchAction GetTouchActionOrDefault(TouchAction touchAction = Enums.TouchAction.None)
         {
             return TouchAction ?? touchAction;
         }
@@ -212,7 +213,7 @@ namespace BlazorPanzoom
             return Easing ?? easing;
         }
 
-        public Contain GetContainOrDefault(Contain contain = BlazorPanzoom.Contain.None)
+        public Contain GetContainOrDefault(Contain contain = Enums.Contain.None)
         {
             return Contain ?? contain;
         }
@@ -232,7 +233,7 @@ namespace BlazorPanzoom
             return DisableYAxis ?? disableYAxis;
         }
 
-        public Cursor GetCursorOrDefault(Cursor cursor = BlazorPanzoom.Cursor.Move)
+        public Cursor GetCursorOrDefault(Cursor cursor = Enums.Cursor.Move)
         {
             return Cursor ?? cursor;
         }

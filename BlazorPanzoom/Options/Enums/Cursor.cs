@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using BlazorPanzoom.Converters;
 
-namespace BlazorPanzoom
+namespace BlazorPanzoom.Options.Enums
 {
     [JsonConverter(typeof(JsonStringEnumMemberConverter))]
     public enum Cursor

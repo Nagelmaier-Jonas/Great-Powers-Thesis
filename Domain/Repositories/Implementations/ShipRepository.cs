@@ -1,6 +1,7 @@
 ﻿using Domain.Repositories.Interfaces;
 using Model.Configuration;
 using Model.Entities.Units;
+using Model.Entities.Units.Abstract;
 
 namespace Domain.Repositories.Implementations;
 

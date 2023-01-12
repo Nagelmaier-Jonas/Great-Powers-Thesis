@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 using Model.Entities.Regions;
+using Model.Entities.Units.Abstract;
 
 namespace Model.Entities.Units;
 

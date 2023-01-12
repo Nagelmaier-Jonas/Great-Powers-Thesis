@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
+using BlazorPanzoom.Events;
 
-namespace BlazorPanzoom
+namespace BlazorPanzoom.Extensions
 {
     public static class BlazorPanzoomEventExtensions
     {

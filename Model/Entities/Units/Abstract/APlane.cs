@@ -2,7 +2,7 @@
 using System.ComponentModel.Design.Serialization;
 using Model.Entities.Regions;
 
-namespace Model.Entities.Units;
+namespace Model.Entities.Units.Abstract;
 
 [Table("PLANES_BT")]
 public abstract class APlane : AUnit{

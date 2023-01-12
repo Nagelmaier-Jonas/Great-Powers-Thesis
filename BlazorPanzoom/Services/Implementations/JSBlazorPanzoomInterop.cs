@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BlazorPanzoom.Options;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace BlazorPanzoom{
+namespace BlazorPanzoom.Services.Implementations{
     public class JSBlazorPanzoomInterop : IJSBlazorPanzoomInterop{
         private const string InteropIdentifier = "blazorPanzoom";
 

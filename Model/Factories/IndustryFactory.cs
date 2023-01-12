@@ -14,8 +14,8 @@ public static class IndustryFactory{
             if (id != 0) unit.Id = id;
         }
         else{
-            unit.Region = region;
-            unit.Nation = region.Nation;
+            if (region != null) unit.Region = region;
+            if (region != null) unit.Nation = region.Nation;
         }
         unit.CurrentMovement = unit.Movement;
         unit.Damage = 0;

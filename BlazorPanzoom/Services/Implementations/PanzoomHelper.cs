@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlazorPanzoom.Events;
+using BlazorPanzoom.Options;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace BlazorPanzoom
+namespace BlazorPanzoom.Services.Implementations
 {
     public class PanzoomHelper : IPanzoomHelper
     {

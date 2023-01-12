@@ -1,4 +1,6 @@
-﻿namespace BlazorPanzoom
+﻿using BlazorPanzoom.Options.Enums;
+
+namespace BlazorPanzoom.Options
 {
     public interface IPanOnlyOptions
     {

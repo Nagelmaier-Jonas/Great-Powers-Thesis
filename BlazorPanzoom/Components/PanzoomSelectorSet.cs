@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BlazorPanzoom.Options;
+using BlazorPanzoom.Services;
 using Microsoft.AspNetCore.Components;
 
-namespace BlazorPanzoom
+namespace BlazorPanzoom.Components
 {
     public class PanzoomSelectorSet : ComponentBase, IAsyncDisposable
     {

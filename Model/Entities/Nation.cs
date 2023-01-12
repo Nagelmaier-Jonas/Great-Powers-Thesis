@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Model.Entities.Regions;
 using Model.Entities.Units;
+using Model.Entities.Units.Abstract;
 
 namespace Model.Entities;
 

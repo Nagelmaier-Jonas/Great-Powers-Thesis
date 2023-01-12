@@ -1,8 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using BlazorPanzoom.Services.Implementations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace BlazorPanzoom
+namespace BlazorPanzoom.Services
 {
     [ExcludeFromCodeCoverage]
     public static class ServiceExtensions

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BlazorPanzoom.Events;
+using BlazorPanzoom.Options;
 using Microsoft.AspNetCore.Components;
 
-namespace BlazorPanzoom
+namespace BlazorPanzoom.Services
 {
     public interface IPanzoomHelper
     {
