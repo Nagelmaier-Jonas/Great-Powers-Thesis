@@ -70,4 +70,7 @@ public abstract class APlane : AUnit{
     }
     
     public override bool IsPlane() => true;
+
+
+    public override bool IsCargo() => AircraftCarrier is not null;
 }

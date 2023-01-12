@@ -10,7 +10,7 @@ public abstract class AUnit{
 
     [Column("ID")]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    [Key] 
+    [Key]
     public int Id{ get; set; }
 
     [Column("NATION_ID")]
@@ -156,9 +156,11 @@ public abstract class AUnit{
     public virtual bool IsTransport() => false;
     public virtual bool IsFactory() => false;
     public virtual bool IsSameType(AUnit unit) => false;
-    public int? GeIntFromDictionary(Dictionary<AUnit,int> dictionary) => dictionary.Where(p => p.Key.IsSameType(this)).ToList().FirstOrDefault().Value;
-    public string? GetStringFromDictionary(Dictionary<AUnit,string> dictionary) => dictionary.Where(p => p.Key.IsSameType(this)).ToList().FirstOrDefault().Value;
-    public Point? GetPointFromDictionary(Dictionary<AUnit, Point> dictionary) => dictionary.Where(p => p.Key.IsSameType(this)).ToList().FirstOrDefault().Value;
+    public int? GeIntFromDictionary(Dictionary<AUnit,int> dictionary) => dictionary.FirstOrDefault(p => IsSameType(p.Key)).Value;
+    public string? GetStringFromDictionary(Dictionary<AUnit,string> dictionary) => dictionary.FirstOrDefault(p => IsSameType(p.Key)).Value;
+    public Point? GetPointFromDictionary(Dictionary<AUnit, Point> dictionary) => dictionary.FirstOrDefault(p => IsSameType(p.Key)).Value;
 
     public abstract AUnit GetNewInstanceOfSameType();
+
+    public virtual bool IsCargo() => false;
 }

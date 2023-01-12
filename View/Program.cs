@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using BlazorPanzoom.Services;
 using Domain.Repositories.Implementations;
 using Domain.Services;
 using Microsoft.EntityFrameworkCore;
@@ -9,9 +10,6 @@ using Model.Entities;
 using MudBlazor;
 using MudBlazor.Services;
 using View.Components.Game.Country;
-using View.Components.Game.Unit;
-using BlazorPanzoom;
-using BlazorPanzoom.Services;
 using Domain.Repositories;
 using Microsoft.Extensions.Logging.Abstractions;
 using View.Components.Game.Channel;

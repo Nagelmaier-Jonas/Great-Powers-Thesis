@@ -8,6 +8,7 @@
 @inject SessionInfoRepository SessionInfoRepository
 @inject NationRepository NationRepository
 @inject WaterRegionRepository WaterRegionRepository
+@inject UnitRepository UnitRepository
 @inject ViewRefreshService ViewRefreshService
 @implements IDisposable
 
@@ -48,6 +49,7 @@
         CurrentNation = await NationRepository.ReadGraphAsync(Info.CurrentNationId);
         MaxTroops = await NationRepository.GetFactoryPower(CurrentNation);
         //PlaceableUnits = await NationRepository.GetPlaceableUnits(CurrentNation);
+        GameEngine.Init(SessionInfoRepository,UnitRepository,NationRepository);
     }
 
     void OpenDrawer(){

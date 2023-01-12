@@ -38,4 +38,6 @@ public abstract class ALandUnit : AUnit{
     public override List<AUnit> GetSubUnits() => null;
     
     public override bool IsLandUnit() => true;
+    
+    public override bool IsCargo() => Transport is not null;
 }

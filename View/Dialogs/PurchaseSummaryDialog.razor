@@ -66,13 +66,13 @@
     public SessionInfo SessionInfo { get; set; }
 
     async void Submit(){
-        SessionInfo.Phase = EPhase.CombatMove;
-        await SessionInfoRepository.UpdateAsync(SessionInfo);
         foreach (var unit in Checkout){
             for (var i = 0; i < unit.Value; i++){
                 GameEngine.CreateUnit(unit.Key, CurrentNation);
             }
         }
+        SessionInfo.Phase = EPhase.CombatMove;
+        await SessionInfoRepository.UpdateAsync(SessionInfo);
         MudDialog.Close(DialogResult.Ok(true));
     }
 

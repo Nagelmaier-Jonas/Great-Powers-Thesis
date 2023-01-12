@@ -33,4 +33,6 @@ public class Nation{
     public List<LandRegion> Regions{ get; set; } = new List<LandRegion>();
     public List<AUnit> Units{ get; set; } = new List<AUnit>();
     public List<Allies> Allies{ get; set; } = new List<Allies>();
+
+    public void CollectIncome() => Treasury += Regions.Sum(r => r.Income);
 }

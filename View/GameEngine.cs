@@ -48,14 +48,42 @@ public static class GameEngine{
     public static async void PlaceUnit(AUnit unit, ARegion region){
         if (unit.SetLocation(region)) await _UnitRepository.UpdateAsync(unit);
     }
-    
 
-    public static async void EndPhase(){
+    private static async Task<bool> CheckIfAllUnitsAreMobilized() =>
+        (await _UnitRepository.ReadAsync(u => u.GetLocation() == null && !u.IsCargo())).Count == 0;
+
+
+        public static async Task<bool> EndPhase(){
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
-        /*switch (session.Phase){
+        switch (session.Phase){
             case EPhase.PurchaseUnits:
                 session.Phase = EPhase.CombatMove;
-                
-        }*/
-    }
+                break;
+            case EPhase.CombatMove:
+                MoveUnits();
+                session.Phase = EPhase.ConductCombat;
+                break;
+            case EPhase.ConductCombat:
+                session.Phase = EPhase.NonCombatMove;
+                break;
+            case EPhase.NonCombatMove:
+                MoveUnits();
+                session.Phase = EPhase.MobilizeNewUnits;
+                break;
+            case EPhase.MobilizeNewUnits:
+                if (! await CheckIfAllUnitsAreMobilized()) return false;
+                session.Phase = EPhase.CollectIncome;
+                break;
+            case EPhase.CollectIncome:
+                Nation nation = await _NationRepository.ReadAsync(session.CurrentNationId);
+                nation.CollectIncome();
+                _NationRepository.UpdateAsync(nation);
+                session.Phase = EPhase.PurchaseUnits;
+                if (session.CurrentNationId == 5) session.CurrentNationId = 1;
+                if (session.CurrentNationId != 5) session.CurrentNationId ++;
+                break; 
+        }
+        await _SessionInfoRepository.UpdateAsync(session);
+        return true;
+        }
 }
