@@ -16,9 +16,9 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
     public GreatPowersDbContext(DbContextOptions options, IConfiguration configuration) : base(options){
         Configuration = configuration;
         Database.SetConnectionString(
-            $"server={AppSettings.IpAddress}; port={AppSettings.Port}; database=greatpowers; user=greatpowers; password=greatpowers; Persist Security Info=False; Connect Timeout=300");
+            $"server={AppSettings.IpAddress}; port={AppSettings.DBPort}; database=greatpowers; user=greatpowers; password=greatpowers; Persist Security Info=False; Connect Timeout=300");
         Configuration["RabbitMQHost"] = $"{AppSettings.IpAddress}";
-        Configuration["RabbitMQPort"] = $"{AppSettings.Port}";
+        Configuration["RabbitMQPort"] = $"{AppSettings.RabbitPort}";
     }
 
     public DbSet<User> User{ get; set; }

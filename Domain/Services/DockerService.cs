@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net.Sockets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Model.Configuration;
@@ -43,7 +44,7 @@ public class DockerService{
     public Task ChangeDbContext(string ipAddress, string port){
         try{
             Logger.Log(LogLevel.Warning, "Changing current Connection String: " + _greatPowersDbContext.Database.GetDbConnection().ConnectionString);
-            AppSettings.Port = port;
+            AppSettings.DBPort = port;
             AppSettings.IpAddress = ipAddress;
             _greatPowersDbContext.Database.CloseConnection();
             _greatPowersDbContext.Database.SetConnectionString($"server={ipAddress}; port={port}; database=greatpowers; user=greatpowers; password=greatpowers; Persist Security Info=False; Connect Timeout=300");

@@ -1,6 +1,8 @@
 ﻿using System.Text;
+using Domain.Services;
 using EventBus.Events;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -25,11 +27,19 @@ public class EventSubscriber : BackgroundService {
         var factory = new ConnectionFactory() {
             HostName = _configuration["RabbitMQHost"],
             Port = int.Parse(_configuration["RabbitMQPort"]),
-            Password = "greatpowers",
             UserName = "greatpowers",
+            Password = "greatpowers",
             VirtualHost = "greatpowers"
         };
-        _connection = factory.CreateConnection();
+        while (true){
+            try{
+                _connection = factory.CreateConnection();
+                break;
+            }
+            catch (Exception e){
+                // ignored
+            }
+        }
         _channel = _connection.CreateModel();
         _queueName = _configuration["EventBusQueue"];
     }
@@ -46,7 +56,6 @@ public class EventSubscriber : BackgroundService {
             _eventProcessor.ProcessEvent(eventMessage);
         };
         
-        _channel.BasicConsume(_queueName, true, consumer);
         return Task.CompletedTask;
     }
 }
