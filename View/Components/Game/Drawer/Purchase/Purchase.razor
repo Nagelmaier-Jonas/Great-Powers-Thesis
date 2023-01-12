@@ -1,0 +1,156 @@
+﻿@using Model.Entities.Units
+@using Model.Factories
+@using Model.Entities
+@using Domain.Repositories
+@using Domain.Repositories.Implementations
+@using Model.Entities.Units.Abstract
+@using View.Dialogs
+@using View.Services
+@inject SessionInfoRepository SessionInfoRepository
+@inject NationRepository NationRepository
+@inject UnitPaths UnitPaths
+@inject IDialogService DialogService
+@inject ViewRefreshService ViewRefreshService
+
+@if (SessionInfo.Phase is not EPhase.PurchaseUnits){
+    return;
+}
+@if (SessionInfo is not null && CurrentNation is not null){
+    <MudText Class="fw-bold text-center mb-3 mt-5 noselect" Color="Color.Secondary" Typo="Typo.h4">Kaufphase</MudText>
+    <MudContainer Class="d-flex justify-content-around noselect">
+        <MudText Class="fw-bold text-center mb-3 mt-5" Color="Color.Info" Typo="Typo.body1">Verbleibende IPP <MudText Color="Color.Success">@CurrentNation.Treasury</MudText></MudText>
+        <MudText Class="fw-bold text-center mb-3 mt-5" Color="Color.Info" Typo="Typo.body1">Gekauft <MudText Color="Color.Success">@Checkout.Values.Sum()/@MaxTroops</MudText></MudText>
+    </MudContainer>
+    <MudContainer Class="noselect border-rd-4">
+        <MudTabs Elevation="1" MinimumTabWidth="20px" Centered="true" Outlined="true" Color="Color.Info">
+            <MudTabPanel Text="Land" OnClick="SetDataToLand"/>
+            <MudTabPanel Text="Meer" OnClick="SetDataToWater"/>
+            <MudTabPanel Text="Luft" OnClick="SetDataToAir"/>
+            <MudTabPanel Text="Industrie" OnClick="SetDataToIndustrial"/>
+        </MudTabs>
+        <MudTable Items="@View.Keys" Class="border-none purchase-table" Dense="true" FixedHeader="true" Height="60vh">
+            <HeaderContent>
+                <MudTh></MudTh>
+                <MudTh>Ang</MudTh>
+                <MudTh>Ver</MudTh>
+                <MudTh>Bew</MudTh>
+                <MudTh>Kosten</MudTh>
+                <MudTh>Kaufen</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="" Class="text-center border-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@CurrentNation.Name" width="50" height="50">
+                        <g>
+                            <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
+                            <path class="troopbadge-medal"
+                                  d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
+                        </g>
+                        <path class="troopbadge-symbol"
+                              d="@UnitPaths[context.Type]"/>
+                    </svg>
+                </MudTd>
+                <MudTd DataLabel="Ang" Class="text-center border-none">@context.Attack</MudTd>
+                <MudTd DataLabel="Ver" Class="text-center border-none">@context.Defense</MudTd>
+                <MudTd DataLabel="Bew" Class="text-center border-none">@context.Movement</MudTd>
+                <MudTd DataLabel="Kosten" Class="text-center border-none">@context.Cost</MudTd>
+                <MudTd DataLabel="Kaufen" Class="text-center border-none">
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="@(() => AddToCheckout(context.Type))"/>
+                    <MudText>@GetCheckoutValue(context.Type)</MudText>
+                    <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="@(() => RemoveFromCheckout(context.Type))"/>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudContainer>
+    <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Label="Finish Phase" Color="Color.Error" Class="w-50 align-self-center mb-3 mt-3" OnClick="FinishPhase"/>
+}
+
+@code {
+
+    [Parameter]
+    public SessionInfo? SessionInfo { get; set; }
+
+    [Parameter]
+    public Nation? CurrentNation { get; set; }
+
+    [Parameter]
+    public int? MaxTroops { get; set; }
+
+    private int StartingAmount { get; set; }
+
+    private Dictionary<AUnit, int> View { get; set; } = new();
+
+    private Dictionary<AUnit, int> Checkout { get; set; } = new();
+
+    protected override void OnInitialized(){
+        if (CurrentNation is null) return;
+        InitData();
+    }
+
+    protected override void OnParametersSet(){
+        if (CurrentNation is null) return;
+        StartingAmount = CurrentNation.Treasury;
+    }
+
+    private void InitData(){
+        if (CurrentNation is null) return;
+        Checkout = PurchaseDictionary.GetCheckoutDictionary(CurrentNation);
+        SetDataToLand();
+    }
+
+    private void SetDataToLand(){
+        View = PurchaseDictionary.GetLandUnitDictionary(CurrentNation);
+    }
+
+    private void SetDataToWater(){
+        View = PurchaseDictionary.GetWaterUnitDictionary(CurrentNation);
+    }
+
+    private void SetDataToAir(){
+        View = PurchaseDictionary.GetAirUnitDictionary(CurrentNation);
+    }
+
+    private void SetDataToIndustrial(){
+        View = PurchaseDictionary.GetIndustrialUnitDictionary(CurrentNation);
+    }
+
+    private void AddToCheckout(EUnitType type){
+        var unit = Checkout.Keys.FirstOrDefault(x => x.Type == type);
+        if (unit is null) return;
+        if (CurrentNation is null) return;
+        if (CurrentNation.Treasury - unit.Cost < 0) return;
+        if (Checkout.Values.Sum() + 1 > MaxTroops) return;
+        Checkout[unit]++;
+        CurrentNation.Treasury -= unit.Cost;
+        StateHasChanged();
+    }
+
+    private void RemoveFromCheckout(EUnitType type){
+        var unit = Checkout.Keys.FirstOrDefault(x => x.Type == type);
+        if (unit is null) return;
+        if (CurrentNation is null) return;
+        if (Checkout[unit] == 0) return;
+        Checkout[unit]--;
+        CurrentNation.Treasury += unit.Cost;
+        StateHasChanged();
+    }
+
+    private int GetCheckoutValue(EUnitType type){
+        return (from c in Checkout where c.Key.Type == type select c.Value).FirstOrDefault();
+    }
+
+    private async Task FinishPhase(){
+        var parameters = new DialogParameters{
+            { "Checkout", Checkout },
+            { "CurrentNation", CurrentNation },
+            { "StartingAmount", StartingAmount },
+            { "SessionInfo", SessionInfo }
+        };
+
+        var options = new DialogOptions{ CloseOnEscapeKey = true , NoHeader = true, DisableBackdropClick = true};
+        var dialog = DialogService.Show<PurchaseSummaryDialog>("Zusammenfassung Kaufen", parameters, options);
+        var result = await dialog.Result;
+        if (result.Cancelled) return;
+        ViewRefreshService.Refresh();
+    }
+
+}

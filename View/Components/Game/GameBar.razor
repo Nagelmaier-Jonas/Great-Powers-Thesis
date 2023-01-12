@@ -5,10 +5,10 @@
 
 @if (Info is not null){
     <MudAppBar Class="bg-opacity-60" Fixed="true">
-        <MudAvatar Square="true" Style="@($"color:{Colors.Grey.Default};")" Class="gamebar-btn" Variant="Variant.Outlined" @onclick="OpenSettingsDialog">
+        <MudAvatar Square="true" Color="Color.Tertiary" Class="gamebar-btn" Variant="Variant.Outlined" @onclick="OpenSettingsDialog">
             <MudIcon Icon="@Icons.Material.Filled.Settings"/>
         </MudAvatar>
-        <MudText Style="@($"color:{Colors.Amber.Default};")" Class="ml-3 fw-bold">
+        <MudText Color="Color.Secondary" Class="ml-3 fw-bold">
             Round @Info?.Round
         </MudText>
         <MudSpacer/>
@@ -23,7 +23,7 @@
             }
         }
         <MudSpacer/>
-        <MudText Class="fw-bold" Style="@($"color:{Colors.Amber.Default};")">
+        <MudText Class="fw-bold" Color="Color.Secondary">
             @Info?.Phase.ToString()
             <br/>
             <span class="d-flex justify-content-around">
@@ -39,10 +39,10 @@
         </MudText>
         <MudSpacer/>
         @if (Info.StandardVictory){
-            <MudAvatar Class="gamebar-score fw-bold" Square="true" Variant="Variant.Outlined" Style="@($"color:{Colors.Grey.Default};")">@Info?.AxisCapitals/9</MudAvatar>
+            <MudAvatar Class="gamebar-score fw-bold" Square="true" Variant="Variant.Outlined" Color="Color.Tertiary">@Info?.AxisCapitals/9</MudAvatar>
         }
         else{
-            <MudAvatar Class="gamebar-score fw-bold" Square="true" Variant="Variant.Outlined" Style="@($"color:{Colors.Grey.Default};")">@Info?.AxisCapitals/12</MudAvatar>
+            <MudAvatar Class="gamebar-score fw-bold" Square="true" Variant="Variant.Outlined" Color="Color.Tertiary">@Info?.AxisCapitals/12</MudAvatar>
         }
         <MudStack Row="true" Style="gap: 1px !important;">
             @for (int i = 0; i < Info?.AxisCapitals; i++){
@@ -53,17 +53,12 @@
             }
         </MudStack>
         @if (Info.StandardVictory){
-            <MudAvatar Class="gamebar-score fw-bold" Square="true" Variant="Variant.Outlined" Style="@($"color:{Colors.Grey.Default};")">@Info?.AlliesCapitals/9</MudAvatar>
+            <MudAvatar Class="gamebar-score fw-bold" Square="true" Variant="Variant.Outlined" Color="Color.Tertiary">@Info?.AlliesCapitals/9</MudAvatar>
         }
         else{
-            <MudAvatar Class="gamebar-score fw-bold" Square="true" Variant="Variant.Outlined" Style="@($"color:{Colors.Grey.Default};")">@Info?.AlliesCapitals/12</MudAvatar>
+            <MudAvatar Class="gamebar-score fw-bold" Square="true" Variant="Variant.Outlined" Color="Color.Tertiary">@Info?.AlliesCapitals/12</MudAvatar>
         }
     </MudAppBar>
-
-    @*<MudPaper Class="position-fixed bottom-0 end-0 d-flex flex-column align-items-center justify-content-around phase-btn">
-        <MudText Class="fw-bold text-center" Style="@($"color:{Colors.Amber.Default};")">End Phase</MudText>
-        <MudIconButton OnClick="OpenPhaseSummaryDialog" Icon="@Icons.Rounded.Forward" Variant="Variant.Filled" Color="Color.Error" Size="Size.Large" Style="border-radius: 50%;"/>
-    </MudPaper>*@
 }
 
 @code {
@@ -78,10 +73,4 @@
         var options = new DialogOptions{ CloseOnEscapeKey = true, CloseButton = true };
         DialogService.Show<SettingsDialog>("Menu", options);
     }
-
-    private void OpenPhaseSummaryDialog(){
-        var options = new DialogOptions{ CloseOnEscapeKey = false, DisableBackdropClick = true };
-        DialogService.Show<PhaseSummaryDialog>("Phase Summary", options);
-    }
-
 }

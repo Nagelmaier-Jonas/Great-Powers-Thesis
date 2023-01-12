@@ -6,6 +6,7 @@
 @inject GreatPowersDbContext GreatPowersDbContext
 @inject SidebarService SidebarService
 @inject DockerService DockerService
+@implements IDisposable
 
 <style>
     .nav-item {
@@ -62,6 +63,10 @@
         DockerService.StopDockerContainer();
         GreatPowersDbContext.Dispose();
         Environment.Exit(0);
+    }
+
+    public void Dispose(){
+        SidebarService.HandleSidebarChange -= HandleSidebarChange;
     }
 
 }

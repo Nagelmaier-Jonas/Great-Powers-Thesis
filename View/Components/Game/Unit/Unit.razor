@@ -3,6 +3,7 @@
 @using System.Drawing
 @using Domain.Repositories.Implementations
 @using Model.Entities.Regions
+@using Model.Entities.Units.Abstract
 @using View.Services
 @inject UnitPaths UnitPaths
 @inject AircraftCarrierRepository AircraftCarrierRepository
@@ -10,7 +11,7 @@
 @inject ActiveRegion ActiveRegion
 
 @if (Troop is not null && Region is not null){
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@Troop.Nation.Name @Class" width="20" height="20" x="@(Region.PositionX + TroopPositioning[Troop.Type].X)" y="@(Region.PositionY + TroopPositioning[Troop.Type].Y)" @onclick="args => UpdateRegion(args)">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@Troop.Nation.Name @Class" width="20" height="20" x="@(Region.PositionX + GetPosition().X)" y="@(Region.PositionY + GetPosition().Y)" @onclick="args => UpdateRegion(args)">
         <g>
             <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
             <path class="troopbadge-medal"
@@ -18,7 +19,7 @@
         </g>
         <path class="troopbadge-symbol"
               d="@UnitPaths[Troop.Type]"/>
-        @if (Troop.GetType() == typeof(Ship) || Troop.GetType() == typeof(Transport) || Troop.GetType() == typeof(AircraftCarrier)){
+        @if (Troop.Type is EUnitType.CRUISER or EUnitType.DESTROYER or EUnitType.BATTLESHIP or EUnitType.SUBMARINE or EUnitType.TRANSPORT or EUnitType.AIRCRAFT_CARRIER){
             <text>
                 <text style="font-size: 19px; font-weight: bold; fill: white;" transform="translate(39.87 31.56)">
                     <tspan x="0" y="0">@Troop.Type.ToString()[0]</tspan>
@@ -69,10 +70,20 @@
         { EUnitType.CRUISER, new Point(-10, -30) },
         { EUnitType.DESTROYER, new Point(-10, 10) },
         { EUnitType.SUBMARINE, new Point(-30, -20) },
-        { EUnitType.TRANSPORT, new Point(-30, 20) },
-        { EUnitType.BATTLESHIP, new Point(30, -20) },
-        { EUnitType.AIRCRAFT_CARRIER, new Point(30, 20) },
+        { EUnitType.TRANSPORT, new Point(-30, 0) },
+        { EUnitType.BATTLESHIP, new Point(10, -20) },
+        { EUnitType.AIRCRAFT_CARRIER, new Point(10, 0) },
     };
+
+    private Point GetPosition(){
+        if (Region is null || Troop is null) return new Point();
+        if (Region.IsLandRegion()) return TroopPositioning[Troop.Type];
+        if (Region.IsWaterRegion() && Troop.Type is not EUnitType.FIGHTER && Troop.Type is not EUnitType.BOMBER) return TroopPositioning[Troop.Type];
+        return new Point(){
+            X = TroopPositioning[Troop.Type].X + 22,
+            Y = TroopPositioning[Troop.Type].Y
+        };
+    }
 
     protected override void OnInitialized(){
         if (Troop is null) return;

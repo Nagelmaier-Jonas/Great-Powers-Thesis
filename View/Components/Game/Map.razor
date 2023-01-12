@@ -5,10 +5,10 @@
 @using Model.Entities.Regions
 @using Model.Entities.Units
 @using System.Drawing
-@using BlazorPanzoom
 @using Domain.Repositories.Implementations
 @using View.Services
 @inject ActiveRegion ActiveRegion
+@implements IDisposable
 
 <div class="panzoom-parent" style="height: 100vh; width: 100vw; background-image: url(img/menu/paper-bg.jpg); background-size: cover;">
     <Panzoom @ref="_panzoom" PanzoomOptions="@_panzoomOptions" WheelMode="WheelMode.Custom" OnWheel="OnWheel">
@@ -100,6 +100,10 @@
             Easing = "linear",
         };
         return Task.CompletedTask;
+    }
+
+    public void Dispose(){
+        ActiveRegion.HandleRegionChange -= HandleRegionChange;
     }
 
 }

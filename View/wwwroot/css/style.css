@@ -45,7 +45,7 @@ span.gold-texture {
     position: fixed !important;
     width: 50vw !important;
     bottom: 0;
-    transform: translateX(50%);
+    transform: translateX(40%);
     background-color: rgba(0, 0, 0, 0.6) !important;
     border-radius: 10px 10px 0 0;
 }
@@ -305,4 +305,66 @@ span.logo {
 
 .z-index-5 {
     z-index: 5 !important;
+}
+
+/* -- -------------------------------------------------- -- */
+/*                  Style: Border-Styles                    */
+/* -- -------------------------------------------------- -- */
+.border-dotted{
+    border: dotted !important;
+}
+
+.border-none{
+    border-radius: unset !important;
+}
+.border-rd-1{
+    border-radius: 2px !important;
+}
+.border-rd-2{
+    border-radius: 5px !important;
+}
+.border-rd-3{
+    border-radius: 10px !important;
+}
+.border-rd-4{
+    border-radius: 20px !important;
+}
+.border-rd-5{
+    border-radius: 50px !important;
+}
+
+/* -- -------------------------------------------------- -- */
+/*                  Style: Overflows                        */
+/* -- -------------------------------------------------- -- */
+.overflow-auto{
+    overflow: auto !important;
+}
+.overflow-x-hidden{
+    overflow-x: hidden !important;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scroll-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scroll-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* -- -------------------------------------------------- -- */
+/*                  Style: Text-Styles                      */
+/* -- -------------------------------------------------- -- */
+.purchase-table .mud-table-container {
+    overflow-x: hidden !important;
+    overflow-y: auto; !important;
+}
+
+/* -- -------------------------------------------------- -- */
+/*                  Style: Overwrite-Mudblazor              */
+/* -- -------------------------------------------------- -- */
+.mud-dialog-actions{
+    justify-content: center !important;
 }

@@ -1,0 +1,10 @@
+﻿@using Model.Entities
+
+@if (SessionInfo.Phase is not EPhase.MobilizeNewUnits){
+    return;
+}
+
+@code {
+    [Parameter]
+    public SessionInfo? SessionInfo { get; set; }
+}

@@ -1,12 +1,13 @@
 ﻿@using Model.Entities
 @using Domain.Repositories
 @using Domain.Repositories.Implementations
+@using MudBlazor.Utilities
 @inherits LayoutComponentBase
 @inject UserRepository UserRepository
 
 <PageTitle>Great - Powers</PageTitle>
 
-<MudThemeProvider/>
+<MudThemeProvider Theme="_theme"/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
@@ -24,6 +25,7 @@
 </CascadingValue>
 
 @code{
+
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
@@ -39,7 +41,21 @@
                 Console.WriteLine("User not found");
             }
         }
-       
+
         await InvokeAsync(StateHasChanged);
     }
+
+    private readonly MudTheme _theme = new(){
+        Palette ={
+            Primary = new MudColor("#5d9943"),
+            Secondary = new MudColor("#FFC107"),
+            Tertiary = new MudColor("#9E9E9E"),
+            Background = new MudColor("#a7a7a7"),
+            Surface = new MudColor("#c3bfbf"),
+            AppbarBackground = new MudColor("#a7a7a7"),
+            DrawerBackground = new MudColor("#00000000"),
+            Info = new MudColor("#bdbdbd")
+        }
+    };
+
 }

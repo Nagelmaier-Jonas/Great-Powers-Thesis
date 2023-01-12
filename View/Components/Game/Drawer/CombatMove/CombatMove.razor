@@ -1,0 +1,25 @@
+﻿@using View.Services
+@using Model.Entities
+@inject ActiveRegion ActiveRegion
+
+@if (SessionInfo.Phase is not EPhase.CombatMove){
+    return;
+}
+<MudText Class="fw-bold text-center mb-3 mt-5 noselect" Color="Color.Secondary" Typo="Typo.h4">Kampfbewegung</MudText>
+@if (SessionInfo is not null && ActiveRegion.Region is not null){
+    @foreach (var unit in ActiveRegion.Region.GetOneStationedUnitPerType()){
+        <Unit Troop="unit" Amount="ActiveRegion.Region.GetStationedUnitCounts()[unit.Type]" Class="ml-3" RenderSubTroops="true"/>
+    }
+}
+else{
+    <MudContainer Class="d-flex justify-content-around noselect">
+        <MudText Class="fw-bold text-center mb-3 mt-5" Color="Color.Info" Typo="Typo.body1">Wähle ein Land aus um dessen Truppen zu bewegen.</MudText>
+    </MudContainer>
+}
+
+@code {
+
+    [Parameter]
+    public SessionInfo? SessionInfo { get; set; }
+
+}

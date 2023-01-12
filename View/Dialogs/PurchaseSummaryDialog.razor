@@ -1,0 +1,144 @@
+﻿@using Model.Entities.Units
+@using Model.Entities
+@using Model.Entities.Units.Abstract
+@using Domain.Repositories
+@using Domain.Repositories.Implementations
+@using Model.Entities.Regions
+@using Model.Factories
+@inject UnitPaths UnitPaths
+@inject SessionInfoRepository SessionInfoRepository
+@inject InfantryRepository InfantryRepository
+@inject TankRepository TankRepository
+@inject AntiAirRepository AntiAirRepository
+@inject ArtilleryRepository ArtilleryRepository
+@inject FighterRepository FighterRepository
+@inject BomberRepository BomberRepository
+@inject TransportRepository TransportRepository
+@inject SubmarineRepository SubmarineRepository
+@inject BattleshipRepository BattleshipRepository
+@inject DestroyerRepository DestroyerRepository
+@inject CruiserRepository CruiserRepository
+@inject AircraftCarrierRepository AircraftCarrierRepository
+@inject FactoryRepository FactoryRepository
+
+<MudDialog>
+    <DialogContent>
+        <MudText Class="fw-bold text-center mb-3 mt-5 noselect" Color="Color.Tertiary" Typo="Typo.h4">Zusammenfassung Kaufen</MudText>
+        @if (Checkout.Values.Sum() > 0){
+            <MudContainer>
+                <MudText Class="fw-bold text-center mb-3 mt-5" Color="Color.Default" Typo="Typo.body1">Ausgegebene IPP <MudText Color="Color.Error">@(StartingAmount - CurrentNation.Treasury)</MudText></MudText>
+                <MudText Class="fw-bold text-center mb-3 mt-5" Color="Color.Default" Typo="Typo.body1">Verbleibende IPP <MudText Color="Color.Success">@CurrentNation.Treasury</MudText></MudText>
+            </MudContainer>
+            <MudContainer>
+                @foreach (var unit in Checkout.Where(unit => unit.Value is not 0)){
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@CurrentNation.Name ml-3" width="50" height="50">
+                        <g>
+                            <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
+                            <path class="troopbadge-medal"
+                                  d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
+                        </g>
+                        <path class="troopbadge-symbol"
+                              d="@UnitPaths[unit.Key.Type]"/>
+                        <circle fill="#ffc107" cx="78.26" cy="78.01" r="16.74"/>
+                        @if (unit.Value > 9){
+                            <text>
+                                <text style="font-size: 19px; font-weight: bold; fill: black;" transform="translate(67.49 83.91)">
+                                    <tspan x="0" y="0">@unit.Value</tspan>
+                                </text></text>
+                        }
+                        else{
+                            <text>
+                                <text style="font-size: 19px; font-weight: bold; fill: black;" transform="translate(71.49 83.91)">
+                                    <tspan x="0" y="0">@unit.Value</tspan>
+                                </text></text>
+                        }
+                    </svg>
+                }
+            </MudContainer>
+        }
+        else{
+            <MudText Class="text-center">Achtung! Sie haben keine Einheiten gekauft.</MudText>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Warning" OnClick="Cancel">Änderungen vornehmen</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="Submit">Zur nächsten Phase</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public Dictionary<AUnit, int> Checkout { get; set; }
+
+    [Parameter]
+    public Nation CurrentNation { get; set; }
+
+    [Parameter]
+    public int StartingAmount { get; set; }
+    
+    [Parameter]
+    public SessionInfo SessionInfo { get; set; }
+
+    async void Submit(){
+        SessionInfo.Phase = EPhase.CombatMove;
+        await SessionInfoRepository.UpdateAsync(SessionInfo);
+        foreach (var unit in Checkout){
+            for (var i = 0; i < unit.Value; i++){
+                await CreateUnit(unit.Key);
+            }
+        }
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+    void Cancel() => MudDialog.Cancel();
+
+    async Task CreateUnit(AUnit unit){
+        switch (unit.Type){
+            case EUnitType.INFANTRY:
+                await InfantryRepository.CreateAsync(LandUnitFactory.Create(EUnitType.INFANTRY, null, CurrentNation) as Infantry);
+                break;
+            case EUnitType.TANK:
+                await TankRepository.CreateAsync(LandUnitFactory.Create(EUnitType.TANK, null, CurrentNation) as Tank);
+                break;
+            case EUnitType.ANTI_AIR:
+                await AntiAirRepository.CreateAsync(LandUnitFactory.Create(EUnitType.ANTI_AIR, null, CurrentNation) as AntiAir);
+                break;
+            case EUnitType.ARTILLERY:
+                await ArtilleryRepository.CreateAsync(LandUnitFactory.Create(EUnitType.ARTILLERY, null, CurrentNation) as Artillery);
+                break;
+            case EUnitType.FIGHTER:
+                await FighterRepository.CreateAsync(PlaneFactory.Create(EUnitType.FIGHTER, null, CurrentNation) as Fighter);
+                break;
+            case EUnitType.BOMBER:
+                await BomberRepository.CreateAsync(PlaneFactory.Create(EUnitType.BOMBER, null, CurrentNation) as Bomber);
+                break;
+            case EUnitType.TRANSPORT:
+                await TransportRepository.CreateAsync(ShipFactory.Create(EUnitType.TRANSPORT, null, CurrentNation) as Transport);
+                break;
+            case EUnitType.SUBMARINE:
+                await SubmarineRepository.CreateAsync(ShipFactory.Create(EUnitType.SUBMARINE, null, CurrentNation) as Submarine);
+                break;
+            case EUnitType.BATTLESHIP:
+                await BattleshipRepository.CreateAsync(ShipFactory.Create(EUnitType.BATTLESHIP, null, CurrentNation) as Battleship);
+                break;
+            case EUnitType.DESTROYER:
+                await DestroyerRepository.CreateAsync(ShipFactory.Create(EUnitType.DESTROYER, null, CurrentNation) as Destroyer);
+                break;
+            case EUnitType.CRUISER:
+                await CruiserRepository.CreateAsync(ShipFactory.Create(EUnitType.CRUISER, null, CurrentNation) as Cruiser);
+                break;
+            case EUnitType.AIRCRAFT_CARRIER:
+                await AircraftCarrierRepository.CreateAsync(ShipFactory.Create(EUnitType.AIRCRAFT_CARRIER, null, CurrentNation) as AircraftCarrier);
+                break;
+            case EUnitType.FACTORY:
+                await FactoryRepository.CreateAsync(IndustryFactory.Create(EUnitType.FACTORY, null, CurrentNation) as Factory);
+                break;
+            default:
+                Console.WriteLine("Unit type not found");
+                break;
+        }
+    }
+}
