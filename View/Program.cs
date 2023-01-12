@@ -114,8 +114,8 @@ builder.Services.AddScoped<CombatTargets>();
 builder.Services.AddScoped<GameEngine>();
 
 builder.Services.AddSingleton<IEventPublisher, EventPublisher>();
-builder.Services.AddSingleton<IEventHandler, ReceivedDatabaseUpdate>();
-builder.Services.AddSingleton<IEventProcessor, DatabaseUpdateEventProcessor>();
+builder.Services.AddSingleton<IEventHandler, StateHasChangedEventHandler>();
+builder.Services.AddSingleton<IEventProcessor, StateHasChangedEventProcessor>();
 builder.Services.AddHostedService<EventSubscriber>();
 
 var app = builder.Build();

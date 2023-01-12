@@ -11,7 +11,7 @@
 @inject WaterRegionRepository WaterRegionRepository
 @inject UnitRepository UnitRepository
 @inject ViewRefreshService ViewRefreshService
-@inject ReceivedDatabaseUpdate ReceivedDatabaseUpdate
+@inject StateHasChangedEventHandler StateHasChangedEventHandler
 
 <style>
     .sidebar{
@@ -44,7 +44,7 @@
 
     protected override async Task OnInitializedAsync(){
         ViewRefreshService.HandleViewRefreshChange += HandleViewRefreshChange;
-        ReceivedDatabaseUpdate.HandleViewRefreshChange += HandleViewRefreshChange;
+        StateHasChangedEventHandler.HandleViewRefreshChange += HandleViewRefreshChange;
         Info = await SessionInfoRepository.ReadAsync();
         Nations = await NationRepository.ReadAllGraphAsync();
         SeeZones = await WaterRegionRepository.ReadAllGraphAsync();
@@ -67,7 +67,7 @@
 
     public void Dispose(){
         ViewRefreshService.HandleViewRefreshChange -= HandleViewRefreshChange;
-        ReceivedDatabaseUpdate.HandleViewRefreshChange -= HandleViewRefreshChange;
+        StateHasChangedEventHandler.HandleViewRefreshChange -= HandleViewRefreshChange;
     }
 
 }
