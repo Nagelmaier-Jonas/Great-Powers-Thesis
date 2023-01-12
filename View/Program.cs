@@ -11,9 +11,8 @@ using MudBlazor.Services;
 using View.Components.Game.Country;
 using View.Components.Game.Unit;
 using BlazorPanzoom;
+using BlazorPanzoom.Services;
 using Domain.Repositories;
-using Eventbus.Client;
-using Eventbus.Events;
 using Microsoft.Extensions.Logging.Abstractions;
 using View.Components.Game.Channel;
 using View.Components.Game.Drawer.CombatMove;
@@ -108,6 +107,12 @@ builder.Services.AddScoped<ChannelPaths>();
 builder.Services.AddScoped<ActiveRegion>();
 builder.Services.AddScoped<ViewRefreshService>();
 builder.Services.AddScoped<CombatTargets>();
+
+/*//Message Queue
+builder.Services.AddSingleton<IEventPublisher, EventPublisher>();
+builder.Services.AddSingleton<IEventProcessor, UpdateEventProcessor>();
+
+builder.Services.AddHostedService<EventSubscriber>();*/
 
 var app = builder.Build();
 

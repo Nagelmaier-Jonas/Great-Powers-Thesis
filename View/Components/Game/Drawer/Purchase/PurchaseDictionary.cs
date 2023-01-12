@@ -9,52 +9,52 @@ namespace View.Components.Game.Drawer.Purchase;
 public static class PurchaseDictionary{
     public static Dictionary<AUnit, int> GetLandUnitDictionary(Nation currentNation){
         return new Dictionary<AUnit, int>(){
-            { LandUnitFactory.Create(EUnitType.INFANTRY, null, currentNation), 0 },
-            { LandUnitFactory.Create(EUnitType.ARTILLERY, null, currentNation), 0 },
-            { LandUnitFactory.Create(EUnitType.TANK, null, currentNation), 0 },
-            { LandUnitFactory.Create(EUnitType.ANTI_AIR, null, currentNation), 0 }
+            { LandUnitFactory.CreateInfantry(null, currentNation), 0 },
+            { LandUnitFactory.CreateArtillery(null, currentNation), 0 },
+            { LandUnitFactory.CreateTank(null, currentNation), 0 },
+            { LandUnitFactory.CreateAntiAir(null, currentNation), 0 }
         };
     }
 
     public static Dictionary<AUnit, int> GetWaterUnitDictionary(Nation currentNation){
         return new Dictionary<AUnit, int>(){
-            { ShipFactory.Create(EUnitType.SUBMARINE, null, currentNation), 0 },
-            { ShipFactory.Create(EUnitType.TRANSPORT, null, currentNation), 0 },
-            { ShipFactory.Create(EUnitType.DESTROYER, null, currentNation), 0 },
-            { ShipFactory.Create(EUnitType.CRUISER, null, currentNation), 0 },
-            { ShipFactory.Create(EUnitType.AIRCRAFT_CARRIER, null, currentNation), 0 },
-            { ShipFactory.Create(EUnitType.BATTLESHIP, null, currentNation), 0 }
+            { ShipFactory.CreateSubmarine(null, currentNation), 0 },
+            { ShipFactory.CreateTransport(null, currentNation), 0 },
+            { ShipFactory.CreateDestroyer(null, currentNation), 0 },
+            { ShipFactory.CreateCruiser( null, currentNation), 0 },
+            { ShipFactory.CreateAircraftCarrier(null, currentNation), 0 },
+            { ShipFactory.CreateBattleship(null, currentNation), 0 }
         };
     }
 
     public static Dictionary<AUnit, int> GetAirUnitDictionary(Nation currentNation){
         return new Dictionary<AUnit, int>(){
-            { PlaneFactory.Create(EUnitType.FIGHTER, null, currentNation), 0 },
-            { PlaneFactory.Create(EUnitType.BOMBER, null, currentNation), 0 }
+            { PlaneFactory.CreateFighter(null, currentNation), 0 },
+            { PlaneFactory.CreateBomber(null, currentNation), 0 }
         };
     }
 
-    public static Dictionary<AUnit, int> GetIndustrialUnitDictionary(Nation currentNation){
+    public static Dictionary<AUnit, int> GetIndustrialUnitDictionary(){
         return new Dictionary<AUnit, int>(){
-            { IndustryFactory.Create(EUnitType.FACTORY, null, currentNation), 0 }
+            { IndustryFactory.Create(null), 0 }
         };
     }
 
     public static Dictionary<AUnit, int> GetCheckoutDictionary(Nation currentNation){
         return new Dictionary<AUnit, int>(){
-            { LandUnitFactory.Create(EUnitType.INFANTRY, null, currentNation), 0 },
-            { LandUnitFactory.Create(EUnitType.ARTILLERY, null, currentNation), 0 },
-            { LandUnitFactory.Create(EUnitType.TANK, null, currentNation), 0 },
-            { LandUnitFactory.Create(EUnitType.ANTI_AIR, null, currentNation), 0 },
-            { ShipFactory.Create(EUnitType.SUBMARINE, null, currentNation), 0 },
-            { ShipFactory.Create(EUnitType.TRANSPORT, null, currentNation), 0 },
-            { ShipFactory.Create(EUnitType.DESTROYER, null, currentNation), 0 },
-            { ShipFactory.Create(EUnitType.CRUISER, null, currentNation), 0 },
-            { ShipFactory.Create(EUnitType.AIRCRAFT_CARRIER, null, currentNation), 0 },
-            { ShipFactory.Create(EUnitType.BATTLESHIP, null, currentNation), 0 },
-            { PlaneFactory.Create(EUnitType.FIGHTER, null, currentNation), 0 },
-            { PlaneFactory.Create(EUnitType.BOMBER, null, currentNation), 0 },
-            { new Factory{ Type = EUnitType.FACTORY }, 0 }
+            { LandUnitFactory.CreateInfantry( null, currentNation), 0 },
+            { LandUnitFactory.CreateArtillery( null, currentNation), 0 },
+            { LandUnitFactory.CreateTank( null, currentNation), 0 },
+            { LandUnitFactory.CreateAntiAir( null, currentNation), 0 },
+            { ShipFactory.CreateSubmarine( null, currentNation), 0 },
+            { ShipFactory.CreateTransport( null, currentNation), 0 },
+            { ShipFactory.CreateDestroyer( null, currentNation), 0 },
+            { ShipFactory.CreateCruiser( null, currentNation), 0 },
+            { ShipFactory.CreateAircraftCarrier( null, currentNation), 0 },
+            { ShipFactory.CreateBattleship( null, currentNation), 0 },
+            { PlaneFactory.CreateFighter( null, currentNation), 0 },
+            { PlaneFactory.CreateBomber( null, currentNation), 0 },
+            { IndustryFactory.Create(null), 0 }
         };
     }
 }

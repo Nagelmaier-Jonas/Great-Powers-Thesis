@@ -10,7 +10,7 @@
 @inject ActiveRegion ActiveRegion
 
 @if (Troop is not null && Region is not null){
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@Troop.Nation.Name @Class" width="20" height="20" x="@(Region.PositionX + Troop.GetPointFromDictionary(TroopPositioning).Value.X)" y="@(Region.PositionY + Troop.GetPointFromDictionary(TroopPositioning).Value.Y))" @onclick="args => UpdateRegion(args)">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@Troop.Nation.Name @Class" width="20" height="20" x="@(Region.PositionX + GetPosition(Troop).X)" y="@(Region.PositionY + GetPosition(Troop).Y)" @onclick="args => UpdateRegion(args)">
         <g>
             <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
             <path class="troopbadge-medal"
@@ -18,7 +18,7 @@
         </g>
         <path class="troopbadge-symbol"
               d="@Troop.GetStringFromDictionary(UnitPaths.Paths)"/>
-        @if (Troop.GetType() == typeof(AShip) || Troop.GetType() == typeof(Transport) || Troop.GetType() == typeof(AircraftCarrier)){
+        @if (Troop.IsBattleship() || Troop.IsCruiser() || Troop.IsDestroyer() || Troop.IsSubmarine() || Troop.IsAircraftCarrier() || Troop.IsTransport()){
             <text>
                 <text style="font-size: 19px; font-weight: bold; fill: white;" transform="translate(39.87 31.56)">
                     <tspan x="0" y="0">@Troop.ToString()[0]</tspan>
@@ -66,21 +66,22 @@
         { UnitPaths.Units[3], new Point(-30, 0) },
         { UnitPaths.Units[4], new Point(10, -20) },
         { UnitPaths.Units[5], new Point(10, 0) },
+        
         { UnitPaths.Units[6], new Point(-10, -30) },
         { UnitPaths.Units[7], new Point(-10, 10) },
         { UnitPaths.Units[8], new Point(-30, -20) },
-        { UnitPaths.Units[9], new Point(-30, 20) },
-        { UnitPaths.Units[10], new Point(30, -20) },
-        { UnitPaths.Units[11], new Point(30, 20) },
+        { UnitPaths.Units[9], new Point(-30, 0) },
+        { UnitPaths.Units[10], new Point(10, -20) },
+        { UnitPaths.Units[11], new Point(10, 0) },
     };
 
-    private Point GetPosition(){
+    private Point GetPosition(AUnit troop){
         if (Region is null || Troop is null) return new Point();
-        if (Region.IsLandRegion()) return TroopPositioning[Troop.Type];
-        if (Region.IsWaterRegion() && Troop.Type is not EUnitType.FIGHTER && Troop.Type is not EUnitType.BOMBER) return TroopPositioning[Troop.Type];
+        if (Region.IsLandRegion()) return troop.GetPointFromDictionary(TroopPositioning).Value;
+        if (Region.IsWaterRegion() && Troop.IsFighter() is false && Troop.IsBomber() is false) return troop.GetPointFromDictionary(TroopPositioning).Value;
         return new Point(){
-            X = TroopPositioning[Troop.Type].X + 22,
-            Y = TroopPositioning[Troop.Type].Y
+            X = troop.GetPointFromDictionary(TroopPositioning).Value.X + 22,
+            Y = troop.GetPointFromDictionary(TroopPositioning).Value.Y
         };
     }
 

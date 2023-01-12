@@ -4,6 +4,7 @@ using Domain.Repositories.Implementations;
 using Model.Entities;
 using Model.Entities.Regions;
 using Model.Entities.Units;
+using Model.Entities.Units.Abstract;
 
 namespace View;
 

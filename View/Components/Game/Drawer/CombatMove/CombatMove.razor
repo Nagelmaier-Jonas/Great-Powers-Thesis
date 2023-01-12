@@ -8,7 +8,7 @@
 <MudText Class="fw-bold text-center mb-3 mt-5 noselect" Color="Color.Secondary" Typo="Typo.h4">Kampfbewegung</MudText>
 @if (SessionInfo is not null && ActiveRegion.Region is not null){
     @foreach (var unit in ActiveRegion.Region.GetOneStationedUnitPerType()){
-        <Unit Troop="unit" Amount="ActiveRegion.Region.GetStationedUnitCounts()[unit.Type]" Class="ml-3" RenderSubTroops="true"/>
+        <Unit Troop="unit" Amount="ActiveRegion.Region.GetUnitCount(unit)" Class="ml-3" RenderSubTroops="true"/>
     }
 }
 else{

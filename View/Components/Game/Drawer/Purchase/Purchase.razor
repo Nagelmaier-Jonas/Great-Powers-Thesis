@@ -8,7 +8,6 @@
 @using View.Services
 @inject SessionInfoRepository SessionInfoRepository
 @inject NationRepository NationRepository
-@inject UnitPaths UnitPaths
 @inject IDialogService DialogService
 @inject ViewRefreshService ViewRefreshService
 
@@ -46,7 +45,7 @@
                                   d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
                         </g>
                         <path class="troopbadge-symbol"
-                              d="@UnitPaths[context.Type]"/>
+                              d="@context.GetStringFromDictionary(UnitPaths.Paths)"/>
                     </svg>
                 </MudTd>
                 <MudTd DataLabel="Ang" Class="text-center border-none">@context.Attack</MudTd>
@@ -54,9 +53,9 @@
                 <MudTd DataLabel="Bew" Class="text-center border-none">@context.Movement</MudTd>
                 <MudTd DataLabel="Kosten" Class="text-center border-none">@context.Cost</MudTd>
                 <MudTd DataLabel="Kaufen" Class="text-center border-none">
-                    <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="@(() => AddToCheckout(context.Type))"/>
-                    <MudText>@GetCheckoutValue(context.Type)</MudText>
-                    <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="@(() => RemoveFromCheckout(context.Type))"/>
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="@(() => AddToCheckout(context))"/>
+                    <MudText>@context.GeIntFromDictionary(Checkout)</MudText>
+                    <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="@(() => RemoveFromCheckout(context))"/>
                 </MudTd>
             </RowTemplate>
         </MudTable>
@@ -110,12 +109,10 @@
     }
 
     private void SetDataToIndustrial(){
-        View = PurchaseDictionary.GetIndustrialUnitDictionary(CurrentNation);
+        View = PurchaseDictionary.GetIndustrialUnitDictionary();
     }
 
-    private void AddToCheckout(EUnitType type){
-        var unit = Checkout.Keys.FirstOrDefault(x => x.Type == type);
-        if (unit is null) return;
+    private void AddToCheckout(AUnit unit){
         if (CurrentNation is null) return;
         if (CurrentNation.Treasury - unit.Cost < 0) return;
         if (Checkout.Values.Sum() + 1 > MaxTroops) return;
@@ -124,18 +121,12 @@
         StateHasChanged();
     }
 
-    private void RemoveFromCheckout(EUnitType type){
-        var unit = Checkout.Keys.FirstOrDefault(x => x.Type == type);
-        if (unit is null) return;
+    private void RemoveFromCheckout(AUnit unit){
         if (CurrentNation is null) return;
         if (Checkout[unit] == 0) return;
         Checkout[unit]--;
         CurrentNation.Treasury += unit.Cost;
         StateHasChanged();
-    }
-
-    private int GetCheckoutValue(EUnitType type){
-        return (from c in Checkout where c.Key.Type == type select c.Value).FirstOrDefault();
     }
 
     private async Task FinishPhase(){
