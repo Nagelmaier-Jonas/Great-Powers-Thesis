@@ -116,15 +116,17 @@
         if (CurrentNation is null) return;
         if (CurrentNation.Treasury - unit.Cost < 0) return;
         if (Checkout.Values.Sum() + 1 > MaxTroops) return;
-        Checkout[unit]++;
+        var key = Checkout.Keys.FirstOrDefault(k => k.IsSameType(unit));
+        if (key is not null) Checkout[key]++;
         CurrentNation.Treasury -= unit.Cost;
         StateHasChanged();
     }
 
     private void RemoveFromCheckout(AUnit unit){
         if (CurrentNation is null) return;
-        if (Checkout[unit] == 0) return;
-        Checkout[unit]--;
+        var key = Checkout.Keys.FirstOrDefault(k => k.IsSameType(unit));
+        if (key is not null) if (Checkout[key] == 0) return;
+        if (key is not null) Checkout[key]--;
         CurrentNation.Treasury += unit.Cost;
         StateHasChanged();
     }

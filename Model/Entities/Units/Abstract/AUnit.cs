@@ -156,9 +156,9 @@ public abstract class AUnit{
     public virtual bool IsTransport() => false;
     public virtual bool IsFactory() => false;
     public virtual bool IsSameType(AUnit unit) => false;
-    public int? GeIntFromDictionary(Dictionary<AUnit,int> dictionary) => dictionary.Where(p => p.Key.IsSameType(this)).ToList().First().Value;
-    public string? GetStringFromDictionary(Dictionary<AUnit,string> dictionary) => dictionary.Where(p => p.Key.IsSameType(this)).ToList().First().Value;
-    public Point? GetPointFromDictionary(Dictionary<AUnit, Point> dictionary) => dictionary.Where(p => p.Key.IsSameType(this)).ToList().First().Value;
+    public int? GeIntFromDictionary(Dictionary<AUnit,int> dictionary) => dictionary.Where(p => p.Key.IsSameType(this)).ToList().FirstOrDefault().Value;
+    public string? GetStringFromDictionary(Dictionary<AUnit,string> dictionary) => dictionary.Where(p => p.Key.IsSameType(this)).ToList().FirstOrDefault().Value;
+    public Point? GetPointFromDictionary(Dictionary<AUnit, Point> dictionary) => dictionary.Where(p => p.Key.IsSameType(this)).ToList().FirstOrDefault().Value;
 
     public abstract AUnit GetNewInstanceOfSameType();
 }

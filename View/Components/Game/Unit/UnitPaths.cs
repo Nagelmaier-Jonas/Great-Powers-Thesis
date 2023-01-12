@@ -17,7 +17,8 @@ public static class UnitPaths{
         ShipFactory.CreateSubmarine(null, null),
         ShipFactory.CreateTransport(null, null),
         ShipFactory.CreateBattleship(null, null),
-        ShipFactory.CreateAircraftCarrier(null, null)
+        ShipFactory.CreateAircraftCarrier(null, null),
+        IndustryFactory.Create(null)
     };
 
     public static Dictionary<AUnit, string> Paths = new Dictionary<AUnit, string>(){
@@ -57,6 +58,9 @@ public static class UnitPaths{
         },{
             Units[11],
             "M5.94,53.82c-.22-1.4-1.51-2.92-1.51-2.92v-1.19l1.3-.11,.22-1.73,32.64,.22v-1.4h2.48v-.65h.87v-1.4l4.32,.11v-3.57h4.22v3.57h1.08v1.3h1.3l-.11,.87h2.7l.11,1.3,33.72-.11v1.19l1.3,.11-.11,1.51c-1.62,.54-1.84,2.81-1.84,2.81l-82.68,.11Z"
+        },{
+            Units[12],
+            "M19.8,71.1h55.4V29.5h-5.5v-5.5h-8.3v5.5v13.9L47.5,29.5v13.9L33.6,29.5v13.9L19.8,29.5V71.1"
         }
     };
 }

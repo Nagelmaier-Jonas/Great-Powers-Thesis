@@ -13,7 +13,7 @@
             </MudContainer>
             <MudContainer>
                 @foreach (var unit in Checkout.Where(unit => unit.Value is not 0)){
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@CurrentNation.Name ml-3" width="50" height="50">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@CurrentNation.Name ml-3 mb-3" width="50" height="50">
                         <g>
                             <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
                             <path class="troopbadge-medal"
@@ -70,7 +70,7 @@
         await SessionInfoRepository.UpdateAsync(SessionInfo);
         foreach (var unit in Checkout){
             for (var i = 0; i < unit.Value; i++){
-    //create unit with current nation with game engine
+                GameEngine.CreateUnit(unit.Key, CurrentNation);
             }
         }
         MudDialog.Close(DialogResult.Ok(true));
