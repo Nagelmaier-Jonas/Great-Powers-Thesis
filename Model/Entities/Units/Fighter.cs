@@ -13,4 +13,6 @@ public class Fighter : APlane{
     public override bool IsFighter() => true;
     
     public override bool IsSameType(AUnit unit) => unit.IsFighter();
+    
+    public override string ToString() => "Fighter";
 }

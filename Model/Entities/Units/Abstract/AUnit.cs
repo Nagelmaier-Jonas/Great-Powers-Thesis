@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Drawing;
 using Model.Entities.Regions;
 
 namespace Model.Entities.Units;
@@ -11,9 +12,6 @@ public abstract class AUnit{
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Key]
     public int Id{ get; set; }
-
-    [Column("UNIT_TYPE", TypeName = "VARCHAR(45)")]
-    public EUnitType Type{ get; set; }
 
     [Column("NATION_ID")]
     public int NationId{ get; set; }
@@ -164,4 +162,7 @@ public abstract class AUnit{
     public virtual bool IsTransport() => false;
     public virtual bool IsFactory() => false;
     public virtual bool IsSameType(AUnit unit) => false;
+    public int? GeIntFromDictionary(Dictionary<AUnit,int> dictionary) => dictionary.Where(p => p.Key.IsSameType(this)).ToList().First().Value;
+    public string? GetStringFromDictionary(Dictionary<AUnit,string> dictionary) => dictionary.Where(p => p.Key.IsSameType(this)).ToList().First().Value;
+    public Point? GetPointFromDictionary(Dictionary<AUnit, Point> dictionary) => dictionary.Where(p => p.Key.IsSameType(this)).ToList().First().Value;
 }

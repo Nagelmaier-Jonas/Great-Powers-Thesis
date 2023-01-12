@@ -13,4 +13,6 @@ public class Bomber : APlane{
     public override bool IsBomber() => true;
     
     public override bool IsSameType(AUnit unit) => unit.IsBomber();
+    
+    public override string ToString() => "Bomber";
 }

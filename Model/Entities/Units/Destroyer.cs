@@ -37,4 +37,6 @@ public class Destroyer : AShip{
     public override bool IsDestroyer() => true;
     
     public override bool IsSameType(AUnit unit) => unit.IsDestroyer();
+    
+    public override string ToString() => "Destroyer";
 }

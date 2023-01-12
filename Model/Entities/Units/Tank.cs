@@ -42,4 +42,6 @@ public class Tank : ALandUnit{
     public override bool IsTank() => true;
     
     public override bool IsSameType(AUnit unit) => unit.IsTank();
+    
+    public override string ToString() => "Tank";
 }

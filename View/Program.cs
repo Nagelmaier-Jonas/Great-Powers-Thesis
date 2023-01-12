@@ -103,7 +103,6 @@ builder.Services.AddScoped<SidebarService>();
 builder.Services.AddScoped<DockerService>();
 
 builder.Services.AddScoped<CountryPaths>();
-builder.Services.AddScoped<UnitPaths>();
 builder.Services.AddScoped<ChannelPaths>();
 
 builder.Services.AddScoped<ActiveRegion>();

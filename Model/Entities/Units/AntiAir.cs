@@ -32,4 +32,6 @@ public class AntiAir : ALandUnit{
     public override bool IsAntiAir() => true;
     
     public override bool IsSameType(AUnit unit) => unit.IsAntiAir();
+    
+    public override string ToString() => "Anti Air";
 }

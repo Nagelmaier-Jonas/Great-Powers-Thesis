@@ -44,4 +44,6 @@ public class AircraftCarrier : AShip{
     public override bool IsAircraftCarrier() => true;
     
     public override bool IsSameType(AUnit unit) => unit.IsAircraftCarrier();
+
+    public override string ToString() => "Aircraft Carrier";
 }

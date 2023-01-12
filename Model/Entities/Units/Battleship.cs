@@ -48,4 +48,6 @@ public class Battleship : AShip{
     public override bool IsBattleship() => true;
     
     public override bool IsSameType(AUnit unit) => unit.IsBattleship();
+    
+    public override string ToString() => "Battleship";
 }
