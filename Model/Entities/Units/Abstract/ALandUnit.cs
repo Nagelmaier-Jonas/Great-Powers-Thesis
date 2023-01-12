@@ -12,6 +12,18 @@ public abstract class ALandUnit : AUnit{
     [Column("TRANSPORT_ID")] public int? TransportId{ get; set; }
 
     public Transport? Transport{ get; set; }
+    
+    public override bool MoveToTarget(EPhase phase){
+        if (GetPathToTarget(phase).Count == 0) return false;
+        if (Target.IsWaterRegion()){
+            Transport transport = Target.GetOpenTransports(Nation,phase).FirstOrDefault();
+            if (transport is null) return false;
+            Transport = transport;
+        }
+        CurrentMovement -= GetDistanceToTarget(phase);
+        SetLocation(Target);
+        return true;
+    }
 
     public override ARegion? GetLocation() => Region;
 

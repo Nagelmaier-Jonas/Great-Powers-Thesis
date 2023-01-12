@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{69E5DFA9-1EEA-4F19-8060-1AB751E0A1B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unittests", "Unittests\Unittests.csproj", "{A9290B01-D54E-4EFB-9DFD-0D3704304D13}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unittests", "Unittests\Unittests.csproj", "{53D4DBA8-1457-40F2-9ED6-CFA7896DEB6A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorPanzoom", "BlazorPanzoom\BlazorPanzoom.csproj", "{33109D07-34E6-48E8-A8ED-C4BFFEFBF070}"
 EndProject

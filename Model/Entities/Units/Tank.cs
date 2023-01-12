@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Model.Entities.Regions;
 using Model.Entities.Units.Abstract;
+using Model.Factories;
 
 namespace Model.Entities.Units;
 
@@ -45,4 +46,6 @@ public class Tank : ALandUnit{
     public override bool IsSameType(AUnit unit) => unit.IsTank();
     
     public override string ToString() => "Tank";
+    
+    public override AUnit GetNewInstanceOfSameType() => LandUnitFactory.CreateTank(null, null);
 }

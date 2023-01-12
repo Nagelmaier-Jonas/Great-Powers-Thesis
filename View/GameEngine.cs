@@ -5,6 +5,7 @@ using Model.Entities;
 using Model.Entities.Regions;
 using Model.Entities.Units;
 using Model.Entities.Units.Abstract;
+using Model.Factories;
 
 namespace View;
 
@@ -24,16 +25,37 @@ public static class GameEngine{
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
         if (unit.SetTarget(session.Phase,target)) _UnitRepository.UpdateAsync(unit);
     }
+
+    public static async void MoveUnits(){
+        SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
+        List<AUnit> units = await _UnitRepository.ReadAsync(u => u.Target != null);
+        foreach (var unit in units.Where(unit => unit.MoveToTarget(session.Phase))){
+            await _UnitRepository.UpdateAsync(unit);
+        }
+    }
     
     public static async Task<List<ARegion>> GetPossibleTarget(AUnit unit){
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
         return unit.GetPossibleTargets(session.Phase);
     }
 
+    public static async void CreateUnit(AUnit type , Nation nation){
+        AUnit unit = type.GetNewInstanceOfSameType();
+        unit.Nation = nation;
+        await _UnitRepository.CreateAsync(unit);
+    }
+
+    public static async void PlaceUnit(AUnit unit, ARegion region){
+        if (unit.SetLocation(region)) await _UnitRepository.UpdateAsync(unit);
+    }
+    
+
     public static async void EndPhase(){
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
-        switch (session.Phase){
-            
-        }
+        /*switch (session.Phase){
+            case EPhase.PurchaseUnits:
+                session.Phase = EPhase.CombatMove;
+                
+        }*/
     }
 }

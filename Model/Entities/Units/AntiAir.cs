@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Model.Entities.Regions;
+using Model.Factories;
 using Model.Entities.Units.Abstract;
 
 namespace Model.Entities.Units;
@@ -35,4 +36,6 @@ public class AntiAir : ALandUnit{
     public override bool IsSameType(AUnit unit) => unit.IsAntiAir();
     
     public override string ToString() => "Anti Air";
+    
+    public override AUnit GetNewInstanceOfSameType() => LandUnitFactory.CreateAntiAir(null, null);
 }

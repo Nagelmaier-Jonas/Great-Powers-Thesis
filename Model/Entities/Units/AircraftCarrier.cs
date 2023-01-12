@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 using Model.Entities.Regions;
+using Model.Factories;
 using Model.Entities.Units.Abstract;
 
 namespace Model.Entities.Units;
@@ -47,4 +48,6 @@ public class AircraftCarrier : AShip{
     public override bool IsSameType(AUnit unit) => unit.IsAircraftCarrier();
 
     public override string ToString() => "Aircraft Carrier";
+
+    public override AUnit GetNewInstanceOfSameType() => ShipFactory.CreateAircraftCarrier(null, null);
 }

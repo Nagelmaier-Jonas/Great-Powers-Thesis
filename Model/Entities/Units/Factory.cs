@@ -1,6 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 using Model.Entities.Regions;
 using Model.Entities.Units.Abstract;
+using Model.Entities.Units;
+using Model.Factories;
 
 namespace Model.Entities.Units;
 
@@ -29,4 +31,8 @@ public class Factory : AUnit{
     protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase) => false;
     
     public override bool IsFactory() => true;
+    
+    public override bool IsSameType(AUnit unit) => unit.IsFactory();
+    
+    public override AUnit GetNewInstanceOfSameType() => IndustryFactory.Create(null);
 }

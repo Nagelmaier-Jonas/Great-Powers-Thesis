@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Model.Entities.Regions;
 using Model.Entities.Units.Abstract;
+using Model.Factories;
 
 namespace Model.Entities.Units;
 
@@ -51,4 +52,6 @@ public class Cruiser : AShip{
     public override bool IsSameType(AUnit unit) => unit.IsCruiser();
     
     public override string ToString() => "Cruiser";
+    
+    public override AUnit GetNewInstanceOfSameType() => ShipFactory.CreateCruiser(null, null);
 }
