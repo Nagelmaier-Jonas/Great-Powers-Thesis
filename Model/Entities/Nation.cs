@@ -13,7 +13,7 @@ public class Nation{
     public int Id{ get; set; }
 
     [Column("NAME", TypeName = "VARCHAR(45)")]
-    public string Name{ get; set; }
+    public string Name{ get; set; } = String.Empty;
     
     [Column("TREASURY")]
     public int Treasury{ get; set; }
@@ -24,7 +24,7 @@ public class Nation{
     public User? User{ get; set; }
 
     [Column("COLOR", TypeName = "VARCHAR(7)")]
-    public string Color{ get; set; }
+    public string Color{ get; set; } = String.Empty;
 
     [Column("TYPE", TypeName = "VARCHAR(45)")]
     public ENation Type{ get; set; }

@@ -5,9 +5,9 @@ using Model.Entities.Units;
 namespace Model.Factories;
 
 public static class PlaneFactory{
-    private static APlane Create(APlane unit,ARegion region, Nation nation, bool seeding = false){
+    private static APlane Create(APlane unit,ARegion region, Nation nation, bool seeding){
         if (seeding){
-            if (region != null) unit.SetLocation(region);
+            if (region != null) unit.RegionId = region.Id;
             unit.NationId = nation.Id;
         }
         else{

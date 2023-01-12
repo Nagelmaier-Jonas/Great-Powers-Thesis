@@ -6,15 +6,15 @@ namespace Model.Entities.Units;
 
 [Table("PLANES_BT")]
 public abstract class APlane : AUnit{
-    [Column("LOCATION_ID")] public int RegionId{ get; set; }
+    [Column("LOCATION_ID")] public int? RegionId{ get; set; }
 
-    public ARegion Region{ get; set; }
+    public ARegion? Region{ get; set; }
 
     [Column("AIRCRAFT_CARRIER_ID")] public int? AircraftCarrierId{ get; set; }
 
     public AircraftCarrier? AircraftCarrier{ get; set; }
 
-    public override ARegion GetLocation() => Region;
+    public override ARegion? GetLocation() => Region;
 
     public override bool SetLocation(ARegion target){
         Region = target;

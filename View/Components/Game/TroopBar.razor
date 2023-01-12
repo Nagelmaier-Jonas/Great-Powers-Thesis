@@ -32,7 +32,7 @@
                     <MudImage Src="img/other/factory.svg"/>
                 }
                 @foreach (var unit in Region.GetOneStationedUnitPerType()){
-                    <Unit Troop="unit" Amount="Region.GetStationedUnitCounts()[unit.Type]" Class="ml-3" RenderSubTroops="true"/>
+                    <Unit Troop="unit" Amount="Region.GetUnitCount(unit)" Class="ml-3" RenderSubTroops="true"/>
                 }
                 <MudIconButton Size="Size.Small" Class="drawer_btn" OnClick="Close" Icon="@Icons.Material.Filled.Close" Color="Color.Error"/>
             </MudDrawerContainer>
