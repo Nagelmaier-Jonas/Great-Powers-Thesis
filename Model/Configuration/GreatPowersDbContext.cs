@@ -1,17 +1,25 @@
 ﻿using System.Drawing;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Model.Entities;
 using Model.Entities.Regions;
 using Model.Entities.Units;
+using Model.Entities.Units.Abstract;
 using Model.Factories;
 
 namespace Model.Configuration;
 
 public sealed class GreatPowersDbContext : IdentityDbContext<User>{
-    public GreatPowersDbContext(DbContextOptions options) : base(options){
+
+    public IConfiguration Configuration{ get; set; }
+    public GreatPowersDbContext(DbContextOptions options, IConfiguration configuration) : base(options){
+        Configuration = configuration;
         Database.SetConnectionString(
             $"server={AppSettings.IpAddress}; port={AppSettings.Port}; database=greatpowers; user=greatpowers; password=greatpowers; Persist Security Info=False; Connect Timeout=300");
+        Configuration["RabbitMQHost"] = $"{AppSettings.IpAddress}";
+        Configuration["RabbitMQPort"] = $"{AppSettings.Port}";
+        
     }
 
     public DbSet<User> User{ get; set; }
@@ -98,46 +106,46 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         #region Nations
 
-        Nation Germany = new Nation(){
-            Id = 1,
-            Name = "Germany",
-            Color = "#8ea39e",
-            Treasury = 41,
-            Type = ENation.Germany
-        };
-        Nation Japan = new Nation(){
-            Id = 2,
-            Name = "Japan",
-            Color = "#d29151",
-            Treasury = 30,
-            Type = ENation.Japan
-        };
         Nation Soviet_Union = new Nation(){
-            Id = 3,
+            Id = 1,
             Name = "Soviet_Union",
             Color = "#ba8772",
             Treasury = 24,
             Type = ENation.SovietUnion
         };
-        Nation United_States = new Nation(){
-            Id = 4,
-            Name = "United_States",
-            Color = "#97a95f",
-            Treasury = 42,
-            Type = ENation.UnitedStates
+        Nation Germany = new Nation(){
+            Id = 2,
+            Name = "Germany",
+            Color = "#8ea39e",
+            Treasury = 41,
+            Type = ENation.Germany
         };
         Nation United_Kingdom = new Nation(){
-            Id = 5,
+            Id = 3,
             Name = "United_Kingdom",
             Color = "#b59b68",
             Treasury = 31,
             Type = ENation.UnitedKingdom
         };
+        Nation Japan = new Nation(){
+            Id = 4,
+            Name = "Japan",
+            Color = "#d29151",
+            Treasury = 30,
+            Type = ENation.Japan
+        };
+        Nation United_States = new Nation(){
+            Id = 5,
+            Name = "United_States",
+            Color = "#97a95f",
+            Treasury = 42,
+            Type = ENation.UnitedStates
+        };
         Nation Neutral = new Nation(){
             Id = 6,
             Name = "Neutral",
             Color = "#4f4d49",
-            Treasury = 24,
+            Treasury = 0,
             Type = ENation.Neutral
         };
 
@@ -154,35 +162,35 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         builder.Entity<Allies>().HasData(new List<Allies>(){
             new Allies(){
-                NationId = 1,
+                NationId = 2,
                 AllyId = 2
             },
             new Allies(){
-                NationId = 2,
+                NationId = 4,
                 AllyId = 1
             },
             new Allies(){
-                NationId = 3,
+                NationId = 1,
                 AllyId = 4
             },
             new Allies(){
-                NationId = 3,
+                NationId = 1,
                 AllyId = 5
             },
             new Allies(){
-                NationId = 4,
+                NationId = 5,
                 AllyId = 3
             },
             new Allies(){
-                NationId = 4,
+                NationId = 5,
                 AllyId = 5
             },
             new Allies(){
-                NationId = 5,
+                NationId = 3,
                 AllyId = 4
             },
             new Allies(){
-                NationId = 5,
+                NationId = 3,
                 AllyId = 3
             }
         });
@@ -191,52 +199,62 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             new Factory(){
                 Id = 229,
                 Damage = 0,
-                RegionId = 66
+                RegionId = 66,
+                NationId = 2
             },
             new Factory(){
                 Id = 230,
                 Damage = 0,
-                RegionId = 74
+                RegionId = 74,
+                NationId = 1
             },
             new Factory(){
                 Id = 231,
                 Damage = 0,
-                RegionId = 77
+                RegionId = 77,
+                NationId = 2
             },
             new Factory(){
                 Id = 232,
                 Damage = 0,
-                RegionId = 84
+                RegionId = 84,
+                NationId = 1
             },
             new Factory(){
                 Id = 233,
                 Damage = 0,
-                RegionId = 110
+                RegionId = 110,
+                NationId = 5
             },
             new Factory(){
                 Id = 234,
                 Damage = 0,
-                RegionId = 115
+                RegionId = 115,
+                NationId = 3
             },
             new Factory(){
                 Id = 235,
                 Damage = 0,
-                RegionId = 117
+                RegionId = 117,
+                NationId = 3
             },
             new Factory(){
                 Id = 236,
                 Damage = 0,
-                RegionId = 86
+                RegionId = 86,
+                NationId = 1
             },
             new Factory(){
                 Id = 237,
                 Damage = 0,
-                RegionId = 96
+                RegionId = 96,
+                NationId = 5
             },
             new Factory(){
                 Id = 238,
                 Damage = 0,
-                RegionId = 130
+                RegionId = 130,
+                NationId = 4
             }
         });
 
@@ -314,7 +332,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 66,
             Income = 10,
             Name = "Deutschland",
-            NationId = 1,
+            NationId = 2,
             Identifier = ERegion.Germany,
             PositionX = 606,
             PositionY = 313
@@ -323,7 +341,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 67,
             Income = 2,
             Name = "Polen",
-            NationId = 1,
+            NationId = 2,
             Identifier = ERegion.Poland,
             PositionX = 694,
             PositionY = 291
@@ -332,7 +350,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 68,
             Income = 2,
             Name = "Baltische Staaten",
-            NationId = 1,
+            NationId = 2,
             Identifier = ERegion.BalticStates,
             PositionX = 686,
             PositionY = 210
@@ -341,7 +359,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 69,
             Income = 2,
             Name = "Weissrussland",
-            NationId = 1,
+            NationId = 2,
             Identifier = ERegion.WhiteRussia,
             PositionX = 745,
             PositionY = 224
@@ -350,7 +368,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 70,
             Income = 2,
             Name = "Ukrainische SSR",
-            NationId = 1,
+            NationId = 2,
             Identifier = ERegion.Ukraine,
             PositionX = 769,
             PositionY = 342
@@ -359,7 +377,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 71,
             Income = 2,
             Name = "West Russland",
-            NationId = 1,
+            NationId = 2,
             Identifier = ERegion.WestRussia,
             PositionX = 811,
             PositionY = 273
@@ -368,7 +386,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 72,
             Income = 1,
             Name = "Finnland",
-            NationId = 1,
+            NationId = 2,
             Identifier = ERegion.Finland,
             PositionX = 700,
             PositionY = 100
@@ -377,7 +395,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 73,
             Income = 2,
             Name = "Norwegen",
-            NationId = 1,
+            NationId = 2,
             Identifier = ERegion.Norway,
             PositionX = 592,
             PositionY = 130
@@ -386,7 +404,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 75,
             Income = 2,
             Name = "Bulgarien Rumänien",
-            NationId = 1,
+            NationId = 2,
             Identifier = ERegion.BulgariaRomania,
             PositionX = 697,
             PositionY = 407
@@ -395,7 +413,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 76,
             Income = 2,
             Name = "Südeuropa",
-            NationId = 1,
+            NationId = 2,
             Identifier = ERegion.SouthEurope,
             PositionX = 657,
             PositionY = 427
@@ -404,7 +422,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 77,
             Income = 3,
             Name = "Italien",
-            NationId = 1,
+            NationId = 2,
             Identifier = ERegion.Italy,
             PositionX = 578,
             PositionY = 415
@@ -413,7 +431,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 78,
             Income = 6,
             Name = "Frankreich",
-            NationId = 1,
+            NationId = 2,
             Identifier = ERegion.France,
             PositionX = 506,
             PositionY = 367
@@ -422,7 +440,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 79,
             Income = 2,
             Name = "Nordwesteuropa",
-            NationId = 1,
+            NationId = 2,
             Identifier = ERegion.NorthWestEurope,
             PositionX = 543,
             PositionY = 293
@@ -431,7 +449,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 80,
             Income = 1,
             Name = "Marokko",
-            NationId = 1,
+            NationId = 2,
             Identifier = ERegion.Morocco,
             PositionX = 460,
             PositionY = 552
@@ -440,7 +458,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 81,
             Income = 1,
             Name = "Algerien",
-            NationId = 1,
+            NationId = 2,
             Identifier = ERegion.Algeria,
             PositionX = 535,
             PositionY = 540
@@ -449,7 +467,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 82,
             Income = 1,
             Name = "Libyen",
-            NationId = 1,
+            NationId = 2,
             Identifier = ERegion.Libya,
             PositionX = 636,
             PositionY = 606
@@ -463,7 +481,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 74,
             Income = 4,
             Name = "Kaukasus",
-            NationId = 3,
+            NationId = 1,
             Identifier = ERegion.Caucasus,
             PositionX = 854,
             PositionY = 416
@@ -472,7 +490,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 84,
             Income = 2,
             Name = "Karelo-Finnische SSR",
-            NationId = 3,
+            NationId = 1,
             Identifier = ERegion.Karelia,
             PositionX = 765,
             PositionY = 125
@@ -481,7 +499,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 85,
             Income = 1,
             Name = "Archangelsk",
-            NationId = 3,
+            NationId = 1,
             Identifier = ERegion.Archangelsk,
             PositionX = 905,
             PositionY = 100
@@ -490,7 +508,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 86,
             Income = 8,
             Name = "Russland",
-            NationId = 3,
+            NationId = 1,
             Identifier = ERegion.Russia,
             PositionX = 888,
             PositionY = 257
@@ -499,7 +517,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 87,
             Income = 1,
             Name = "Autonomer Kreis der Ewenken",
-            NationId = 3,
+            NationId = 1,
             Identifier = ERegion.EwenkiAutonomousDistrict,
             PositionX = 1122,
             PositionY = 87
@@ -508,7 +526,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 88,
             Income = 2,
             Name = "Wologda",
-            NationId = 3,
+            NationId = 1,
             Identifier = ERegion.Vologda,
             PositionX = 991,
             PositionY = 161
@@ -517,7 +535,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 89,
             Income = 1,
             Name = "Nowosibirsk",
-            NationId = 3,
+            NationId = 1,
             Identifier = ERegion.Novosibirsk,
             PositionX = 1000,
             PositionY = 288
@@ -526,7 +544,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 90,
             Income = 2,
             Name = "Kasachische SSR",
-            NationId = 3,
+            NationId = 1,
             Identifier = ERegion.Kazakhstan,
             PositionX = 945,
             PositionY = 450
@@ -535,7 +553,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 91,
             Income = 1,
             Name = "Jakutische SSR",
-            NationId = 3,
+            NationId = 1,
             Identifier = ERegion.Yakutia,
             PositionX = 1286,
             PositionY = 48
@@ -544,7 +562,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 92,
             Income = 1,
             Name = "Burjatische SSR",
-            NationId = 3,
+            NationId = 1,
             Identifier = ERegion.Buryatia,
             PositionX = 1362,
             PositionY = 185
@@ -553,7 +571,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 93,
             Income = 1,
             Name = "Sowjetischer Ferner Osten",
-            NationId = 3,
+            NationId = 1,
             Identifier = ERegion.SovietFarEast,
             PositionX = 1490,
             PositionY = 57
@@ -567,7 +585,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 83,
             Income = 2,
             Name = "Ägypten",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.Egypt,
             PositionX = 722,
             PositionY = 631
@@ -576,7 +594,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 94,
             Income = 1,
             Name = "Transjordanien",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.Transjordan,
             PositionX = 823,
             PositionY = 555
@@ -585,7 +603,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 95,
             Income = 1,
             Name = "Persien",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.Persia,
             PositionX = 910,
             PositionY = 571
@@ -594,7 +612,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 96,
             Income = 3,
             Name = "Indien",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.India,
             PositionX = 1017,
             PositionY = 681
@@ -603,7 +621,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 97,
             Income = 1,
             Name = "Burma",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.Burma,
             PositionX = 1131,
             PositionY = 685
@@ -612,7 +630,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 98,
             Income = 1,
             Name = "Westaustralien",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.WestAustralia,
             PositionX = 1373,
             PositionY = 966
@@ -621,7 +639,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 99,
             Income = 1,
             Name = "Ostaustralien",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.EastAustralia,
             PositionX = 1478,
             PositionY = 953
@@ -630,7 +648,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 100,
             Income = 1,
             Name = "Neuseeland",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.NewZealand,
             PositionX = 1614,
             PositionY = 1076
@@ -639,7 +657,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 101,
             Income = 1,
             Name = "Französisch Madagaskar",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.FrenchMadagascar,
             PositionX = 804,
             PositionY = 962
@@ -648,7 +666,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 102,
             Income = 2,
             Name = "Südafrikanische Union",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.SouthAfricanUnion,
             PositionX = 679,
             PositionY = 981
@@ -657,7 +675,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 103,
             Income = 1,
             Name = "Rhodesien",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.Rhodesia,
             PositionX = 749,
             PositionY = 873
@@ -666,7 +684,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 104,
             Income = 1,
             Name = "Belgisch-Kongo",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.BelgianCongo,
             PositionX = 675,
             PositionY = 846
@@ -675,7 +693,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 105,
             Income = 0,
             Name = "Anglo-Ägyptischer Sudan",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.AngloEgyptianSudan,
             PositionX = 710,
             PositionY = 754
@@ -684,7 +702,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 106,
             Income = 1,
             Name = "Italienisch-Ostafrika",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.ItalianEastAfrica,
             PositionX = 795,
             PositionY = 795
@@ -693,7 +711,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 107,
             Income = 1,
             Name = "Französisch-Äquatorialafrika",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.FrenchEquatorialAfrica,
             PositionX = 610,
             PositionY = 778
@@ -702,7 +720,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 108,
             Income = 1,
             Name = "Französisch-Westafrika",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.FrenchWestAfrica,
             PositionX = 479,
             PositionY = 734
@@ -711,7 +729,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 109,
             Income = 0,
             Name = "Gibraltar",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.Gibraltar,
             PositionX = 453,
             PositionY = 497
@@ -720,7 +738,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 110,
             Income = 8,
             Name = "Vereinigtes Königreich",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.UnitedKingdom,
             PositionX = 494,
             PositionY = 269
@@ -729,7 +747,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 111,
             Income = 0,
             Name = "Island",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.Iceland,
             PositionX = 487,
             PositionY = 22
@@ -738,7 +756,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 112,
             Income = 3,
             Name = "Ostkanada",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.EastCanada,
             PositionX = 67,
             PositionY = 143
@@ -747,7 +765,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 113,
             Income = 1,
             Name = "Westkanada",
-            NationId = 5,
+            NationId = 3,
             Identifier = ERegion.WestCanada,
             PositionX = 1856,
             PositionY = 145
@@ -761,7 +779,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 114,
             Income = 2,
             Name = "Alaska",
-            NationId = 4,
+            NationId = 5,
             Identifier = ERegion.Alaska,
             PositionX = 1725,
             PositionY = 85
@@ -770,7 +788,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 115,
             Income = 10,
             Name = "Westliche Vereinigte Staaten",
-            NationId = 4,
+            NationId = 5,
             Identifier = ERegion.WesternUnitedStates,
             PositionX = 1850,
             PositionY = 357
@@ -779,7 +797,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 116,
             Income = 6,
             Name = "Zentrale Vereinigte Staaten",
-            NationId = 4,
+            NationId = 5,
             Identifier = ERegion.CentralUnitedStates,
             PositionX = 30,
             PositionY = 350
@@ -788,7 +806,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 117,
             Income = 12,
             Name = "Östliche Vereinigte Staaten",
-            NationId = 4,
+            NationId = 5,
             Identifier = ERegion.EasternUnitedStates,
             PositionX = 125,
             PositionY = 370
@@ -797,7 +815,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 118,
             Income = 1,
             Name = "Westindien",
-            NationId = 4,
+            NationId = 5,
             Identifier = ERegion.WestIndia,
             PositionX = 176,
             PositionY = 524
@@ -806,7 +824,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 119,
             Income = 0,
             Name = "Ostmexiko",
-            NationId = 4,
+            NationId = 5,
             Identifier = ERegion.EastMexico,
             PositionX = 30,
             PositionY = 490
@@ -815,16 +833,16 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 120,
             Income = 1,
             Name = "Zentralamerika",
-            NationId = 4,
+            NationId = 5,
             Identifier = ERegion.CentralAmerica,
             PositionX = 95,
-            PositionY = 600
+            PositionY = 560
         };
         LandRegion mexiko = new LandRegion(){
             Id = 121,
             Income = 2,
             Name = "Mexiko",
-            NationId = 4,
+            NationId = 5,
             Identifier = ERegion.Mexico,
             PositionX = 1885,
             PositionY = 457
@@ -833,16 +851,16 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 122,
             Income = 3,
             Name = "Brasilien",
-            NationId = 4,
+            NationId = 5,
             Identifier = ERegion.Brazil,
             PositionX = 205,
-            PositionY = 780
+            PositionY = 700
         };
         LandRegion grönland = new LandRegion(){
             Id = 123,
             Income = 0,
             Name = "Grönland",
-            NationId = 4,
+            NationId = 5,
             Identifier = ERegion.Greenland,
             PositionX = 242,
             PositionY = 10
@@ -851,7 +869,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 124,
             Income = 0,
             Name = "Midway-Atoll",
-            NationId = 4,
+            NationId = 5,
             Identifier = ERegion.MidwayAtoll,
             PositionX = 1658,
             PositionY = 439
@@ -860,7 +878,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 125,
             Income = 1,
             Name = "Hawaii-Inseln",
-            NationId = 4,
+            NationId = 5,
             Identifier = ERegion.HawaiiIslands,
             PositionX = 1674,
             PositionY = 556
@@ -869,7 +887,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 126,
             Income = 1,
             Name = "Sinkiang",
-            NationId = 4,
+            NationId = 5,
             Identifier = ERegion.Sinkiang,
             PositionX = 1085,
             PositionY = 396
@@ -878,7 +896,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 127,
             Income = 1,
             Name = "Anhwei",
-            NationId = 4,
+            NationId = 5,
             Identifier = ERegion.Anhwei,
             PositionX = 1212,
             PositionY = 440
@@ -887,7 +905,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 128,
             Income = 1,
             Name = "Sezuan",
-            NationId = 4,
+            NationId = 5,
             Identifier = ERegion.Sezuan,
             PositionX = 1116,
             PositionY = 530
@@ -896,7 +914,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 129,
             Income = 1,
             Name = "Yunnan",
-            NationId = 4,
+            NationId = 5,
             Identifier = ERegion.Yunnan,
             PositionX = 1182,
             PositionY = 618
@@ -910,7 +928,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 130,
             Income = 8,
             Name = "Japan",
-            NationId = 2,
+            NationId = 4,
             Identifier = ERegion.Japan,
             PositionX = 1453,
             PositionY = 380
@@ -919,7 +937,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 131,
             Income = 3,
             Name = "Mandschurei",
-            NationId = 2,
+            NationId = 4,
             Identifier = ERegion.Mandschurei,
             PositionX = 1297,
             PositionY = 285
@@ -928,7 +946,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 132,
             Income = 2,
             Name = "Jiangsu",
-            NationId = 2,
+            NationId = 4,
             Identifier = ERegion.Jiangsu,
             PositionX = 1288,
             PositionY = 470
@@ -937,7 +955,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 133,
             Income = 2,
             Name = "Guandong",
-            NationId = 2,
+            NationId = 4,
             Identifier = ERegion.Guandong,
             PositionX = 1241,
             PositionY = 588
@@ -946,7 +964,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 134,
             Income = 2,
             Name = "Französisch-Indochina-Thailand",
-            NationId = 2,
+            NationId = 4,
             Identifier = ERegion.FrenchIndochinaThailand,
             PositionX = 1191,
             PositionY = 749
@@ -955,7 +973,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 135,
             Income = 1,
             Name = "Malaysia",
-            NationId = 2,
+            NationId = 4,
             Identifier = ERegion.Malaysia,
             PositionX = 1177,
             PositionY = 850
@@ -964,7 +982,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 136,
             Income = 4,
             Name = "Borneo",
-            NationId = 2,
+            NationId = 4,
             Identifier = ERegion.Borneo,
             PositionX = 1269,
             PositionY = 878
@@ -973,7 +991,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 137,
             Income = 4,
             Name = "Ostindien",
-            NationId = 2,
+            NationId = 4,
             Identifier = ERegion.EastIndia,
             PositionX = 1190,
             PositionY = 929
@@ -982,7 +1000,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 138,
             Income = 0,
             Name = "Salomon-Inseln",
-            NationId = 2,
+            NationId = 4,
             Identifier = ERegion.SolomonIslands,
             PositionX = 1593,
             PositionY = 878
@@ -991,7 +1009,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 139,
             Income = 1,
             Name = "Neuguniea",
-            NationId = 2,
+            NationId = 4,
             Identifier = ERegion.NewGuinea,
             PositionX = 1462,
             PositionY = 839
@@ -1000,7 +1018,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 140,
             Income = 3,
             Name = "Philippinische Inseln",
-            NationId = 2,
+            NationId = 4,
             Identifier = ERegion.PhilippineIslands,
             PositionX = 1354,
             PositionY = 700
@@ -1009,7 +1027,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 141,
             Income = 0,
             Name = "Formosa",
-            NationId = 2,
+            NationId = 4,
             Identifier = ERegion.Formosa,
             PositionX = 1293,
             PositionY = 583
@@ -1018,7 +1036,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 142,
             Income = 0,
             Name = "Okinawa",
-            NationId = 2,
+            NationId = 4,
             Identifier = ERegion.Okinawa,
             PositionX = 1429,
             PositionY = 525
@@ -1027,7 +1045,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 143,
             Income = 0,
             Name = "Iwojima",
-            NationId = 2,
+            NationId = 4,
             Identifier = ERegion.Iwojima,
             PositionX = 1521,
             PositionY = 459
@@ -1036,7 +1054,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 144,
             Income = 0,
             Name = "Wake",
-            NationId = 2,
+            NationId = 4,
             Identifier = ERegion.Wake,
             PositionX = 1567,
             PositionY = 566
@@ -1045,7 +1063,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Id = 145,
             Income = 0,
             Name = "Caroline-Atoll",
-            NationId = 2,
+            NationId = 4,
             Identifier = ERegion.CarolineAtoll,
             PositionX = 1489,
             PositionY = 657
@@ -5192,7 +5210,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         builder.Entity<SessionInfo>().HasData(new SessionInfo(){
             Id = 1,
-            CurrentNationId = 3,
+            CurrentNationId = 1,
             StandardVictory = true,
             TotalVictory = false,
             Phase = EPhase.PurchaseUnits,
