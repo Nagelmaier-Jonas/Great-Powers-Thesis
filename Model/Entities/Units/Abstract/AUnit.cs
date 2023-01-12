@@ -60,14 +60,8 @@ public abstract class AUnit{
         Target = target;
         return true;
     }
-    
-    public virtual bool MoveToTarget(EPhase phase){
-        if (Target == null) return false;
-        if (GetLocation() == null) return false;
-        CurrentMovement -= GetDistanceToTarget(phase);
-        SetLocation(Target);
-        return true;
-    }
+
+    public virtual bool MoveToTarget(EPhase phase) => false;
 
     public List<ARegion> GetPossibleTargets(EPhase phase){
         List<ARegion> regions = GetTargetsForMovement(CurrentMovement, GetLocation(), phase);
@@ -165,4 +159,6 @@ public abstract class AUnit{
     public int? GeIntFromDictionary(Dictionary<AUnit,int> dictionary) => dictionary.Where(p => p.Key.IsSameType(this)).ToList().First().Value;
     public string? GetStringFromDictionary(Dictionary<AUnit,string> dictionary) => dictionary.Where(p => p.Key.IsSameType(this)).ToList().First().Value;
     public Point? GetPointFromDictionary(Dictionary<AUnit, Point> dictionary) => dictionary.Where(p => p.Key.IsSameType(this)).ToList().First().Value;
+
+    public abstract AUnit GetNewInstanceOfSameType();
 }

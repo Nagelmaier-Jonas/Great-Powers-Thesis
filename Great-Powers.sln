@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{69E5DFA9-1EEA-4F19-8060-1AB751E0A1B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Great-Powers.unittest", "Great-Powers.unittest\Great-Powers.unittest.csproj", "{48B6A4B8-6555-438D-935C-60A7EF4F4B1A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unittests", "Unittests\Unittests.csproj", "{53D4DBA8-1457-40F2-9ED6-CFA7896DEB6A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

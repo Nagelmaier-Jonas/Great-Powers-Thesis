@@ -21,14 +21,13 @@ public abstract class AShip : AUnit{
     }
 
     public override bool MoveToTarget(EPhase phase){
-        if (Target == null) return false;
+        if (GetPathToTarget(phase).Count == 0) return false;
         if (phase == EPhase.CombatMove && Target.IsLandRegion()){
             CurrentMovement -= GetDistanceToTarget(phase) - 1;
             List<ARegion> path = GetPathToTarget(phase);
             Region = (WaterRegion)path[^2];
             return true;
         }
-
         CurrentMovement -= GetDistanceToTarget(phase);
         Region = (WaterRegion)Target;
         return true;

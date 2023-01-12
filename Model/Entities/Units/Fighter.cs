@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Model.Entities.Regions;
+using Model.Factories;
 
 namespace Model.Entities.Units;
 
@@ -15,4 +16,6 @@ public class Fighter : APlane{
     public override bool IsSameType(AUnit unit) => unit.IsFighter();
     
     public override string ToString() => "Fighter";
+    
+    public override AUnit GetNewInstanceOfSameType() => PlaneFactory.CreateFighter(null, null);
 }

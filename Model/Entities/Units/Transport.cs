@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Model.Entities.Regions;
+using Model.Factories;
 
 namespace Model.Entities.Units;
 
@@ -47,4 +48,6 @@ public class Transport : AShip{
     public override bool IsSameType(AUnit unit) => unit.IsTransport();
     
     public override string ToString() => "Transport";
+    
+    public override AUnit GetNewInstanceOfSameType() => ShipFactory.CreateTransport(null, null);
 }

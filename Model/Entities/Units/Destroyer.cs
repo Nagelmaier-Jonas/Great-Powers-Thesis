@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Model.Entities.Regions;
+using Model.Factories;
 
 namespace Model.Entities.Units;
 
@@ -39,4 +40,6 @@ public class Destroyer : AShip{
     public override bool IsSameType(AUnit unit) => unit.IsDestroyer();
     
     public override string ToString() => "Destroyer";
+    
+    public override AUnit GetNewInstanceOfSameType() => ShipFactory.CreateDestroyer(null, null);
 }

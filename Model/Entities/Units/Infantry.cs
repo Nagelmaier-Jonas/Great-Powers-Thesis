@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Model.Entities.Regions;
+using Model.Factories;
 
 namespace Model.Entities.Units;
 
@@ -38,4 +39,6 @@ public class Infantry : ALandUnit{
     public override bool IsSameType(AUnit unit) => unit.IsInfantry();
     
     public override string ToString() => "Infantry";
+    
+    public override AUnit GetNewInstanceOfSameType() => LandUnitFactory.CreateInfantry(null, null);
 }

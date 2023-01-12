@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Model.Entities.Units;
+using Model.Factories;
 
 namespace Model.Entities.Regions;
 
@@ -29,4 +30,8 @@ public class Factory : AUnit{
     protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase) => false;
     
     public override bool IsFactory() => true;
+    
+    public override bool IsSameType(AUnit unit) => unit.IsFactory();
+    
+    public override AUnit GetNewInstanceOfSameType() => IndustryFactory.Create(null);
 }

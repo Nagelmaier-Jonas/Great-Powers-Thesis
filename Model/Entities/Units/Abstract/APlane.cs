@@ -22,6 +22,18 @@ public abstract class APlane : AUnit{
     }
 
     public override List<AUnit> GetSubUnits() => null;
+    
+    public override bool MoveToTarget(EPhase phase){
+        if (GetPathToTarget(phase).Count == 0) return false;
+        if (Target.IsWaterRegion()){
+           AircraftCarrier carrier = Target.GetOpenAircraftCarriers(Nation).FirstOrDefault();
+           if (carrier is null) return false;
+           AircraftCarrier = carrier;
+        }
+        CurrentMovement -= GetDistanceToTarget(phase);
+        SetLocation(Target);
+        return true;
+    }
 
     public bool CanLand(ARegion region){
         if (region.GetOwner() != null){
