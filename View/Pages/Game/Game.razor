@@ -2,6 +2,7 @@
 @using Model.Entities
 @using Domain.Repositories
 @using Domain.Repositories.Implementations
+@using EventHandling.EventHandler
 @using Model.Entities.Regions
 @using Model.Entities.Units.Abstract
 @using View.Services
@@ -10,7 +11,7 @@
 @inject WaterRegionRepository WaterRegionRepository
 @inject UnitRepository UnitRepository
 @inject ViewRefreshService ViewRefreshService
-
+@inject ReceivedDatabaseUpdate ReceivedDatabaseUpdate
 
 <style>
     .sidebar{
@@ -43,6 +44,7 @@
 
     protected override async Task OnInitializedAsync(){
         ViewRefreshService.HandleViewRefreshChange += HandleViewRefreshChange;
+        ReceivedDatabaseUpdate.HandleViewRefreshChange += HandleViewRefreshChange;
         Info = await SessionInfoRepository.ReadAsync();
         Nations = await NationRepository.ReadAllGraphAsync();
         SeeZones = await WaterRegionRepository.ReadAllGraphAsync();
@@ -65,6 +67,7 @@
 
     public void Dispose(){
         ViewRefreshService.HandleViewRefreshChange -= HandleViewRefreshChange;
+        ReceivedDatabaseUpdate.HandleViewRefreshChange -= HandleViewRefreshChange;
     }
 
 }

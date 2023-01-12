@@ -11,11 +11,14 @@ using MudBlazor;
 using MudBlazor.Services;
 using View.Components.Game.Country;
 using Domain.Repositories;
+using EventBus.Clients;
+using EventBus.Events;
+using EventHandling;
+using EventHandling.EventHandler;
 using Microsoft.Extensions.Logging.Abstractions;
 using View;
 using View.Components.Game.Channel;
 using View.Components.Game.Drawer.CombatMove;
-using View.Pages.Game;
 using View.Services;
 
 //setup firewall
@@ -110,11 +113,10 @@ builder.Services.AddScoped<CombatTargets>();
 
 builder.Services.AddScoped<GameEngine>();
 
-/*//Message Queue
 builder.Services.AddSingleton<IEventPublisher, EventPublisher>();
-builder.Services.AddSingleton<IEventProcessor, UpdateEventProcessor>();
-
-builder.Services.AddHostedService<EventSubscriber>();*/
+builder.Services.AddSingleton<IEventHandler, ReceivedDatabaseUpdate>();
+builder.Services.AddSingleton<IEventProcessor, DatabaseUpdateEventProcessor>();
+builder.Services.AddHostedService<EventSubscriber>();
 
 var app = builder.Build();
 

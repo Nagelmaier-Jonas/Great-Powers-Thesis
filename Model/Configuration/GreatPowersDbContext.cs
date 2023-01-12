@@ -19,7 +19,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             $"server={AppSettings.IpAddress}; port={AppSettings.Port}; database=greatpowers; user=greatpowers; password=greatpowers; Persist Security Info=False; Connect Timeout=300");
         Configuration["RabbitMQHost"] = $"{AppSettings.IpAddress}";
         Configuration["RabbitMQPort"] = $"{AppSettings.Port}";
-        
     }
 
     public DbSet<User> User{ get; set; }
