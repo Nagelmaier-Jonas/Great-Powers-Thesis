@@ -1,5 +1,5 @@
 ﻿namespace EventBus.Events; 
 
 public interface IEventProcessor {
-    void ProcessEvent(string message);
+    void ProcessEvent(string eventMessage);
 }

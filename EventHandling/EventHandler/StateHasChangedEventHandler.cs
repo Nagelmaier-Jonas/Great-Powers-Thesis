@@ -12,7 +12,7 @@ public class StateHasChangedEventHandler : IEventHandler{
         
     }
     
-    public void Execute(string message){ 
+    public void Execute(){ 
         HandleViewRefreshChange?.Invoke();
     }
     

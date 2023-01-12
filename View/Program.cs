@@ -30,7 +30,7 @@ t.Start();
 t.Stop();
 
 
-//start docker container
+/*//start docker container
 var process = new Process();
 var startInfo = new ProcessStartInfo{
     WindowStyle = ProcessWindowStyle.Hidden,
@@ -39,7 +39,7 @@ var startInfo = new ProcessStartInfo{
 process.StartInfo = startInfo;
 process.StartInfo.Arguments = "/c cd ..\\Databases && docker-compose down && docker-compose up -d --build";
 process.Start();
-process.WaitForExit();
+process.WaitForExit();*/
 
 //configure builder
 var builder = WebApplication.CreateBuilder(args);
@@ -113,8 +113,9 @@ builder.Services.AddScoped<CombatTargets>();
 
 builder.Services.AddScoped<GameEngine>();
 
+builder.Services.AddScoped<StateHasChangedEventHandler>();
+
 builder.Services.AddSingleton<IEventPublisher, EventPublisher>();
-builder.Services.AddSingleton<IEventHandler, StateHasChangedEventHandler>();
 builder.Services.AddSingleton<IEventProcessor, StateHasChangedEventProcessor>();
 builder.Services.AddHostedService<EventSubscriber>();
 

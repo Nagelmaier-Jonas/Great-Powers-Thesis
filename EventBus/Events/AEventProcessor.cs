@@ -3,17 +3,18 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EventBus.Events; 
 
-public abstract class AEventProcessor : Dictionary<string, IEventHandler>, IEventProcessor {
-    private readonly IServiceScopeFactory _scopeFactory;
-    
-    public AEventProcessor(IServiceScopeFactory scopeFactory){
-        this._scopeFactory = scopeFactory;
-    }
+public abstract class AEventProcessor : Dictionary<string, IEventHandler>,IEventProcessor {
 
-    public void ProcessEvent(string message) {
-        var eventRecord = JsonSerializer.Deserialize<EventRecord>(message);
+    protected readonly IServiceScopeFactory ScopeFactory;
+    
+    public AEventProcessor(IServiceScopeFactory scopeFactory) {
+        ScopeFactory = scopeFactory;
+    }
+    public void ProcessEvent(string eventMessage) {
+        var eventRecord = JsonSerializer.Deserialize<EventRecord>(eventMessage);
         var eventHandler = this[eventRecord.Type];
 
-        eventHandler.Execute(message);
+        eventHandler.Execute();
     }
+
 }
