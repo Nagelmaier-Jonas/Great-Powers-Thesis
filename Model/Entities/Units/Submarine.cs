@@ -50,4 +50,6 @@ public class Submarine : AShip{
     public override string ToString() => "Submarine";
     
     public override AUnit GetNewInstanceOfSameType() => ShipFactory.CreateSubmarine(null, null);
+
+    public override bool CanAttack(AUnit unit) => !unit.IsPlane();
 }

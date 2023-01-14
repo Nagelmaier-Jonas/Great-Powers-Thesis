@@ -9,12 +9,18 @@ public abstract class APlane : AUnit{
     [Column("LOCATION_ID")] public int? RegionId{ get; set; }
 
     public ARegion? Region{ get; set; }
+    
+    [Column("PREVIOS_LOCATION_ID")] public int? PreviousLocationId{ get; set; }
+
+    public ARegion? PreviousLocation{ get; set; }
 
     [Column("AIRCRAFT_CARRIER_ID")] public int? AircraftCarrierId{ get; set; }
 
     public AircraftCarrier? AircraftCarrier{ get; set; }
 
     public override ARegion? GetLocation() => Region;
+    
+    public override ARegion? GetPreviousLocation() => PreviousLocation;
 
     public override bool SetLocation(ARegion target){
         Region = target;
@@ -25,13 +31,15 @@ public abstract class APlane : AUnit{
     
     public override bool MoveToTarget(EPhase phase){
         if (GetPathToTarget(phase).Count == 0) return false;
+        if (phase == EPhase.CombatMove) CanMove = false;
         if (Target.IsWaterRegion()){
            AircraftCarrier carrier = Target.GetOpenAircraftCarriers(Nation).FirstOrDefault();
            if (carrier is null) return false;
            AircraftCarrier = carrier;
         }
-        CurrentMovement -= GetDistanceToTarget(phase);
+        PreviousLocation = Region;
         SetLocation(Target);
+        CurrentMovement -= GetDistanceToTarget(phase);
         return true;
     }
 
@@ -73,4 +81,6 @@ public abstract class APlane : AUnit{
 
 
     public override bool IsCargo() => AircraftCarrier is not null;
+
+    public override bool CanAttack(AUnit unit) => !unit.IsSubmarine();
 }

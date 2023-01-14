@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Domain.Repositories;
 using Domain.Repositories.Implementations;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Model.Entities;
 using Model.Entities.Regions;
 using Model.Entities.Units;
@@ -14,12 +15,14 @@ public class GameEngine{
     public UnitRepository _UnitRepository{ get; set; }
 
     public NationRepository _NationRepository{ get; set; }
-
-    public GameEngine(SessionInfoRepository _sessionInfoRepository, UnitRepository _unitRepository,
-        NationRepository _nationRepository){
-        _SessionInfoRepository = _sessionInfoRepository;
-        _UnitRepository = _unitRepository;
-        _NationRepository = _nationRepository;
+    public BattleRepository _BattleRepository{ get; set; }
+    public GameEngine(IServiceScopeFactory serviceScopeFactory){
+        using (var scope = serviceScopeFactory.CreateScope()){
+            _SessionInfoRepository = scope.ServiceProvider.GetRequiredService<SessionInfoRepository>();
+            _UnitRepository = scope.ServiceProvider.GetRequiredService<UnitRepository>();
+            _NationRepository = scope.ServiceProvider.GetRequiredService<NationRepository>();
+            _BattleRepository = scope.ServiceProvider.GetRequiredService<BattleRepository>();
+        }
     }
 
     public async Task PlanMovement(AUnit unit, ARegion target){
@@ -46,6 +49,8 @@ public class GameEngine{
         await _UnitRepository.CreateAsync(unit);
     }
 
+    public async Task<List<AUnit>> GetMovingUnits() => await _UnitRepository.ReadAsync(u => u.Target != null);
+
     public async Task PlaceUnit(AUnit unit, ARegion region){
         if (unit.SetLocation(region)) await _UnitRepository.UpdateAsync(unit);
     }
@@ -53,6 +58,42 @@ public class GameEngine{
     private async Task<bool> CheckIfAllUnitsAreMobilized() =>
         (await _UnitRepository.ReadAsync(u => u.GetLocation() == null && !u.IsCargo())).Count == 0;
 
+
+    private async Task<Battle> StartBattle(ARegion region){
+        Battle battle = new Battle{
+            Location = region,
+            Phase = region.IsWaterRegion() ? EBattlePhase.SPECIAL_SUBMARINE : EBattlePhase.ATTACK,
+            CurrentNation = (await _SessionInfoRepository.ReadAsync()).Nation
+        };
+        
+        List<AUnit> units = region.GetStationedUnits();
+        units.AddRange(region.IncomingUnits);
+        
+        foreach (var unit in units){
+            if (unit.Target is null) unit.Defender = battle;
+            else unit.Aggressor = battle;
+            await _UnitRepository.UpdateAsync(unit);
+        }
+
+        await _BattleRepository.CreateAsync(battle);
+        return (await _BattleRepository.ReadAsync(b => b.Location == region)).FirstOrDefault();
+    }
+
+    public async Task<Battle> GetBattle(ARegion region){
+        Battle battle = (await _BattleRepository.ReadAsync(b => b.Location == region)).First();
+        if (battle is null) return await StartBattle(region);
+        return battle;
+    }
+
+    public async Task<List<ARegion>> GetPossibleRetreatTargets(AUnit unit){
+        Battle battle = (await _BattleRepository.ReadAsync(b => b.Location == unit.GetLocation())).FirstOrDefault();
+        if (battle is null) return new List<ARegion>();
+        if (!battle.Attackers.Contains(unit)) return new List<ARegion>();
+        List<ARegion> previosRegions = (from u in battle.Attackers
+            where u.GetPreviousLocation() is not null
+            select u.GetPreviousLocation()).ToList();
+        return unit.GetPossibleRetreatTargets(previosRegions);
+    }
 
     public async Task<bool> EndPhase(){
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;

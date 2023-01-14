@@ -11,6 +11,8 @@ public class Battleship : AShip{
     public override int Cost{ get; protected set; } = 20;
     public override int Attack{ get; protected set; } = 4;
     public override int Defense{ get; protected set; } = 4;
+    
+    public override int HitPoints{ get; set; } = 2;
 
     protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase){
         //Ships cant pass through canals if they arent owned by a friendly Nation

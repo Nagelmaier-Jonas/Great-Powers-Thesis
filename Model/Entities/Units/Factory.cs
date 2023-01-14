@@ -23,6 +23,8 @@ public class Factory : AUnit{
     public override int Defense{ get; protected set; } = 0;
     public int GetCost() => Cost;
     public override ARegion? GetLocation() => Region;
+    
+    public override ARegion? GetPreviousLocation() => null;
 
     public override bool SetLocation(ARegion region) => false;
 

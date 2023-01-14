@@ -16,9 +16,6 @@ public class SessionInfo{
     [Column("TOTAL_VICTORY", TypeName = "TINYINT")]
     public bool TotalVictory{ get; set; }
 
-    [Column("DICE_MODE", TypeName = "VARCHAR(45)")]
-    public EDiceMode DiceMode{ get; set; }
-
     [Column("ROUND")]
     public int Round{ get; set; }
     

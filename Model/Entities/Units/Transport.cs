@@ -51,4 +51,6 @@ public class Transport : AShip{
     public override string ToString() => "Transport";
     
     public override AUnit GetNewInstanceOfSameType() => ShipFactory.CreateTransport(null, null);
+
+    public override bool CanAttack(AUnit unit) => false;
 }

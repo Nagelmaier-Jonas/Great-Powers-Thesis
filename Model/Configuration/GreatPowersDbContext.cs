@@ -48,6 +48,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
     public DbSet<SessionInfo> Session{ get; set; }
     public DbSet<Allies> Allies{ get; set; }
     public DbSet<Capital> Capitals{ get; set; }
+    public DbSet<Battle> Battles{ get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder){
         builder.UseCollation("utf8_general_ci").HasCharSet("utf8");
@@ -86,19 +87,30 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         builder.Entity<AUnit>().HasOne(u => u.Nation).WithMany(n => n.Units);
         builder.Entity<AUnit>().HasOne(n => n.Target)
             .WithMany(u => u.IncomingUnits);
+        builder.Entity<AUnit>().HasOne(u => u.Aggressor).WithMany(b => b.Attackers);
+        builder.Entity<AUnit>().HasOne(u => u.Defender).WithMany(b => b.Defenders);
 
         builder.Entity<ALandUnit>().HasOne(n => n.Transport)
             .WithMany(u => u.Units);
         builder.Entity<ALandUnit>().HasOne(n => n.Region)
             .WithMany(u => u.StationedUnits);
+        builder.Entity<ALandUnit>().HasOne(n => n.PreviousLocation)
+            .WithMany();
 
         builder.Entity<APlane>().HasOne(n => n.AircraftCarrier)
             .WithMany(u => u.Planes);
         builder.Entity<APlane>().HasOne(n => n.Region)
             .WithMany(u => u.StationedPlanes);
+        builder.Entity<APlane>().HasOne(n => n.PreviousLocation)
+            .WithMany();
 
         builder.Entity<AShip>().HasOne(s => s.Region)
             .WithMany(w => w.StationedShips);
+        builder.Entity<AShip>().HasOne(s => s.PreviousLocation)
+            .WithMany();
+
+        builder.Entity<Battle>().HasOne(b => b.Location).WithOne();
+        builder.Entity<Battle>().HasOne(b => b.CurrentNation).WithMany(n => n.Battles);
 
         builder.Entity<SessionInfo>().HasOne(s => s.Nation).WithOne()
             .HasForeignKey<SessionInfo>(s => s.CurrentNationId);
@@ -5165,7 +5177,6 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             TotalVictory = false,
             Phase = EPhase.PurchaseUnits,
             Round = 1,
-            DiceMode = EDiceMode.STANDARD,
             AxisCapitals = 6,
             AlliesCapitals = 6,
         });

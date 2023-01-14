@@ -96,6 +96,7 @@ builder.Services.AddScoped<UnitRepository>();
 builder.Services.AddScoped<LandUnitRepository>();
 builder.Services.AddScoped<PlaneRepository>();
 builder.Services.AddScoped<ShipRepository>();
+builder.Services.AddScoped<BattleRepository>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -111,7 +112,7 @@ builder.Services.AddScoped<ActiveRegion>();
 builder.Services.AddScoped<ViewRefreshService>();
 builder.Services.AddScoped<CombatTargets>();
 
-builder.Services.AddScoped<GameEngine>();
+builder.Services.AddTransient<GameEngine>();
 
 builder.Services.AddScoped<StateHasChangedEventHandler>();
 

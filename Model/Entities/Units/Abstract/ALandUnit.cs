@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Model.Entities.Regions;
+using Model.Factories;
 
 namespace Model.Entities.Units.Abstract;
 
@@ -8,6 +9,10 @@ public abstract class ALandUnit : AUnit{
     [Column("LOCATION_ID")] public int? RegionId{ get; set; }
 
     public LandRegion? Region{ get; set; }
+    
+    [Column("PREVIOS_LOCATION_ID")] public int? PreviousLocationId{ get; set; }
+
+    public LandRegion? PreviousLocation{ get; set; }
 
     [Column("TRANSPORT_ID")] public int? TransportId{ get; set; }
 
@@ -21,11 +26,15 @@ public abstract class ALandUnit : AUnit{
             Transport = transport;
         }
         CurrentMovement -= GetDistanceToTarget(phase);
+        PreviousLocation = Region;
         SetLocation(Target);
+        if (phase == EPhase.CombatMove) CanMove = false;
         return true;
     }
 
     public override ARegion? GetLocation() => Region;
+    
+    public override ARegion? GetPreviousLocation() => PreviousLocation;
 
     public override bool SetLocation(ARegion region){
         if (region.IsLandRegion()){
