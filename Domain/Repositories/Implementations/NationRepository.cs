@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Model.Configuration;
 using Model.Entities;
+using Model.Entities.Regions;
+using Model.Entities.Units;
 
 namespace Domain.Repositories.Implementations;
 
@@ -19,6 +21,8 @@ public class NationRepository : ARepository<Nation>, INationRepository{
             .ThenInclude(t => t.Capital)
             .Include(n => n.Regions)
             .ThenInclude(t => t.Factory)
+            .Include(n => n.Regions)
+            .ThenInclude(u => u.Neighbours)
             .AsSplitQuery()
             .FirstOrDefaultAsync(n => n.Id == Id);
     }
@@ -33,6 +37,8 @@ public class NationRepository : ARepository<Nation>, INationRepository{
             .ThenInclude(t => t.Capital)
             .Include(n => n.Regions)
             .ThenInclude(t => t.Factory)
+            .Include(n => n.Regions)
+            .ThenInclude(u => u.Neighbours)
             .AsSplitQuery()
             .ToListAsync();
     }

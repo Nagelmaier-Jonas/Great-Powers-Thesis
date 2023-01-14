@@ -16,21 +16,29 @@ public class GameEngine{
 
     public NationRepository _NationRepository{ get; set; }
     public BattleRepository _BattleRepository{ get; set; }
+
+    public IServiceScopeFactory _ServiceScopeFactory{ get; set; }
     public GameEngine(IServiceScopeFactory serviceScopeFactory){
-        using (var scope = serviceScopeFactory.CreateScope()){
-            _SessionInfoRepository = scope.ServiceProvider.GetRequiredService<SessionInfoRepository>();
-            _UnitRepository = scope.ServiceProvider.GetRequiredService<UnitRepository>();
-            _NationRepository = scope.ServiceProvider.GetRequiredService<NationRepository>();
-            _BattleRepository = scope.ServiceProvider.GetRequiredService<BattleRepository>();
-        }
+        _ServiceScopeFactory = serviceScopeFactory;
+        using var scope = _ServiceScopeFactory.CreateScope();
+        Init(scope);
+    }
+
+    private void Init(IServiceScope scope){
+        _SessionInfoRepository = scope.ServiceProvider.GetRequiredService<SessionInfoRepository>();
+        _UnitRepository = scope.ServiceProvider.GetRequiredService<UnitRepository>();
+        _NationRepository = scope.ServiceProvider.GetRequiredService<NationRepository>();
+        _BattleRepository = scope.ServiceProvider.GetRequiredService<BattleRepository>();
     }
 
     public async Task PlanMovement(AUnit unit, ARegion target){
+        Init(_ServiceScopeFactory.CreateScope());
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
         if (unit.SetTarget(session.Phase, target)) _UnitRepository.UpdateAsync(unit);
     }
 
     public async Task MoveUnits(){
+        Init(_ServiceScopeFactory.CreateScope());
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
         List<AUnit> units = await _UnitRepository.ReadAsync(u => u.Target != null);
         foreach (var unit in units.Where(unit => unit.MoveToTarget(session.Phase))){
@@ -39,27 +47,37 @@ public class GameEngine{
     }
 
     public async Task<List<ARegion>> GetPossibleTarget(AUnit unit){
+        Init(_ServiceScopeFactory.CreateScope());
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
         return unit.GetPossibleTargets(session.Phase);
     }
 
     public async Task CreateUnit(AUnit type, Nation nation){
+        Init(_ServiceScopeFactory.CreateScope());
         AUnit unit = type.GetNewInstanceOfSameType();
         unit.Nation = nation;
         await _UnitRepository.CreateAsync(unit);
     }
 
-    public async Task<List<AUnit>> GetMovingUnits() => await _UnitRepository.ReadAsync(u => u.Target != null);
+    public async Task<List<AUnit>> GetMovingUnits(){
+        Init(_ServiceScopeFactory.CreateScope());
+        return await _UnitRepository.ReadAsync(u => u.Target != null);
+    } 
 
     public async Task PlaceUnit(AUnit unit, ARegion region){
+        Init(_ServiceScopeFactory.CreateScope());
         if (unit.SetLocation(region)) await _UnitRepository.UpdateAsync(unit);
     }
 
-    private async Task<bool> CheckIfAllUnitsAreMobilized() =>
-        (await _UnitRepository.ReadAsync(u => u.GetLocation() == null && !u.IsCargo())).Count == 0;
+    private async Task<bool> CheckIfAllUnitsAreMobilized(){
+        Init(_ServiceScopeFactory.CreateScope());
+        return (await _UnitRepository.ReadAsync(u => u.GetLocation() == null && !u.IsCargo())).Count == 0;
+    }
+        
 
 
     private async Task<Battle> StartBattle(ARegion region){
+        Init(_ServiceScopeFactory.CreateScope());
         Battle battle = new Battle{
             Location = region,
             Phase = region.IsWaterRegion() ? EBattlePhase.SPECIAL_SUBMARINE : EBattlePhase.ATTACK,
@@ -80,12 +98,14 @@ public class GameEngine{
     }
 
     public async Task<Battle> GetBattle(ARegion region){
+        Init(_ServiceScopeFactory.CreateScope());
         Battle battle = (await _BattleRepository.ReadAsync(b => b.Location == region)).First();
         if (battle is null) return await StartBattle(region);
         return battle;
     }
 
     public async Task<List<ARegion>> GetPossibleRetreatTargets(AUnit unit){
+        Init(_ServiceScopeFactory.CreateScope());
         Battle battle = (await _BattleRepository.ReadAsync(b => b.Location == unit.GetLocation())).FirstOrDefault();
         if (battle is null) return new List<ARegion>();
         if (!battle.Attackers.Contains(unit)) return new List<ARegion>();
@@ -96,6 +116,7 @@ public class GameEngine{
     }
 
     public async Task<bool> EndPhase(){
+        Init(_ServiceScopeFactory.CreateScope());
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
         switch (session.Phase){
             case EPhase.PurchaseUnits:
