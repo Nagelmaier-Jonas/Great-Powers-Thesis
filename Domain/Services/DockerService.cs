@@ -22,6 +22,7 @@ public class DockerService{
         var dockerComposeFile = File.ReadAllText("..\\Databases\\docker-compose.yml");
         dockerComposeFile = dockerComposeFile.Replace("./default:/var/lib/mysql", $"./{name}:/var/lib/mysql");
         dockerComposeFile = dockerComposeFile.Replace("26280", "26281");
+        dockerComposeFile = dockerComposeFile.Replace("greatpowers_db_default", $"greatpowers_db_local_{name}");
         Directory.CreateDirectory($"..\\Databases\\{name}");
         File.WriteAllText($"..\\Databases\\{name}\\schema.sql", schema);
         File.WriteAllText($"..\\Databases\\{name}\\docker-compose.yml", dockerComposeFile);

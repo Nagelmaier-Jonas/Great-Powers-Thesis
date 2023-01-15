@@ -1,23 +1,26 @@
 ﻿using System.Diagnostics;
 using Domain.Repositories;
 using Domain.Repositories.Implementations;
+using Domain.Services;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Model.Entities;
 using Model.Entities.Regions;
 using Model.Entities.Units;
 using Model.Entities.Units.Abstract;
 using Model.Factories;
+using View.Services;
 
 namespace View;
 
 public class GameEngine{
     public SessionInfoRepository _SessionInfoRepository{ get; set; }
     public UnitRepository _UnitRepository{ get; set; }
-
     public NationRepository _NationRepository{ get; set; }
     public BattleRepository _BattleRepository{ get; set; }
-
     public IServiceScopeFactory _ServiceScopeFactory{ get; set; }
+    public ViewRefreshService _ViewRefreshService{ get; set; }
+    
+    public FileService FileService{ get; set; }
     public GameEngine(IServiceScopeFactory serviceScopeFactory){
         _ServiceScopeFactory = serviceScopeFactory;
         using var scope = _ServiceScopeFactory.CreateScope();
@@ -29,12 +32,15 @@ public class GameEngine{
         _UnitRepository = scope.ServiceProvider.GetRequiredService<UnitRepository>();
         _NationRepository = scope.ServiceProvider.GetRequiredService<NationRepository>();
         _BattleRepository = scope.ServiceProvider.GetRequiredService<BattleRepository>();
+        _ViewRefreshService = scope.ServiceProvider.GetRequiredService<ViewRefreshService>();
+        FileService = scope.ServiceProvider.GetRequiredService<FileService>();
     }
 
     public async Task PlanMovement(AUnit unit, ARegion target){
         Init(_ServiceScopeFactory.CreateScope());
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
         if (unit.SetTarget(session.Phase, target)) _UnitRepository.UpdateAsync(unit);
+        _ViewRefreshService.Refresh();
     }
 
     public async Task MoveUnits(){
@@ -55,7 +61,7 @@ public class GameEngine{
     public async Task CreateUnit(AUnit type, Nation nation){
         Init(_ServiceScopeFactory.CreateScope());
         AUnit unit = type.GetNewInstanceOfSameType();
-        unit.Nation = nation;
+        unit.NationId = nation.Id;
         await _UnitRepository.CreateAsync(unit);
     }
 
@@ -138,16 +144,20 @@ public class GameEngine{
                 session.Phase = EPhase.CollectIncome;
                 break;
             case EPhase.CollectIncome:
+                Init(_ServiceScopeFactory.CreateScope());
                 Nation nation = await _NationRepository.ReadAsync(session.CurrentNationId);
                 nation.CollectIncome();
+                Init(_ServiceScopeFactory.CreateScope());
                 _NationRepository.UpdateAsync(nation);
                 session.Phase = EPhase.PurchaseUnits;
                 if (session.CurrentNationId == 5) session.CurrentNationId = 1;
                 if (session.CurrentNationId != 5) session.CurrentNationId++;
                 break;
         }
-
+        FileService.WriteSessionInfoToFile(session.Path,session);
+        Init(_ServiceScopeFactory.CreateScope());
         await _SessionInfoRepository.UpdateAsync(session);
+        _ViewRefreshService.Refresh();
         return true;
     }
 }

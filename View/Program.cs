@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using System.Text.Json;
 using BlazorPanzoom.Services;
 using Domain.Repositories.Implementations;
 using Domain.Services;
@@ -40,6 +41,20 @@ process.StartInfo = startInfo;
 process.StartInfo.Arguments = "/c cd ..\\Databases && docker-compose down && docker-compose up -d --build";
 process.Start();
 process.WaitForExit();
+
+//write default sessionInfo
+File.WriteAllText(
+    Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, "Databases\\default\\") + "sessionInfo.json", JsonSerializer.Serialize(new SessionInfo(){
+        Id = 1,
+        CurrentNationId = 1,
+        StandardVictory = true,
+        TotalVictory = false,
+        Phase = EPhase.PurchaseUnits,
+        Round = 1,
+        AxisCapitals = 6,
+        AlliesCapitals = 6,
+        Path = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, "Databases\\default\\")
+    }));
 
 //configure builder
 var builder = WebApplication.CreateBuilder(args);
@@ -104,6 +119,7 @@ builder.Services.AddLogging();
 
 builder.Services.AddScoped<SidebarService>();
 builder.Services.AddScoped<DockerService>();
+builder.Services.AddScoped<FileService>();
 
 builder.Services.AddScoped<CountryPaths>();
 builder.Services.AddScoped<ChannelPaths>();

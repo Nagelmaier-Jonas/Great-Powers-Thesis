@@ -5179,6 +5179,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             Round = 1,
             AxisCapitals = 6,
             AlliesCapitals = 6,
+            Path = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, "Databases\\default\\")
         });
 
         base.OnModelCreating(builder);
