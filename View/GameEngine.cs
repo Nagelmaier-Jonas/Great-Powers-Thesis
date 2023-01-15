@@ -42,6 +42,12 @@ public class GameEngine{
         if (unit.SetTarget(session.Phase, target)) _UnitRepository.UpdateAsync(unit);
         _ViewRefreshService.Refresh();
     }
+    
+    public async Task<List<ARegion>> GetPathForUnit(AUnit unit){
+        Init(_ServiceScopeFactory.CreateScope());
+        SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
+        return unit.GetPathToTarget(session.Phase);
+    }
 
     public async Task MoveUnits(){
         Init(_ServiceScopeFactory.CreateScope());

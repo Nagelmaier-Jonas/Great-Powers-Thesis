@@ -90,6 +90,7 @@ public abstract class AUnit{
 
     protected List<ARegion> GetTargetsForMovement(int distance, ARegion region, EPhase phase, bool planeCheck = false,
         List<ARegion>? previous = null){
+        if (phase is not EPhase.CombatMove or EPhase.NonCombatMove) return new List<ARegion>();
         if (distance <= 0) return new List<ARegion>();
         if (region == null) return new List<ARegion>();
         HashSet<ARegion> regions = new HashSet<ARegion>();
@@ -107,6 +108,7 @@ public abstract class AUnit{
 
 
     protected int GetDistanceToTarget(EPhase phase, int distance = 1, ARegion? region = null, bool planeCheck = false){
+        if (phase is not EPhase.CombatMove or EPhase.NonCombatMove) return 0;
         if (Target == null) return 0;
         if (distance > CurrentMovement) return 0;
         if (GetLocation() == null) return 0;
@@ -121,6 +123,7 @@ public abstract class AUnit{
     public List<ARegion> GetPathToTarget(EPhase phase, ARegion? region = null){
         if (Target == null) return new List<ARegion>();
         if (GetLocation() == null) return new List<ARegion>();
+        if (phase is not EPhase.CombatMove or EPhase.NonCombatMove) return new List<ARegion>();
 
         ARegion location = region ?? GetLocation();
 

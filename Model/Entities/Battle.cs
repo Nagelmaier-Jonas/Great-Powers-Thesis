@@ -32,6 +32,9 @@ public class Battle{
     public int NonAirHits{ get; set; }
     public int NonSubmarineHits{ get; set; }
     public int NormalHits{ get; set; }
+    
+    [NotMapped]
+    public Dictionary<int,int> DiceRolls{ get; set; }
 
     private bool CheckForDestroyers(AUnit submarine){
         if (!submarine.IsSubmarine()) return true;
@@ -94,13 +97,16 @@ public class Battle{
     private void RollForHits(){
         bool attacker = IsAttacker(CurrentNation);
         foreach (var unit in GetCurrentNationsUnits()){
+            int roll = Dice.Roll();
+            DiceRolls[roll] += 1;
             if (unit.IsPlane()){
                 if (attacker){
-                    if (Dice.Roll() <= unit.Attack) NonSubmarineHits += 1;
+                    
+                    if (roll <= unit.Attack) NonSubmarineHits += 1;
                     continue;
                 }
 
-                if (Dice.Roll() <= unit.Defense) NonSubmarineHits += 1;
+                if (roll <= unit.Defense) NonSubmarineHits += 1;
                 continue;
             }
 
@@ -108,20 +114,20 @@ public class Battle{
                 if (CheckForDestroyers(unit) && Phase == EBattlePhase.SPECIAL_SUBMARINE) continue;
 
                 if (attacker){
-                    if (Dice.Roll() <= unit.Attack) NonAirHits += 1;
+                    if (roll <= unit.Attack) NonAirHits += 1;
                     continue;
                 }
 
-                if (Dice.Roll() <= unit.Defense) NonAirHits += 1;
+                if (roll <= unit.Defense) NonAirHits += 1;
                 continue;
             }
 
             if (attacker){
-                if (Dice.Roll() <= unit.Attack) NormalHits += 1;
+                if (roll <= unit.Attack) NormalHits += 1;
                 continue;
             }
 
-            if (Dice.Roll() <= unit.Defense) NormalHits += 1;
+            if (roll <= unit.Defense) NormalHits += 1;
         }
     }
 
@@ -166,7 +172,6 @@ public class Battle{
                     Phase = EBattlePhase.RESOLUTION;
                     return true;
                 }
-
                 RollForHits();
                 if (CheckForOpenHits()) return false;
                 Phase = EBattlePhase.DEFENSE;
@@ -209,7 +214,6 @@ public class Battle{
         if (Phase != EBattlePhase.RESOLUTION) return false;
         AttackerDecided = true;
         List<AUnit> retreatingUnits = Attackers.Where(unit => unit.GetPossibleRetreatTargets((from u in Attackers select u.GetPreviousLocation()).ToList()).Count > 0).ToList();
-
         return true;
     }
 

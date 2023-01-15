@@ -6,5 +6,5 @@ public enum EPhase{
     ConductCombat,
     NonCombatMove,
     MobilizeNewUnits,
-    CollectIncome,
+    CollectIncome
 }
