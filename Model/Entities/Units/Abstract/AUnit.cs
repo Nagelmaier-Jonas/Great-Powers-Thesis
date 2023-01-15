@@ -69,6 +69,14 @@ public abstract class AUnit{
         Target = target;
         return true;
     }
+    public bool RemoveTarget(){
+        Target = null;
+        return true;
+    }
+
+    public bool HasTarget(){
+        return Target is not null;
+    }
 
     public virtual bool MoveToTarget(EPhase phase) => false;
 

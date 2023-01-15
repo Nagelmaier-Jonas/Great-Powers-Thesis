@@ -39,7 +39,14 @@ public class GameEngine{
     public async Task PlanMovement(AUnit unit, ARegion target){
         Init(_ServiceScopeFactory.CreateScope());
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
-        if (unit.SetTarget(session.Phase, target)) _UnitRepository.UpdateAsync(unit);
+        if (unit.SetTarget(session.Phase, target)) await _UnitRepository.UpdateAsync(unit);
+        _ViewRefreshService.Refresh();
+    }
+
+    public async Task RemovePlanedMovement(AUnit unit){
+        Init(_ServiceScopeFactory.CreateScope());
+        unit.RemoveTarget();
+        await _UnitRepository.UpdateAsync(unit);
         _ViewRefreshService.Refresh();
     }
     
@@ -85,9 +92,7 @@ public class GameEngine{
         Init(_ServiceScopeFactory.CreateScope());
         return (await _UnitRepository.ReadAsync(u => u.GetLocation() == null && !u.IsCargo())).Count == 0;
     }
-        
-
-
+    
     private async Task<Battle> StartBattle(ARegion region){
         Init(_ServiceScopeFactory.CreateScope());
         Battle battle = new Battle{

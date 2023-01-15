@@ -1,9 +1,11 @@
 ﻿using Model.Entities.Regions;
+using Model.Entities.Units.Abstract;
 
 namespace View.Components.Game.Drawer.CombatMove;
 
 public class CombatTargets{
     public List<ARegion>? Regions{ get; set; }
+    public List<AUnit>? Units{ get; set; }
 
     public event Action? HandleTargetChange;
     
@@ -12,8 +14,18 @@ public class CombatTargets{
         HandleTargetChange?.Invoke();
     }
 
-    public void ClearRegion(){
+    public void ClearRegions(){
         Regions = null;
+        HandleTargetChange?.Invoke();
+    }
+    
+    public void SetUnits(List<AUnit> units){
+        Units = units;
+        HandleTargetChange?.Invoke();
+    }
+
+    public void ClearUnits(){
+        Units = null;
         HandleTargetChange?.Invoke();
     }
 }

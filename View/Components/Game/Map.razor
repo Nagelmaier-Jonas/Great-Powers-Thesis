@@ -39,6 +39,13 @@
                 <Country Region="@sea"/>
             }
             <Channel/>
+            @*Render Unit Paths*@
+            @foreach (var unit in Nations.SelectMany(nation => nation.Regions.SelectMany(land => land.GetOneStationedUnitPerType()))){
+                <UnitArrow Unit="@unit"/>
+            }
+            @foreach (var unit in SeeZones.SelectMany(sea => sea.GetOneStationedUnitPerType())){
+                <UnitArrow Unit="@unit"/>
+            }
             @*Render Income*@
             @foreach (var land in Nations.SelectMany(nation => nation.Regions)){
                 <CountryIncome Region="@land"/>
@@ -71,6 +78,7 @@
 </div>
 @if (ActiveRegion.Region is not null){
     <TroopBar Region="ActiveRegion.Region"/>
+    
 }
 
 

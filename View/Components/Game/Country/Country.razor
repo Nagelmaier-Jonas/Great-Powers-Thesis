@@ -2,9 +2,12 @@
 @using Model.Entities
 @using Domain.Services
 @using View.Services
+@using Microsoft.AspNetCore.Components.Web
 @inject CountryPaths CountryPaths
 @inject ActiveRegion ActiveRegion
 @inject ViewRefreshService ViewRefreshService
+@inject CombatTargets CombatTargets
+@inject GameEngine GameEngine
 
 @if (Region is not null){
     @if (Region.IsLandRegion()){
@@ -16,7 +19,12 @@
                 <path d="@CountryPaths[Region.Identifier]" class="active_country svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
             }
             else{
-                <path d="@CountryPaths[Region.Identifier]" class="svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
+                if (CombatTargets.Regions is not null && CombatTargets.Regions.Contains(Region)){
+                    <path d="@CountryPaths[Region.Identifier]" class="combat_target svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
+                }
+                else{
+                    <path d="@CountryPaths[Region.Identifier]" class="svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
+                }
             }
         }
     }
@@ -25,7 +33,12 @@
             <path d="@CountryPaths[Region.Identifier]" class="active_country svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="1" @onclick="UpdateRegion"/>
         }
         else{
-            <path d="@CountryPaths[Region.Identifier]" class="svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="1" @onclick="UpdateRegion"/>
+            if (CombatTargets.Regions is not null && CombatTargets.Regions.Contains(Region)){
+                <path d="@CountryPaths[Region.Identifier]" class="combat_target svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="1" @onclick="UpdateRegion"/>
+            }
+            else{
+                <path d="@CountryPaths[Region.Identifier]" class="svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="1" @onclick="UpdateRegion"/>
+            }
         }
     }
 }
@@ -43,13 +56,26 @@
             return;
         }
         if (Region is null) return;
+        PlanMovements();
         if (ActiveRegion.Region == Region){
             ActiveRegion.ClearRegion();
         }
         else{
             ActiveRegion.RefreshRegion(Region);
         }
+        CombatTargets.ClearRegions();  
         ViewRefreshService.Refresh();
+    }
+
+    private async void PlanMovements(){
+        if (CombatTargets.Regions is null) return;
+        if (CombatTargets.Units is null) return;
+        if (Region is null) return;
+        if (!CombatTargets.Regions.Contains(Region)) return;
+        Console.WriteLine("Planned movements");
+        foreach (var u in CombatTargets.Units){
+            await GameEngine.PlanMovement(u, Region);
+        }
     }
 
 }

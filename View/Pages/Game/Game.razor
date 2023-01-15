@@ -2,16 +2,19 @@
 @using Model.Entities
 @using Domain.Repositories
 @using Domain.Repositories.Implementations
+@using EventBus.Clients
 @using EventHandling.EventHandler
 @using Model.Entities.Regions
 @using Model.Entities.Units.Abstract
 @using View.Services
+@using DataTransfer
+@using System.Text.Json
 @inject SessionInfoRepository SessionInfoRepository
 @inject NationRepository NationRepository
 @inject WaterRegionRepository WaterRegionRepository
 @inject UnitRepository UnitRepository
 @inject ViewRefreshService ViewRefreshService
-@inject StateHasChangedEventHandler StateHasChangedEventHandler
+@* @inject StateHasChangedEventHandler StateHasChangedEventHandler *@
 
 <style>
     .sidebar{
@@ -37,6 +40,7 @@
     private List<Nation> Nations { get; set; } = new();
     private List<WaterRegion> SeeZones { get; set; } = new();
     private Nation CurrentNation { get; set; } = new();
+    private  List<AUnit> MoveableUnits { get; set; } = new();
     private  List<AUnit> PlaceableUnits { get; set; } = new();
     private int MaxTroops { get; set; }
     
@@ -44,7 +48,7 @@
 
     protected override async Task OnInitializedAsync(){
         ViewRefreshService.HandleViewRefreshChange += HandleViewRefreshChange;
-        StateHasChangedEventHandler.HandleViewRefreshChange += HandleViewRefreshChange;
+        //StateHasChangedEventHandler.HandleViewRefreshChange += HandleViewRefreshChange;
         Info = await SessionInfoRepository.ReadAsync();
         Nations = await NationRepository.ReadAllGraphAsync();
         SeeZones = await WaterRegionRepository.ReadAllGraphAsync();
@@ -67,7 +71,6 @@
 
     public void Dispose(){
         ViewRefreshService.HandleViewRefreshChange -= HandleViewRefreshChange;
-        StateHasChangedEventHandler.HandleViewRefreshChange -= HandleViewRefreshChange;
+        //StateHasChangedEventHandler.HandleViewRefreshChange -= HandleViewRefreshChange;
     }
-
 }

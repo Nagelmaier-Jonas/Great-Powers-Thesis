@@ -14,7 +14,7 @@
 
     protected override void OnInitialized(){
         DockerContainer = Directory.GetDirectories("../Databases").Select(x => x.Split('\\').Last()).ToList();
-        DockerContainer.Remove("default");
+        //DockerContainer.Remove("default");
         base.OnInitialized();
     }
 
