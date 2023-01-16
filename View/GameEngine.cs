@@ -90,8 +90,10 @@ public class GameEngine{
         Init(_ServiceScopeFactory.CreateScope());
         return (await _UnitRepository.ReadAsync(u => u.GetLocation() == null && !u.IsCargo())).Count == 0;
     }
-    
-    private async Task<Battle?> StartBattle(ARegion region){
+        
+
+
+    private async Task<Battle> StartBattle(ARegion region){
         Init(_ServiceScopeFactory.CreateScope());
         if (!(await GetBatteLocations()).Contains(region)) return null;
         

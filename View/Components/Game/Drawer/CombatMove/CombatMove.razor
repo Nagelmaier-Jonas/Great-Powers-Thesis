@@ -2,6 +2,7 @@
 @using Model.Entities
 @using Model.Entities.Regions
 @using Model.Entities.Units.Abstract
+@using Model.Entities.Units.Abstract
 @inject ActiveRegion ActiveRegion
 @inject CombatTargets CombatTargets
 @inject GameEngine GameEngine
@@ -72,10 +73,11 @@ else{
         else{
             CombatTargets.ClearRegion();
         }
-        if (ActiveRegion.Region is not null)
+        if (ActiveRegion.Region is not null){
             CombatTargets.SetUnits(new List<AUnit>(){
                 unit
             });
+        }
         ViewRefreshService.Refresh();
     }
 

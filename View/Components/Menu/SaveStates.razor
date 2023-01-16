@@ -1,11 +1,16 @@
 ﻿@using Domain.Services
+@using Model.Entities
+@using Domain.Repositories
 @inject DockerService DockerService
 @inject NavigationManager NavigationManager
+@inject FileService FileService
 
 @foreach (var container in DockerContainers){
     <MudCard Outlined="true">
         <MudCardContent>
             <MudText>@container</MudText>
+            <MudText>@Infos[container].Round</MudText>
+            <MudText>@Infos[container].Phase.ToString()</MudText>
         </MudCardContent>
         <MudCardActions>
             <MudButton OnClick="@(() => LoadSession(container, "127.0.0.1", "26281"))">Load</MudButton>
@@ -17,6 +22,14 @@
 
     [Parameter]
     public List<string> DockerContainers { get; set; }
+
+    private Dictionary<string,SessionInfo> Infos { get; set; } = new();
+    
+    protected override void OnInitialized(){
+        foreach (var container in DockerContainers){
+            Infos.Add(container,FileService.ReadSessionInfoFromFile(container));
+        }
+    }
 
     private async void LoadSession(string name, string ipAddress, string port){
         await DockerService.StartDockerContainer(name);

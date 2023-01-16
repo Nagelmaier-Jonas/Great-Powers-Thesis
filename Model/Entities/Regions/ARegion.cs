@@ -94,6 +94,9 @@ public abstract class ARegion{
 
     public int GetUnitCount(AUnit unit) => GetStationedUnitCounts().Where(d => d.Key.IsSameType(unit))
         .ToDictionary(p => unit).Values.First().Value;
+    
+    public int GetMovableUnitCount(AUnit unit) => GetMovableUnitCounts().Where(d => d.Key.IsSameType(unit))
+        .ToDictionary(p => unit).Values.First().Value;
 
     public Dictionary<AUnit, int> GetStationedUnitCounts(){
         Dictionary<AUnit, int> counts = new Dictionary<AUnit, int>();
@@ -104,10 +107,29 @@ public abstract class ARegion{
         }
         return counts;
     }
+    
+    public Dictionary<AUnit, int> GetMovableUnitCounts(){
+        Dictionary<AUnit, int> counts = new Dictionary<AUnit, int>();
+        foreach (var type in GetOneMovableUnitPerType()){
+            if(counts.Keys.Any(u => u.IsSameType(type))) continue;
+            int count = GetStationedUnits().Count(unit => unit.IsSameType(type) && unit.CanMove);
+            counts[type] = count;
+        }
+        return counts;
+    }
 
     public List<AUnit> GetOneStationedUnitPerType(){
         List<AUnit> oneUnitPerType = new List<AUnit>();
         foreach (var unit in GetStationedUnits()){
+            if (oneUnitPerType.Any(u => unit.IsSameType(u))) continue;
+            oneUnitPerType.Add(unit);
+        }
+        return oneUnitPerType;
+    }
+    
+    public List<AUnit> GetOneMovableUnitPerType(){
+        List<AUnit> oneUnitPerType = new List<AUnit>();
+        foreach (var unit in GetStationedUnits().Where(u => u.CanMove)){
             if (oneUnitPerType.Any(u => unit.IsSameType(u))) continue;
             oneUnitPerType.Add(unit);
         }

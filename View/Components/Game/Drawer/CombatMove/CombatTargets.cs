@@ -15,7 +15,7 @@ public class CombatTargets{
         HandleTargetChange?.Invoke();
     }
 
-    public void ClearRegion(){
+    public void ClearRegions(){
         Regions = null;
         HandleTargetChange?.Invoke();
     }

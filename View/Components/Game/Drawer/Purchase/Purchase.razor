@@ -10,6 +10,7 @@
 @inject NationRepository NationRepository
 @inject IDialogService DialogService
 @inject ViewRefreshService ViewRefreshService
+@inject GameEngine GameEngine
 
 @if (SessionInfo.Phase is not EPhase.PurchaseUnits){
     return;
@@ -143,6 +144,7 @@
         var dialog = DialogService.Show<PurchaseSummaryDialog>("Zusammenfassung Kaufen", parameters, options);
         var result = await dialog.Result;
         if (result.Cancelled) return;
+        await GameEngine.EndPhase();
         ViewRefreshService.Refresh();
     }
 

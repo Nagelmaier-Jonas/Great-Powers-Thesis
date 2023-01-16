@@ -3,8 +3,10 @@
 @using Microsoft.AspNetCore.Components
 @using Domain.Services
 @using Model.Configuration
+@using Model.Entities
 @inject NavigationManager NavigationManager
 @inject DockerService DockerService
+@inject FileService FileService
 
 <style>
     body {
@@ -33,6 +35,17 @@
         while (!DockerService.CheckConnection("localhost", "26281")){
         }
         await Task.Run(() => DockerService.ChangeDbContext("localhost", "26281"));
+        FileService.WriteSessionInfoToFile(SessionName,new SessionInfo(){
+            Id = 1,
+            CurrentNationId = 1,
+            StandardVictory = true,
+            TotalVictory = false,
+            Phase = EPhase.PurchaseUnits,
+            Round = 1,
+            AxisCapitals = 6,
+            AlliesCapitals = 6,
+            Path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"Databases/{SessionName}")
+        });
         NavigationManager.NavigateTo("/game");
         StateHasChanged();
     }
