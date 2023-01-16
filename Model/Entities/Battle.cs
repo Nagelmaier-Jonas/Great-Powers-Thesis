@@ -19,7 +19,7 @@ public class Battle{
     [Column("LOCATION_ID")] public int LocationId{ get; set; }
     public ARegion Location{ get; set; }
 
-    [Column("BATTLE_PHASE")] public EBattlePhase Phase{ get; set; }
+    [Column("BATTLE_PHASE", TypeName = "VARCHAR(45)")] public EBattlePhase Phase{ get; set; }
 
     [Column("BATTLE_ROUND")] public int Round{ get; set; } = 1;
 

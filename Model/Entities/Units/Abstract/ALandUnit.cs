@@ -28,6 +28,7 @@ public abstract class ALandUnit : AUnit{
         CurrentMovement -= GetDistanceToTarget(phase);
         PreviousLocation = Region;
         SetLocation(Target);
+        RemoveTarget();
         if (phase == EPhase.CombatMove) CanMove = false;
         return true;
     }
@@ -39,6 +40,7 @@ public abstract class ALandUnit : AUnit{
     public override bool SetLocation(ARegion region){
         if (region.IsLandRegion()){
             Region = (LandRegion)region;
+            RegionId = region.Id;
             return true;
         }
         return false;

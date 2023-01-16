@@ -1,25 +1,91 @@
 ﻿@using View.Services
 @using Model.Entities
+@using Model.Entities.Regions
+@using Model.Entities.Units.Abstract
 @inject ActiveRegion ActiveRegion
+@inject CombatTargets CombatTargets
+@inject GameEngine GameEngine
+@inject ViewRefreshService ViewRefreshService
 
 @if (SessionInfo.Phase is not EPhase.CombatMove){
     return;
 }
-<MudText Class="fw-bold text-center mb-3 mt-5 noselect" Color="Color.Secondary" Typo="Typo.h4">Kampfbewegung</MudText>
-@if (SessionInfo is not null && ActiveRegion.Region is not null){
-    @foreach (var unit in ActiveRegion.Region.GetOneStationedUnitPerType()){
-        <Unit Troop="unit" Amount="ActiveRegion.Region.GetUnitCount(unit)" Class="ml-3" RenderSubTroops="true"/>
+@if (ActiveRegion.Region?.GetOwner() != null){
+    @if (SessionInfo.CurrentNationId != ActiveRegion.Region.GetOwner().Id){
+        <MudContainer Class="d-flex justify-content-around noselect">
+            <MudText Class="fw-bold text-center mb-3 mt-5" Color="Color.Info" Typo="Typo.body1">Dieses Land ist nicht in Ihrem Besitz!</MudText>
+        </MudContainer>
+        return;
     }
+}
+<MudText Class="fw-bold text-center mb-3 mt-5 noselect" Color="Color.Secondary" Typo="Typo.h4">Kampfbewegung</MudText>
+@if (SessionInfo is not null && ActiveRegion.Region is not null && ActiveRegion.Region.GetStationedUnits().Count > 0){
+    <MudTable Items="@ActiveRegion.Region.GetStationedUnits()" Class="border-none purchase-table" Dense="true" FixedHeader="true" Height="60vh">
+        <HeaderContent>
+            <MudTh></MudTh>
+            <MudTh>Bewegen</MudTh>
+            <MudTh>Löschen</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="" Class="text-center border-none">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@context.Nation.Name" width="50" height="50">
+                    <g>
+                        <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
+                        <path class="troopbadge-medal"
+                              d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
+                    </g>
+                    <path class="troopbadge-symbol"
+                          d="@context.GetStringFromDictionary(UnitPaths.Paths)"/>
+                </svg>
+            </MudTd>
+            <MudTd DataLabel="Bewegen">
+                <MudIconButton Icon="@Icons.Material.Filled.Map" OnClick="() => SetPossibleTargets(context)"/>
+            </MudTd>
+            <MudTd DataLabel="Löschen">
+                @if (context.HasTarget()){
+                    <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="() => RemoveTarget(context)"/>
+                }
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
 }
 else{
     <MudContainer Class="d-flex justify-content-around noselect">
-        <MudText Class="fw-bold text-center mb-3 mt-5" Color="Color.Info" Typo="Typo.body1">Wähle ein Land aus um dessen Truppen zu bewegen.</MudText>
+        <MudText Class="fw-bold text-center mb-3 mt-5" Color="Color.Info" Typo="Typo.body1">Wähle ein Land mit Truppen aus um diese zu bewegen.</MudText>
     </MudContainer>
 }
+<MudFab StartIcon="@Icons.Material.Filled.NextPlan" Label="Finish Phase" Color="Color.Error" Class="w-50 align-self-center mb-3 mt-3" OnClick="FinishPhase"/>
 
 @code {
 
     [Parameter]
     public SessionInfo? SessionInfo { get; set; }
+
+    private Dictionary<AUnit, int> Checkout { get; set; } = new();
+
+    private async void SetPossibleTargets(AUnit unit){
+        var targets = await GameEngine.GetPossibleTarget(unit);
+
+        if (targets.Count > 0){
+            CombatTargets.SetRegions(targets);
+        }
+        else{
+            CombatTargets.ClearRegion();
+        }
+        if (ActiveRegion.Region is not null)
+            CombatTargets.SetUnits(new List<AUnit>(){
+                unit
+            });
+        ViewRefreshService.Refresh();
+    }
+
+
+    private async void FinishPhase(){
+        await GameEngine.EndPhase();
+    }
+
+    private async void RemoveTarget(AUnit unit){
+        await GameEngine.RemovePlannedMovement(unit);
+    }
 
 }

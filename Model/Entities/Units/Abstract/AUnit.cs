@@ -18,7 +18,7 @@ public abstract class AUnit{
 
     [Column("TARGET_ID")] public int? TargetId{ get; set; }
 
-    public ARegion? Target{ get; protected set; }
+    public ARegion? Target{ get; set; }
 
     [Column("CURRENT_MOVEMENT")] public int CurrentMovement{ get; set; }
 
@@ -67,7 +67,17 @@ public abstract class AUnit{
     public bool SetTarget(EPhase phase, ARegion target){
         if (!CanTarget(phase, target)) return false;
         Target = target;
+        TargetId = target.Id;
         return true;
+    }
+    public bool RemoveTarget(){
+        Target = null;
+        TargetId = null;
+        return true;
+    }
+
+    public bool HasTarget(){
+        return Target is not null;
     }
 
     public virtual bool MoveToTarget(EPhase phase) => false;

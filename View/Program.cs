@@ -20,6 +20,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using View;
 using View.Components.Game.Channel;
 using View.Components.Game.Drawer.CombatMove;
+using View.Components.Game.Drawer.ConductCombat;
 using View.Services;
 
 //setup firewall
@@ -127,14 +128,15 @@ builder.Services.AddScoped<ChannelPaths>();
 builder.Services.AddScoped<ActiveRegion>();
 builder.Services.AddScoped<ViewRefreshService>();
 builder.Services.AddScoped<CombatTargets>();
+builder.Services.AddScoped<Battlegrounds>();
 
 builder.Services.AddTransient<GameEngine>();
 
 builder.Services.AddScoped<StateHasChangedEventHandler>();
 
-builder.Services.AddSingleton<IEventPublisher, EventPublisher>();
+/*builder.Services.AddSingleton<IEventPublisher, EventPublisher>();
 builder.Services.AddSingleton<IEventProcessor, StateHasChangedEventProcessor>();
-builder.Services.AddHostedService<EventSubscriber>();
+builder.Services.AddHostedService<EventSubscriber>();*/
 
 var app = builder.Build();
 

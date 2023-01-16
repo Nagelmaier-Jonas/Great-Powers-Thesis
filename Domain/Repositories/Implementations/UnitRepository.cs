@@ -70,4 +70,12 @@ public class UnitRepository : ACreatableRepository<AUnit>, IUnitRepository{
 
         return result;
     }
+
+    public async Task RemoveTargetAsync(AUnit unit){
+        _context.ChangeTracker.Clear();
+        unit.TargetId = null;
+        unit.Target = null; 
+        _set.Update(unit);
+        await _context.SaveChangesAsync();
+    }
 }

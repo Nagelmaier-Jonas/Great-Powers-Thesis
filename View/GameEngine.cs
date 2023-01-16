@@ -19,7 +19,7 @@ public class GameEngine{
     public BattleRepository _BattleRepository{ get; set; }
     public IServiceScopeFactory _ServiceScopeFactory{ get; set; }
     public ViewRefreshService _ViewRefreshService{ get; set; }
-    
+
     public FileService FileService{ get; set; }
     public GameEngine(IServiceScopeFactory serviceScopeFactory){
         _ServiceScopeFactory = serviceScopeFactory;
@@ -39,7 +39,14 @@ public class GameEngine{
     public async Task PlanMovement(AUnit unit, ARegion target){
         Init(_ServiceScopeFactory.CreateScope());
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
-        if (unit.SetTarget(session.Phase, target)) _UnitRepository.UpdateAsync(unit);
+        if (unit.SetTarget(session.Phase, target)) await _UnitRepository.UpdateAsync(unit);
+        _ViewRefreshService.Refresh();
+    }
+
+    public async Task RemovePlannedMovement(AUnit unit){
+        Init(_ServiceScopeFactory.CreateScope());
+        unit.RemoveTarget();
+        await _UnitRepository.UpdateAsync(unit);
         _ViewRefreshService.Refresh();
     }
     
@@ -85,11 +92,11 @@ public class GameEngine{
         Init(_ServiceScopeFactory.CreateScope());
         return (await _UnitRepository.ReadAsync(u => u.GetLocation() == null && !u.IsCargo())).Count == 0;
     }
-        
-
-
+    
     private async Task<Battle> StartBattle(ARegion region){
         Init(_ServiceScopeFactory.CreateScope());
+        return null!;
+        //TODO: Check if battle is possible
         Battle battle = new Battle{
             Location = region,
             Phase = region.IsWaterRegion() ? EBattlePhase.SPECIAL_SUBMARINE : EBattlePhase.ATTACK,
@@ -111,11 +118,10 @@ public class GameEngine{
 
     public async Task<Battle> GetBattle(ARegion region){
         Init(_ServiceScopeFactory.CreateScope());
-        Battle battle = (await _BattleRepository.ReadAsync(b => b.Location == region)).First();
+        Battle? battle = await _BattleRepository.GetBattleFromLocation(region);
         if (battle is null) return await StartBattle(region);
         return battle;
     }
-
     public async Task<List<ARegion>> GetPossibleRetreatTargets(AUnit unit){
         Init(_ServiceScopeFactory.CreateScope());
         Battle battle = (await _BattleRepository.ReadAsync(b => b.Location == unit.GetLocation())).FirstOrDefault();
@@ -135,14 +141,14 @@ public class GameEngine{
                 session.Phase = EPhase.CombatMove;
                 break;
             case EPhase.CombatMove:
-                MoveUnits();
+                await MoveUnits();
                 session.Phase = EPhase.ConductCombat;
                 break;
             case EPhase.ConductCombat:
                 session.Phase = EPhase.NonCombatMove;
                 break;
             case EPhase.NonCombatMove:
-                MoveUnits();
+                await MoveUnits();
                 session.Phase = EPhase.MobilizeNewUnits;
                 break;
             case EPhase.MobilizeNewUnits:
@@ -154,7 +160,7 @@ public class GameEngine{
                 Nation nation = await _NationRepository.ReadAsync(session.CurrentNationId);
                 nation.CollectIncome();
                 Init(_ServiceScopeFactory.CreateScope());
-                _NationRepository.UpdateAsync(nation);
+                await _NationRepository.UpdateAsync(nation);
                 session.Phase = EPhase.PurchaseUnits;
                 if (session.CurrentNationId == 5) session.CurrentNationId = 1;
                 if (session.CurrentNationId != 5) session.CurrentNationId++;
