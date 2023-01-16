@@ -12,6 +12,10 @@ public class LandRegionRepository : ARepository<LandRegion>, ILandRegionReposito
     public async Task<LandRegion?> ReadGraphAsync(int Id){
         return await _set
             .Include(l => l.Neighbours)
+            .Include(i => i.StationedPlanes)
+            .Include(i => i.Canals)
+            .Include(i => i.StationedUnits)
+            .Include(i => i.IncomingUnits)
             .FirstOrDefaultAsync(l => l.Id == Id);
     }
 }

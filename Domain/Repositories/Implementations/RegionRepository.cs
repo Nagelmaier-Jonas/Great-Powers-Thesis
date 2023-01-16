@@ -17,8 +17,8 @@ public class RegionRepository : ARepository<ARegion>, IRegionRepository{
     public override async Task<ARegion?> ReadAsync(int id){
         ARegion region = await base.ReadAsync(id);
         if (region is null) return null;
-        if (region.IsLandRegion()) return await _LandRegionRepository.ReadAsync(region.Id);
-        if (region.IsWaterRegion()) return await _WaterRegionRepository.ReadAsync(region.Id);
+        if (region.IsLandRegion()) return await _LandRegionRepository.ReadGraphAsync(region.Id);
+        if (region.IsWaterRegion()) return await _WaterRegionRepository.ReadGraphAsync(region.Id);
         return region;
     }
 
@@ -28,8 +28,8 @@ public class RegionRepository : ARepository<ARegion>, IRegionRepository{
 
         List<ARegion> result = new List<ARegion>();
         foreach (var region in regions){
-            if (region.IsLandRegion()) result.Add(await _LandRegionRepository.ReadAsync(region.Id));
-            if (region.IsWaterRegion()) result.Add(await _WaterRegionRepository.ReadAsync(region.Id));
+            if (region.IsLandRegion()) result.Add(await _LandRegionRepository.ReadGraphAsync(region.Id));
+            if (region.IsWaterRegion()) result.Add(await _WaterRegionRepository.ReadGraphAsync(region.Id));
         }
         
         return result;
@@ -42,8 +42,8 @@ public class RegionRepository : ARepository<ARegion>, IRegionRepository{
         List<ARegion> result = new List<ARegion>();
         
         foreach (var region in regions){
-            if (region.IsLandRegion()) result.Add(await _LandRegionRepository.ReadAsync(region.Id));
-            if (region.IsWaterRegion()) result.Add(await _WaterRegionRepository.ReadAsync(region.Id));
+            if (region.IsLandRegion()) result.Add(await _LandRegionRepository.ReadGraphAsync(region.Id));
+            if (region.IsWaterRegion()) result.Add(await _WaterRegionRepository.ReadGraphAsync(region.Id));
         }
 
         return result;
@@ -56,8 +56,8 @@ public class RegionRepository : ARepository<ARegion>, IRegionRepository{
         List<ARegion> result = new List<ARegion>();
         
         foreach (var region in regions){
-            if (region.IsLandRegion()) result.Add(await _LandRegionRepository.ReadAsync(region.Id));
-            if (region.IsWaterRegion()) result.Add(await _WaterRegionRepository.ReadAsync(region.Id));
+            if (region.IsLandRegion()) result.Add(await _LandRegionRepository.ReadGraphAsync(region.Id));
+            if (region.IsWaterRegion()) result.Add(await _WaterRegionRepository.ReadGraphAsync(region.Id));
         }
 
         return result;

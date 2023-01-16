@@ -18,6 +18,7 @@ public class WaterRegionRepository : ARepository<WaterRegion>, IWaterRegionRepos
             .Include(t => t.StationedShips)
             .ThenInclude(s => ((AircraftCarrier)s).Planes)
             .Include(t => t.StationedPlanes)
+            .Include(i => i.IncomingUnits)
             .FirstOrDefaultAsync(w => w.Id == Id);
     }
 
@@ -29,6 +30,7 @@ public class WaterRegionRepository : ARepository<WaterRegion>, IWaterRegionRepos
             .Include(t => t.StationedShips)
             .ThenInclude(s => ((AircraftCarrier)s).Planes)
             .Include(t => t.StationedPlanes)
+            .Include(i => i.IncomingUnits)
             .AsSplitQuery()
             .ToListAsync();
     }
