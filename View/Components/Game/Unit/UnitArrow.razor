@@ -4,14 +4,15 @@
 @inject GameEngine GameEngine
 
 @if (Unit is not null){
-    <svg xmlns="http://www.w3.org/2000/svg">
+    @if(GetPath() == string.Empty) return;
+    <svg xmlns="http://www.w3.org/2000/svg" class="path-arrow">
         <defs>
             <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5"
-                    markerWidth="6" markerHeight="6" orient="auto">
+                    markerWidth="4" markerHeight="4" orient="auto" fill="darkcyan">
                 <path d="M 0 0 L 10 5 L 0 10 z"/>
             </marker>
         </defs>
-        <path d="@GetPath()" stroke="black" fill="none" marker-end="url(#arrow)"/>
+        <path d="@GetPath()" stroke="darkcyan" fill="none" marker-end="url(#arrow)" stroke-width="4"/>
     </svg>
 }
 
@@ -21,17 +22,39 @@
     public AUnit? Unit { get; set; }
 
     private List<Point> Path { get; set; } = new();
+    
+    /*private Dictionary<AUnit, Point> TroopPositioning { get; set; } = new(){
+        { UnitPaths.Units[0], new Point(0, -25) },
+        { UnitPaths.Units[1], new Point(0, 25) },
+        { UnitPaths.Units[2], new Point(-15, -15) },
+        { UnitPaths.Units[3], new Point(-15, 15) },
+        { UnitPaths.Units[4], new Point(15, -15) },
+        { UnitPaths.Units[5], new Point(15, 15) },
+        { UnitPaths.Units[6], new Point(0, -25) },
+        { UnitPaths.Units[7], new Point(0, 25) },
+        { UnitPaths.Units[8], new Point(-15, -15) },
+        { UnitPaths.Units[9], new Point(-15, 15) },
+        { UnitPaths.Units[10], new Point(15, -15) },
+        { UnitPaths.Units[11], new Point(15, 15) }
+    };*/
 
     protected override async Task OnInitializedAsync(){
         if (Unit is null) return;
         var countries = await GameEngine.GetPathForUnit(Unit);
+        if (countries.Count is 0) return;
         foreach (var c in countries){
             Path.Add(new Point((int)c.PositionX, (int)c.PositionY));
         }
     }
     
     private string GetPath(){
-        const string path = "";
+        if (Path.Count is 0) return String.Empty;
+        /*if (Unit is null) return "";
+        var p = Unit.GetPointFromDictionary(TroopPositioning);
+        var x = (p.Value.X + Path[0].X).ToString();
+        var y = (p.Value.Y + Path[0].Y).ToString();
+        var path = $"M {x} {y} ";*/
+        var path = $"M";
         return Path.Aggregate(path, (current, p) => current + $"{p.X} {p.Y} ");
     }
 

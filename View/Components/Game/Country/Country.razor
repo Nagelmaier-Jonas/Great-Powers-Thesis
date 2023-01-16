@@ -23,11 +23,16 @@
                 <path d="@CountryPaths[Region.Identifier]" class="active_country svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
             }
             else{
-                if (CombatTargets.Regions is not null && CombatTargets.Regions.Contains(Region)){
-                    <path d="@CountryPaths[Region.Identifier]" class="combat_target svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
+                if (Battlegrounds.Battleground is not null && Battlegrounds.Battleground.Contains(Region)){
+                    <path d="@CountryPaths[Region.Identifier]" class="battleground svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
                 }
                 else{
-                    <path d="@CountryPaths[Region.Identifier]" class="svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
+                    if (CombatTargets.Regions is not null && CombatTargets.Regions.Contains(Region)){
+                        <path d="@CountryPaths[Region.Identifier]" class="combat_target svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
+                    }
+                    else{
+                        <path d="@CountryPaths[Region.Identifier]" class="svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
+                    }
                 }
             }
         }
@@ -41,7 +46,12 @@
                 <path d="@CountryPaths[Region.Identifier]" class="combat_target svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="1" @onclick="UpdateRegion"/>
             }
             else{
-                <path d="@CountryPaths[Region.Identifier]" class="svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="1" @onclick="UpdateRegion"/>
+                if (Battlegrounds.Battleground is not null && Battlegrounds.Battleground.Contains(Region)){
+                    <path d="@CountryPaths[Region.Identifier]" class="battleground svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="1" @onclick="UpdateRegion"/>
+                }
+                else{
+                    <path d="@CountryPaths[Region.Identifier]" class="svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="1" @onclick="UpdateRegion"/>
+                }
             }
         }
     }
@@ -54,6 +64,14 @@
 
     [Parameter]
     public Nation Owner { get; set; } = new();
+
+    [Parameter]
+    public SessionInfo? SessionInfo { get; set; }
+
+    protected override async Task OnInitializedAsync(){
+        var regions = await GameEngine.GetBatteLocations();
+        Battlegrounds.SetBattlegrounds(regions);
+    }
 
     private void UpdateRegion(MouseEventArgs args){
         if (args.ShiftKey){
@@ -79,18 +97,21 @@
         foreach (var u in CombatTargets.Units){
             await GameEngine.PlanMovement(u, Region);
         }
+        CombatTargets.ClearRegions();
+        CombatTargets.ClearUnits();
         ViewRefreshService.Refresh();
     }
 
     private async void StartBattle(ARegion region){
+        if (SessionInfo?.Phase != EPhase.ConductCombat) return;
         var battle = await GameEngine.GetBattle(region);
         if (battle is null) return;
-        
+
         var parameters = new DialogParameters{
-            {"Battle", battle}
+            { "Battle", battle }
         };
-        var options = new DialogOptions{ CloseOnEscapeKey = true , NoHeader = true, DisableBackdropClick = true, FullScreen = true};
-        var dialog = await DialogService.ShowAsync<BattleDialog>("Kampf", parameters, options);
+        var options = new DialogOptions{ NoHeader = true, FullScreen = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<ConductCombatDialog>("Kampf", parameters, options);
         var result = await dialog.Result;
         if (result.Cancelled) return;
     }

@@ -4,6 +4,7 @@ using Domain.Services;
 using Model.Entities;
 using Model.Entities.Regions;
 using Model.Entities.Units.Abstract;
+using View.Components.Game.Drawer.ConductCombat;
 using View.Services;
 
 namespace View;
@@ -16,6 +17,8 @@ public class GameEngine{
     public IServiceScopeFactory _ServiceScopeFactory{ get; set; }
     public ViewRefreshService _ViewRefreshService{ get; set; }
     public RegionRepository _RegionRepository{ get; set; }
+
+    public Battlegrounds _Battlegrounds {get; set; }
 
     public FileService FileService{ get; set; }
     public GameEngine(IServiceScopeFactory serviceScopeFactory){
@@ -32,12 +35,16 @@ public class GameEngine{
         _ViewRefreshService = scope.ServiceProvider.GetRequiredService<ViewRefreshService>();
         FileService = scope.ServiceProvider.GetRequiredService<FileService>();
         _RegionRepository = scope.ServiceProvider.GetRequiredService<RegionRepository>();
+        _Battlegrounds = scope.ServiceProvider.GetRequiredService<Battlegrounds>();
     }
 
     public async Task PlanMovement(AUnit unit, ARegion target){
         Init(_ServiceScopeFactory.CreateScope());
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
-        if (unit.SetTarget(session.Phase, target)) await _UnitRepository.UpdateAsync(unit);
+        if (unit.SetTarget(session.Phase, target)){
+            Init(_ServiceScopeFactory.CreateScope());
+            await _UnitRepository.UpdateAsync(unit);
+        }
         _ViewRefreshService.Refresh();
     }
 
@@ -123,8 +130,11 @@ public class GameEngine{
         return battle;
     }
 
-    public async Task<List<ARegion>> GetBatteLocations() => await _RegionRepository.ReadAsync(r => r.IncomingUnits.Count > 0);
-    
+    public async Task<List<ARegion>> GetBatteLocations(){
+        Init(_ServiceScopeFactory.CreateScope());
+        return await _RegionRepository.ReadAsync(r => r.IncomingUnits.Count > 0);
+    }
+
     public async Task<List<ARegion>> GetPossibleRetreatTargets(AUnit unit){
         Init(_ServiceScopeFactory.CreateScope());
         Battle battle = (await _BattleRepository.ReadAsync(b => b.Location == unit.GetLocation())).FirstOrDefault();
@@ -148,6 +158,7 @@ public class GameEngine{
                 session.Phase = EPhase.ConductCombat;
                 break;
             case EPhase.ConductCombat:
+                _Battlegrounds.Battleground = await GetBatteLocations();
                 session.Phase = EPhase.NonCombatMove;
                 break;
             case EPhase.NonCombatMove:

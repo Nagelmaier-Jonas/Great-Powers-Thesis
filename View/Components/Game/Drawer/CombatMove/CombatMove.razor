@@ -2,11 +2,12 @@
 @using Model.Entities
 @using Model.Entities.Regions
 @using Model.Entities.Units.Abstract
-@using Model.Entities.Units.Abstract
+@using View.Dialogs
 @inject ActiveRegion ActiveRegion
 @inject CombatTargets CombatTargets
 @inject GameEngine GameEngine
 @inject ViewRefreshService ViewRefreshService
+@inject IDialogService DialogService
 
 @if (SessionInfo.Phase is not EPhase.CombatMove){
     return;
@@ -71,7 +72,7 @@ else{
             CombatTargets.SetRegions(targets);
         }
         else{
-            CombatTargets.ClearRegion();
+            CombatTargets.ClearRegions();
         }
         if (ActiveRegion.Region is not null){
             CombatTargets.SetUnits(new List<AUnit>(){
@@ -83,7 +84,11 @@ else{
 
 
     private async void FinishPhase(){
-        await GameEngine.EndPhase();
+        var parameters = new DialogParameters{
+            { "SessionInfo", SessionInfo }
+        };
+        var options = new DialogOptions{ CloseOnEscapeKey = true , NoHeader = true, DisableBackdropClick = true};
+        var dialog = await DialogService.ShowAsync<CombatMoveSummaryDialog>("Zusammenfassung Bewegung", parameters, options);
     }
 
     private async void RemoveTarget(AUnit unit){

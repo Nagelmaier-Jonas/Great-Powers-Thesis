@@ -1,0 +1,76 @@
+﻿@using Model.Entities
+@inject IJSRuntime JSRuntime
+
+@if (Battle is not null){
+    <MudDialog Class="@RegionType">
+        <DialogContent>
+            @if (Battle.Location.IsLandRegion()){
+                <div id="particles-js"></div>
+            }
+            @if (Battle.Location.IsWaterRegion()){
+                <div class="splat-toggle">
+                    <div class="rain front-row"></div>
+                    <div class="rain back-row"></div>
+                </div>
+            }
+            <MudPaper Height="20vh" Width="100vw" Class="d-flex bg-transparent">
+                <MudContainer>
+
+                </MudContainer>
+                <MudContainer>
+
+                </MudContainer>
+                <MudContainer>
+
+                </MudContainer>
+            </MudPaper>
+            <MudPaper Height="80vh" Width="100vw" Class="d-flex bg-transparent">
+                <MudContainer>
+
+                </MudContainer>
+                <MudContainer>
+
+                </MudContainer>
+                <MudContainer>
+
+                </MudContainer>
+            </MudPaper>
+        </DialogContent>
+    </MudDialog>
+}
+
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    private string RegionType { get; set; } = FilterOperator.String.Empty;
+
+    private bool IsRendered { get; set; }
+
+    [Parameter]
+    public Battle? Battle { get; set; }
+
+    protected override void OnInitialized(){
+        if (Battle is null) return;
+        RegionType = Battle.Location.IsLandRegion() ? "battleground-drawer-land" : "battleground-drawer-water";
+    }
+
+    protected override void OnAfterRender(bool firstRender){
+        if (IsRendered) return;
+        if (Battle.Location.IsWaterRegion()){
+            JSRuntime.InvokeVoidAsync("makeRain");
+        }
+        if (Battle.Location.IsLandRegion()){
+            JSRuntime.InvokeVoidAsync("MakeFire");
+        }
+        IsRendered = true;
+    }
+
+    async void Submit(){
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    void Cancel() => MudDialog.Cancel();
+}
