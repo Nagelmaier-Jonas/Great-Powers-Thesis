@@ -9,8 +9,7 @@ public abstract class ARepository<TEntity> : IRepository<TEntity> where TEntity 
     protected readonly GreatPowersDbContext _context;
     protected readonly DbSet<TEntity> _set;
 
-    public ARepository(GreatPowersDbContext context)
-    {
+    public ARepository(GreatPowersDbContext context){
         _context = context;
         _set = _context.Set<TEntity>();
     }

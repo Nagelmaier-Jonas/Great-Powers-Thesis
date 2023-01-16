@@ -113,6 +113,7 @@ builder.Services.AddScoped<LandUnitRepository>();
 builder.Services.AddScoped<PlaneRepository>();
 builder.Services.AddScoped<ShipRepository>();
 builder.Services.AddScoped<BattleRepository>();
+builder.Services.AddScoped<RegionRepository>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
