@@ -145,6 +145,8 @@ public class Battle{
         Defenders.RemoveAll(u => u.HitPoints == 0);
     }
 
+    private bool AreSubamrinesInvolved() => Attackers.Any(u => u.IsSubmarine()) || Defenders.Any(u => u.IsSubmarine());
+
     public List<Nation> GetDefendingNations() =>
         (from u in Defenders.DistinctBy(u => u.Nation) select u.Nation).ToList();
 
@@ -162,6 +164,10 @@ public class Battle{
     public bool AdvanceCombat(){
         switch (Phase){
             case EBattlePhase.SPECIAL_SUBMARINE:
+                if (!AreSubamrinesInvolved()){
+                    Phase = EBattlePhase.ATTACK;
+                    return true;
+                }
                 RollForHits();
                 if (CheckForOpenHits()) return false;
                 if (GetNextNation() == GetAttacker()) Phase = EBattlePhase.ATTACK;
@@ -187,7 +193,7 @@ public class Battle{
                 CurrentNation = GetNextNation();
                 Round += 1;
                 ResolveCasualties();
-                Phase = Location.IsWaterRegion() ? EBattlePhase.SPECIAL_SUBMARINE : EBattlePhase.ATTACK;
+                Phase = IsAquaticBattle() ? EBattlePhase.SPECIAL_SUBMARINE : EBattlePhase.ATTACK;
                 return true;
         }
 
@@ -224,4 +230,6 @@ public class Battle{
     }
 
     public bool CheckForWinner() => Attackers.Count == 0 || Defenders.Count == 0;
+
+    public bool IsAquaticBattle() => Location.IsWaterRegion();
 }
