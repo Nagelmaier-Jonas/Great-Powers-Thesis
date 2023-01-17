@@ -97,12 +97,10 @@ public class GameEngine{
         Init(_ServiceScopeFactory.CreateScope());
         return (await _UnitRepository.ReadAsync(u => u.GetLocation() == null && !u.IsCargo())).Count == 0;
     }
-        
-
 
     private async Task<Battle> StartBattle(ARegion region){
         Init(_ServiceScopeFactory.CreateScope());
-        if (!(await GetBatteLocations()).Contains(region)) return null;
+        if (!_Battlegrounds.Battleground.Contains(region)) return null;
         
         Battle battle = new Battle{
             Location = region,
@@ -155,10 +153,10 @@ public class GameEngine{
                 break;
             case EPhase.CombatMove:
                 await MoveUnits();
+                _Battlegrounds.Battleground = await GetBatteLocations();
                 session.Phase = EPhase.ConductCombat;
                 break;
             case EPhase.ConductCombat:
-                _Battlegrounds.Battleground = await GetBatteLocations();
                 session.Phase = EPhase.NonCombatMove;
                 break;
             case EPhase.NonCombatMove:

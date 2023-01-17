@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using Model.Entities;
 using Model.Entities.Regions;
 using Model.Entities.Units;
@@ -823,30 +822,30 @@ public class Tests{
         };
 
         LandRegion landSEESWFW1 = new LandRegion(){
-            Name = "landSESFS1",
+            Name = "landSEESWFW1",
             Nation = self
         };
         LandRegion landSEESWFW2 = new LandRegion(){
-            Name = "landSESFS2",
+            Name = "landSEESWFW2",
             Nation = enemy
         };
         LandRegion landSEESWFW3 = new LandRegion(){
-            Name = "landSESFS3",
+            Name = "landSEESWFW3",
             Nation = enemy
         };
         LandRegion landSEESWFW4 = new LandRegion(){
-            Name = "landSESFS4",
+            Name = "landSEESWFW4",
             Nation = self
         };
         WaterRegion landSEESWFW5 = new WaterRegion(){
-            Name = "landSESFS5"
+            Name = "landSEESWFW5"
         };
         LandRegion landSEESWFW6 = new LandRegion(){
-            Name = "landSESFS6",
+            Name = "landSEESWFW6",
             Nation = friendly
         };
         WaterRegion landSEESWFW7 = new WaterRegion(){
-            Name = "landSESFS7"
+            Name = "landSEESWFW7"
         };
 
         WaterRegion water1 = new WaterRegion(){
@@ -2542,9 +2541,5 @@ public class Tests{
         Assert.AreEqual(3, region.GetUnitCount(units[3]));
         Assert.AreEqual(3, region.GetUnitCount(units[4]));
         Assert.AreEqual(3, region.GetUnitCount(units[5]));
-
-        KeyValuePair<AUnit, int> pair = new KeyValuePair<AUnit, int>(){
-            
-        };
     }
 }

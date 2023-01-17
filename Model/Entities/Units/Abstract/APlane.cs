@@ -26,8 +26,6 @@ public abstract class APlane : AUnit{
         Region = target;
         return true;
     }
-
-    public override List<AUnit> GetSubUnits() => null;
     
     public override bool MoveToTarget(EPhase phase){
         if (GetPathToTarget(phase).Count == 0) return false;
@@ -44,11 +42,8 @@ public abstract class APlane : AUnit{
     }
 
     public bool CanLand(ARegion region){
-        if (region.GetOwner() != null){
-            if (region.GetOwner() == Nation || Nation.Allies.Any(a => a.Ally == region.GetOwner())) return true;
-        }
-        if (region.GetOpenAircraftCarriers(Nation).Count != 0) return true;
-        return false;
+        if (region.GetOwner() == null) return region.GetOpenAircraftCarriers(Nation).Count != 0;
+        return region.GetOwner() == Nation || Nation.Allies.Any(a => a.Ally == region.GetOwner());
     }
 
     public List<ARegion> GetClosestLandingSpots(ARegion region, int movement, int distance = 1){
@@ -60,10 +55,9 @@ public abstract class APlane : AUnit{
     }
     
     protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase){
-        LandRegion neigh = new LandRegion();
         switch (phase){
             case EPhase.NonCombatMove:
-                if (!CanLand(target.Neighbour) && distance == 1) break;
+                if (!CanLand(target.Neighbour) && Target is not null && target.Neighbour == Target) break;
                 return true;
             case EPhase.CombatMove:
                 //A Plane can only attack a Field if it will still have enough Movement left to land in the Non Combat Movement Phase

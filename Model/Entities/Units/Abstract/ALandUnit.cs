@@ -28,7 +28,6 @@ public abstract class ALandUnit : AUnit{
         CurrentMovement -= GetDistanceToTarget(phase);
         PreviousLocation = Region;
         SetLocation(Target);
-        RemoveTarget();
         if (phase == EPhase.CombatMove) CanMove = false;
         return true;
     }

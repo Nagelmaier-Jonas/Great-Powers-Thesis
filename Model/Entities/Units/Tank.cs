@@ -26,7 +26,6 @@ public class Tank : ALandUnit{
                 if (neigh.Nation != Nation && neigh.Nation.Allies.All(a => a.Ally != Nation)) break;
                 return true;
             case EPhase.CombatMove:
-
                 if (GetLocation().Neighbours.All(n => n.Neighbour != Target)){
                     if (Target is not null && !Target.IsHostile(Nation) && !target.Neighbour.IsHostile(Nation) && target.Neighbour != Target) break;
                     if (distance == 2 && target.Neighbour.ContainsEnemies(Nation)) break;

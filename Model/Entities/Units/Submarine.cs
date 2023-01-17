@@ -25,6 +25,8 @@ public class Submarine : AShip{
                         u.Nation != Nation && u.Nation.Allies.All(a => a.Ally != Nation) &&
                         u.IsDestroyer())) break;
                 
+                if(distance == 1 && target.Neighbour.IsHostile(Nation)) break;
+                
                 return true;
             case EPhase.CombatMove:
                 //If a Ship doesnt support an amphibious assault, it has to end its attack on a Field containing Enemies, unless it started in an enemy Field and is escaping elsewhere

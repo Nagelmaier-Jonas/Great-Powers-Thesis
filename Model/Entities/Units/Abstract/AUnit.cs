@@ -45,7 +45,7 @@ public abstract class AUnit{
     public abstract ARegion? GetLocation();
     public abstract ARegion? GetPreviousLocation();
     public abstract bool SetLocation(ARegion region);
-    public abstract List<AUnit> GetSubUnits();
+    public virtual List<AUnit> GetSubUnits() => null;
 
     public List<ARegion> GetPossibleRetreatTargets(List<ARegion> previousRegions) =>
         GetTargetsForMovement(1, GetLocation(), EPhase.NonCombatMove).Where(previousRegions.Contains)
@@ -55,14 +55,11 @@ public abstract class AUnit{
     private bool CanTarget(EPhase phase, ARegion target){
         ARegion temp = Target;
         Target = target;
-        if (GetPathToTarget(phase).Count > 0 && GetPathToTarget(phase).Contains(target)){
-            Target = temp;
-            return true;
-        }
-
+        List<ARegion> path = GetPathToTarget(phase);
         Target = temp;
-        return false;
+        return path.Contains(target);
     }
+
 
     public bool SetTarget(EPhase phase, ARegion target){
         if (!CanTarget(phase, target)) return false;
@@ -74,7 +71,7 @@ public abstract class AUnit{
     public void RemoveTarget() => Target = null;
 
     public bool HasTarget() => Target is not null;
-    
+
 
     public virtual bool MoveToTarget(EPhase phase) => false;
 
@@ -85,7 +82,7 @@ public abstract class AUnit{
         foreach (var region in regions){
             ARegion temp = Target;
             Target = region;
-            if (GetPathToTarget(phase).Count > 0 && GetPathToTarget(phase).Contains(region)) targets.Add(region);
+            if (GetPathToTarget(phase).Contains(region)) targets.Add(region);
             Target = temp;
         }
 
@@ -99,19 +96,25 @@ public abstract class AUnit{
         if (distance <= 0) return new List<ARegion>();
         if (region == null) return new List<ARegion>();
         HashSet<ARegion> regions = new HashSet<ARegion>();
-        if(previous is not null)regions.UnionWith(previous);
+        regions.Add(region);
+        
         foreach (var neighbour in region.Neighbours){
-            if (previous is not null && previous.Contains(neighbour.Neighbour)) continue;
+            
+            if (previous is not null){
+                regions.UnionWith(previous);
+                if(regions.Contains(neighbour.Neighbour)) continue;
+            }
+
             if (!CheckForMovementRestrictions(distance, neighbour, phase) && !planeCheck) continue;
+            
             regions.Add(neighbour.Neighbour);
             regions.UnionWith(GetTargetsForMovement(distance - 1, neighbour.Neighbour, phase, planeCheck,
                 regions.ToList()));
         }
 
-        regions.Remove(GetLocation());
+        regions.Remove(region);
         return regions.ToList();
     }
-
 
     protected int GetDistanceToTarget(EPhase phase, int distance = 1, ARegion? region = null, bool planeCheck = false){
         if (Target == null) return 0;
@@ -125,7 +128,7 @@ public abstract class AUnit{
         return GetDistanceToTarget(phase, distance + 1, location, planeCheck);
     }
 
-    public List<ARegion> GetPathToTarget(EPhase phase, ARegion? region = null){
+    public List<ARegion> GetPathToTarget(EPhase phase, ARegion? region = null, List<ARegion>? previos = null){
         if (Target == null) return new List<ARegion>();
         if (GetLocation() == null) return new List<ARegion>();
 
@@ -135,12 +138,15 @@ public abstract class AUnit{
 
         if (distance == 0) return new List<ARegion>();
 
-        List<ARegion> path = new List<ARegion>();
-        path.Add(location);
+        List<ARegion> path = new List<ARegion>(){
+            location
+        };
 
-        List<ARegion> neighbours = new List<ARegion>();
+        if (previos is not null) path.AddRange(previos);
 
-        neighbours = GetTargetsForMovement(distance, location, phase);
+        if (path.Any(r => GetDistanceToTarget(phase, 1, r) == distance - 1)) return new List<ARegion>();
+
+        List<ARegion> neighbours = GetTargetsForMovement(distance, location, phase);
 
         if (distance == 1){
             if (neighbours.Contains(Target)){
@@ -151,10 +157,10 @@ public abstract class AUnit{
             return new List<ARegion>();
         }
 
+
         foreach (var neigh in neighbours){
-            if (path.Any(r => GetDistanceToTarget(phase, 1, r) == distance - 1)) break;
             if (GetDistanceToTarget(phase, 1, neigh) == distance - 1)
-                path.AddRange(GetPathToTarget(phase, neigh));
+                path.AddRange(GetPathToTarget(phase, neigh, path));
         }
 
         return path;
