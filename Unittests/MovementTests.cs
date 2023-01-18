@@ -1,3 +1,5 @@
+using System.Text.Json;
+using DataTransfer;
 using Model.Entities;
 using Model.Entities.Regions;
 using Model.Entities.Units;
@@ -2543,5 +2545,11 @@ public class Tests{
         Assert.AreEqual(3, region.GetUnitCount(units[3]));
         Assert.AreEqual(3, region.GetUnitCount(units[4]));
         Assert.AreEqual(3, region.GetUnitCount(units[5]));
+    }
+    
+    [Test]
+    public void Test1(){
+        string asd = JsonSerializer.Serialize(new StateHasChangedEvent());
+        Assert.AreEqual("a",asd);
     }
 }

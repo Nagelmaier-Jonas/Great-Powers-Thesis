@@ -17,6 +17,8 @@ public class EventSubscriber : BackgroundService {
     private IModel _channel;
     private string _queueName;
     private string _exchangeName;
+    private string _uniqueId = new (Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 10).Select(s => s[Random.Next(s.Length)]).ToArray());
+    private static readonly Random Random = new ();
 
     public EventSubscriber(IConfiguration configuration, IEventProcessor processor) {
         _configuration = configuration;
@@ -42,10 +44,10 @@ public class EventSubscriber : BackgroundService {
             }
         }
         _channel = _connection.CreateModel();
-        _queueName = _configuration["EventBusQueue"];
+        _queueName = $"{_configuration["EventBusQueue"]}{_uniqueId}";
         _exchangeName = _configuration["EventBusExchange"];
         
-        _channel.QueueDeclare(_queueName,true,false);
+        _channel.QueueDeclare(_queueName,true,false,false);
         _channel.ExchangeDeclare(exchange: _exchangeName, type: ExchangeType.Fanout);
         _channel.QueueBind(_queueName,_exchangeName,"");
     }
@@ -56,12 +58,13 @@ public class EventSubscriber : BackgroundService {
         var consumer = new EventingBasicConsumer(_channel);
         
         consumer.Received += (moduleHandle, message) => {
-            Console.WriteLine("Received message");
             var body = message.Body;
             var eventMessage = Encoding.UTF8.GetString(body.ToArray());
             
             _eventProcessor.ProcessEvent(eventMessage);
         };
+
+        _channel.BasicConsume(_queueName, true, consumer);
         
         return Task.CompletedTask;
     }

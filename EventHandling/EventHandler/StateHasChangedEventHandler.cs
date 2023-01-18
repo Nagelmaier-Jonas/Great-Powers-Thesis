@@ -6,7 +6,7 @@ namespace EventHandling.EventHandler;
 public class StateHasChangedEventHandler : IEventHandler{
     public event Action? HandleViewRefreshChange;
     
-    public void Execute(){ 
+    public void Execute(){
         HandleViewRefreshChange?.Invoke();
     }
     
