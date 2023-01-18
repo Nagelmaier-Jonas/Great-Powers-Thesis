@@ -58,7 +58,7 @@
         Units = await GameEngine.GetMovingUnits();
     }
 
-    async void Submit(){
+    async Task Submit(){
         await GameEngine.EndPhase();
         MudDialog.Close(DialogResult.Ok(true));
     }

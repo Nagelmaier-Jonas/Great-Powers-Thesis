@@ -91,6 +91,6 @@ window.MakeFire = function () {
         },
         retina_detect: true
     });
-    alert("Fire");
+    
     $("#particles-js").css("position", "absolute");
 }

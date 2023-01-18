@@ -40,10 +40,10 @@
             }
             <Channel/>
             @*Render Unit Paths*@
-            @foreach (var unit in Nations.SelectMany(nation => nation.Regions.SelectMany(land => land.GetOneStationedUnitPerType()))){
+            @foreach (var unit in Nations.SelectMany(nation => nation.Regions.SelectMany(land => land.GetStationedUnits()))){
                 <UnitArrow Unit="@unit"/>
             }
-            @foreach (var unit in SeeZones.SelectMany(sea => sea.GetOneStationedUnitPerType())){
+            @foreach (var unit in SeeZones.SelectMany(sea => sea.GetStationedUnits())){
                 <UnitArrow Unit="@unit"/>
             }
             @*Render Income*@

@@ -1,0 +1,31 @@
+﻿@if (Rolls is not null){
+    <MudStack Justify="Justify.SpaceEvenly" Spacing="0" AlignItems="AlignItems.Center" Row="true" Class="mt-10">
+        <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[1]">
+            <MudImage Src="img/dices/dice_one.svg"/>
+        </MudBadge>
+        <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[2]">
+            <MudImage Src="img/dices/dice_two.svg"/>
+        </MudBadge>
+        <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[3]">
+            <MudImage Src="img/dices/dice_three.svg"/>
+        </MudBadge>
+    </MudStack>
+    <MudStack Justify="Justify.SpaceEvenly" Spacing="0" AlignItems="AlignItems.Center" Row="true" Class="mt-10">
+        <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[4]">
+            <MudImage Src="img/dices/dice_four.svg"/>
+        </MudBadge>
+        <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[5]">
+            <MudImage Src="img/dices/dice_five.svg"/>
+        </MudBadge>
+        <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[6]">
+            <MudImage Src="img/dices/dice_six.svg"/>
+        </MudBadge>
+    </MudStack>
+}
+
+@code {
+
+    [Parameter]
+    public Dictionary<int, int>? Rolls { get; set; }
+
+}

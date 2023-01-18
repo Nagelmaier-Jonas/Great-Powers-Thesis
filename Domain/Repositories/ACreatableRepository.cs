@@ -11,6 +11,7 @@ public abstract class ACreatableRepository<TEntity> : ARepository<TEntity>,ICrea
 
     public async Task<TEntity> CreateAsync(TEntity entity)
     {
+        _context.ChangeTracker.Clear();
         _set.Add(entity);
         await _context.SaveChangesAsync();
         return entity;

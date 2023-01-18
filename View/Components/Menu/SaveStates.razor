@@ -13,7 +13,7 @@
             <MudText>@Infos[container].Phase.ToString()</MudText>
         </MudCardContent>
         <MudCardActions>
-            <MudButton OnClick="@(() => LoadSession(container, "127.0.0.1", "26281"))">Load</MudButton>
+            <MudButton OnClick="@(() => LoadSession(container, "127.0.0.1", DockerService.GetPortMySql().ToString(), DockerService.GetPortRabbitMqS().ToString(), DockerService.GetPortRabbitMqW().ToString()))">Load</MudButton>
         </MudCardActions>
     </MudCard>
 }
@@ -31,11 +31,11 @@
         }
     }
 
-    private async void LoadSession(string name, string ipAddress, string port){
-        await DockerService.StartDockerContainer(name);
-        while (!DockerService.CheckConnection($"{ipAddress}", port)){
+    private async Task LoadSession(string name, string ipAddress, string portmySql,string portRabbitMqS,string portRabbitMqW){
+        await DockerService.StartDockerContainer(name, portmySql, portRabbitMqS, portRabbitMqW);
+        while (!DockerService.CheckConnection($"{ipAddress}", portmySql)){
         }
-        await DockerService.ChangeDbContext($"{ipAddress}", port);
+        await DockerService.ChangeDbContext($"{ipAddress}", portmySql, portRabbitMqS, portRabbitMqW);
         NavigationManager.NavigateTo("/game");
     }
 

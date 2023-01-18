@@ -33,10 +33,14 @@
 
     private string? Port { get; set; }
 
-    private async void JoinGame(){
-        if (Port == null || IpAddress == null) return;
+    public string? RabbitPortS { get; set; }
+    
+    public string? RabbitPortW { get; set; }
+
+    private async Task JoinGame(){
+        if (Port == null || IpAddress == null || RabbitPortS == null || RabbitPortW == null) return;
         if (DockerService.CheckConnection(IpAddress, Port)){
-            await DockerService.ChangeDbContext(IpAddress, Port);
+            await DockerService.ChangeDbContext(IpAddress, Port, RabbitPortS, RabbitPortW);
         }
         else{
             Logger.Log(LogLevel.Critical,  "Cannot connect to the server");

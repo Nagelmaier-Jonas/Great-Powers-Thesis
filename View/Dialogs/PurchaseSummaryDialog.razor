@@ -68,7 +68,7 @@
     [Parameter]
     public SessionInfo SessionInfo { get; set; }
 
-    async void Submit(){
+    async Task Submit(){
         foreach (var unit in Checkout){
             for (var i = 0; i < unit.Value; i++){
                  await GameEngine.CreateUnit(unit.Key, CurrentNation);

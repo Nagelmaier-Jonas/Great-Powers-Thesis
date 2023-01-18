@@ -115,10 +115,6 @@ builder.Services.AddScoped<ShipRepository>();
 builder.Services.AddScoped<BattleRepository>();
 builder.Services.AddScoped<RegionRepository>();
 
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
-builder.Services.AddLogging();
-
 builder.Services.AddScoped<SidebarService>();
 builder.Services.AddScoped<DockerService>();
 builder.Services.AddScoped<FileService>();
@@ -131,7 +127,7 @@ builder.Services.AddScoped<ViewRefreshService>();
 builder.Services.AddScoped<CombatTargets>();
 builder.Services.AddScoped<Battlegrounds>();
 
-builder.Services.AddTransient<GameEngine>();
+builder.Services.AddSingleton<GameEngine>();
 
 builder.Services.AddScoped<StateHasChangedEventHandler>();
 

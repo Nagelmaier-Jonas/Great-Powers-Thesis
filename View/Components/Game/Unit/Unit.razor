@@ -27,18 +27,20 @@
                 <SubUnit Troops="@Troop.GetSubUnits()"/>
             }
         }
-        <circle fill="#ffc107" cx="78.26" cy="78.01" r="16.74"/>
-        @if (Amount > 9){
-            <text>
-                <text style="font-size: 19px; font-weight: bold; fill: black;" transform="translate(67.49 83.91)">
-                    <tspan x="0" y="0">@Amount</tspan>
-                </text></text>
-        }
-        else{
-            <text>
-                <text style="font-size: 19px; font-weight: bold; fill: black;" transform="translate(71.49 83.91)">
-                    <tspan x="0" y="0">@Amount</tspan>
-                </text></text>
+        @if (Amount is not 0){
+            <circle fill="#ffc107" cx="78.26" cy="78.01" r="16.74"/>
+            @if (Amount > 9){
+                <text>
+                    <text style="font-size: 19px; font-weight: bold; fill: black;" transform="translate(67.49 83.91)">
+                        <tspan x="0" y="0">@Amount</tspan>
+                    </text></text>
+            }
+            else{
+                <text>
+                    <text style="font-size: 19px; font-weight: bold; fill: black;" transform="translate(71.49 83.91)">
+                        <tspan x="0" y="0">@Amount</tspan>
+                    </text></text>
+            }
         }
     </svg>
 }
@@ -49,7 +51,7 @@
     public AUnit? Troop { get; set; }
 
     [Parameter]
-    public int? Amount { get; set; }
+    public int? Amount { get; set; } = 0;
 
     [Parameter]
     public string? Class { get; set; }

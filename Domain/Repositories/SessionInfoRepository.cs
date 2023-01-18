@@ -14,8 +14,10 @@ public class SessionInfoRepository{
         _set = _context.Set<SessionInfo>();
     }
 
-    public async Task<SessionInfo?> ReadAsync() => await _set.FirstOrDefaultAsync();
-    
+    public async Task<SessionInfo?> ReadAsync(){
+        return await _set.FirstOrDefaultAsync();
+    }
+
     public async Task UpdateAsync(SessionInfo entity)
     {
         _context.ChangeTracker.Clear();

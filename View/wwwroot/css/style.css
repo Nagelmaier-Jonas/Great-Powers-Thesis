@@ -318,36 +318,42 @@ span.logo {
 /* -- -------------------------------------------------- -- */
 /*                  Style: Border-Styles                    */
 /* -- -------------------------------------------------- -- */
-.border-dotted{
+.border-dotted {
     border: dotted !important;
 }
 
-.border-none{
+.border-none {
     border-radius: unset !important;
 }
-.border-rd-1{
+
+.border-rd-1 {
     border-radius: 2px !important;
 }
-.border-rd-2{
+
+.border-rd-2 {
     border-radius: 5px !important;
 }
-.border-rd-3{
+
+.border-rd-3 {
     border-radius: 10px !important;
 }
-.border-rd-4{
+
+.border-rd-4 {
     border-radius: 20px !important;
 }
-.border-rd-5{
+
+.border-rd-5 {
     border-radius: 50px !important;
 }
 
 /* -- -------------------------------------------------- -- */
 /*                  Style: Overflows                        */
 /* -- -------------------------------------------------- -- */
-.overflow-auto{
+.overflow-auto {
     overflow: auto !important;
 }
-.overflow-x-hidden{
+
+.overflow-x-hidden {
     overflow-x: hidden !important;
 }
 
@@ -358,8 +364,8 @@ span.logo {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .scroll-hide {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 }
 
 /* -- -------------------------------------------------- -- */
@@ -367,13 +373,14 @@ span.logo {
 /* -- -------------------------------------------------- -- */
 .purchase-table .mud-table-container {
     overflow-x: hidden !important;
-    overflow-y: auto; !important;
+    overflow-y: auto;
+!important;
 }
 
 /* -- -------------------------------------------------- -- */
 /*                  Style: Overwrite-Mudblazor              */
 /* -- -------------------------------------------------- -- */
-.mud-dialog-actions{
+.mud-dialog-actions {
     justify-content: center !important;
 }
 
@@ -381,20 +388,38 @@ span.logo {
 /*                  Style: Battleground                     */
 /* -- -------------------------------------------------- -- */
 .battleground-drawer-water {
-    background-image: linear-gradient(#233c4a 0%,#85949d 60%, #233c4a 90%, #1f1f1f 100%);
+    background-image: linear-gradient(#233c4a 0%, #85949d 60%, #233c4a 90%, #1f1f1f 100%);
     background-repeat: no-repeat;
     background-size: cover;
 }
+
 .battleground-drawer-land {
     background-image: linear-gradient(#484545 0%, #9d8585 60%, #4a2323 90%, #1f1f1f 100%);
     background-repeat: no-repeat;
     background-size: cover;
 }
-.battleground-drawer-water .mud-dialog-content{
+
+.battleground-drawer-water .mud-dialog-content {
     padding: 0 !important;
 }
-.battleground-drawer-land .mud-dialog-content{
+
+.battleground-drawer-land .mud-dialog-content {
     padding: 0 !important;
+}
+
+/* -- -------------------------------------------------- -- */
+/*                  Style: Combat-Card                      */
+/* -- -------------------------------------------------- -- */
+.combat-card-container {
+    height: 20vh;
+    margin-bottom: 10px;
+    background-color: rgb(0 0 0 / 25%) !important;
+}
+.vh-13 {
+    height: 13vh !important;
+}
+.vh-15{
+    height: 15vh !important;
 }
 
 /* -- -------------------------------------------------- -- */

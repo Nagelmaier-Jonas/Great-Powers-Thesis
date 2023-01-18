@@ -3,6 +3,7 @@
 @using Domain.Repositories
 @using Domain.Repositories.Implementations
 @using EventHandling.EventHandler
+@using Microsoft.CodeAnalysis.CSharp.Syntax
 @using Model.Entities.Regions
 @using Model.Entities.Units.Abstract
 @using View.Services
@@ -12,6 +13,7 @@
 @inject UnitRepository UnitRepository
 @inject ViewRefreshService ViewRefreshService
 @inject StateHasChangedEventHandler StateHasChangedEventHandler
+@inject IServiceScopeFactory ServiceScopeFactory
 @implements IDisposable
 
 <style>
@@ -35,6 +37,7 @@
 </MudLayout>
 
 @code {
+
     private SessionInfo Info { get; set; } = new();
     private List<Nation> Nations { get; set; } = new();
     private List<WaterRegion> SeeZones { get; set; } = new();
@@ -45,12 +48,15 @@
     bool _open = false;
     private string? Style { get; set; }
 
-    protected override async Task OnInitializedAsync(){
+    protected override void OnInitialized(){
         ViewRefreshService.HandleViewRefreshChange += HandleViewRefreshChange;
+    }
+
+    protected override async Task OnInitializedAsync(){
         await Load();
     }
     
-    private async Task Load(){
+    public async Task Load(){
         Info = await SessionInfoRepository.ReadAsync();
         Nations = await NationRepository.ReadAllGraphAsync();
         SeeZones = await WaterRegionRepository.ReadAllGraphAsync();
@@ -70,7 +76,7 @@
     }
     
     private async void HandleViewRefreshChange(){
-        await Load();
+        await InvokeAsync(StateHasChanged);
     }
 
     public void Dispose(){

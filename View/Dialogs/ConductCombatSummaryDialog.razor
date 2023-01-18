@@ -1,0 +1,20 @@
+﻿@using Model.Entities
+@using Model.Entities.Units.Abstract
+
+<MudDialog>
+    <DialogContent>
+        <MudText Class="fw-bold text-center mb-3 mt-5 noselect" Color="Color.Tertiary" Typo="Typo.h4">Zusammenfassung Kampf</MudText>
+        <MudText Class="text-center">Achtung! Es sind noch Kämpfe ausständig.</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Warning" OnClick="Cancel">Änderungen vornehmen</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    void Cancel() => MudDialog.Cancel();
+}

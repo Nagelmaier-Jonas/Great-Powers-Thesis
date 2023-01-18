@@ -1,0 +1,41 @@
+﻿@using Model.Entities
+@using Model.Entities.Regions
+@using View.Dialogs
+@inject IDialogService DialogService
+@inject GameEngine GameEngine
+
+@if (SessionInfo.Phase is not EPhase.ConductCombat){
+    return;
+}
+<MudText Class="fw-bold text-center mb-3 mt-5 noselect" Color="Color.Secondary" Typo="Typo.h4">Kämpfe</MudText>
+@if (Battlegrounds.Count > 0){
+    <MudText Class="text-center" Color="Color.Info">Achtung! Es sind noch Kämpfe ausständig.</MudText>
+}
+else{
+    <MudText Class="text-center">Alle Kämpfe wurden abgehalten. Es kann in die nächste Phase übergegangen werden.</MudText>
+}
+<MudFab StartIcon="@Icons.Material.Filled.NextPlan" Label="Finish Phase" Color="Color.Error" Class="w-50 align-self-center mb-3 mt-3" OnClick="FinishPhase"/>
+
+@code {
+
+    [Parameter]
+    public SessionInfo? SessionInfo { get; set; }
+
+    private List<ARegion> Battlegrounds { get; set; } = new();
+
+    protected override async Task OnInitializedAsync(){
+        await base.OnInitializedAsync();
+        Battlegrounds = await GameEngine.GetBattleLocations();
+    }
+
+    private async Task FinishPhase(){
+        if (Battlegrounds.Count > 0){
+            var options = new DialogOptions{ CloseOnEscapeKey = true, NoHeader = true, DisableBackdropClick = true };
+            await DialogService.ShowAsync<ConductCombatSummaryDialog>("Achtung", options);
+        }
+        else{
+            await GameEngine.EndPhase();
+        }
+    }
+
+}

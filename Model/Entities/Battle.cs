@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Model.Entities.Regions;
-using Model.Entities.Units;
 using Model.Entities.Units.Abstract;
 
 namespace Model.Entities;
@@ -32,9 +31,15 @@ public class Battle{
     public int NonAirHits{ get; set; }
     public int NonSubmarineHits{ get; set; }
     public int NormalHits{ get; set; }
-    
-    [NotMapped]
-    public Dictionary<int,int> DiceRolls{ get; set; }
+
+    [NotMapped] public Dictionary<int, int> DiceRolls{ get; set; } = new (){
+        {1,0},
+        {2,0},
+        {3,0},
+        {4,0},
+        {5,0},
+        {6,0}
+    };
 
     private bool CheckForDestroyers(AUnit submarine){
         if (!submarine.IsSubmarine()) return true;
@@ -44,20 +49,24 @@ public class Battle{
     }
 
     private List<AUnit> GetCurrentNationsUnits(){
-        List<AUnit> units = Attackers;
+        List<AUnit> units = new List<AUnit>();
+        units.AddRange(Attackers);
         units.AddRange(Defenders);
-        units.RemoveAll(u => u.Nation == CurrentNation);
+        units.RemoveAll(u => u.Nation != CurrentNation);
         return units;
     }
 
     private List<AUnit> GetCurrentNationsEnemies(){
-        List<AUnit> units = Attackers;
+        //Todo: make work
+        List<AUnit> units = new List<AUnit>();
+        units.AddRange(Attackers);
         units.AddRange(Defenders);
-        units.RemoveAll(u => u.Nation != CurrentNation && CurrentNation.Allies.All(a => a.Ally != u.Nation));
+        units.RemoveAll(u => u.Nation.Id != CurrentNation.Id && CurrentNation.Allies.All(a => a.Ally.Id != u.Nation.Id));
         return units;
     }
 
     private void HitUnit(AUnit unit){
+        //Todo: make work
         if (!CheckForOpenHits()) return;
 
         bool hit = false;
@@ -168,8 +177,8 @@ public class Battle{
                     Phase = EBattlePhase.ATTACK;
                     return true;
                 }
-                RollForHits();
                 if (CheckForOpenHits()) return false;
+                RollForHits();
                 if (GetNextNation() == GetAttacker()) Phase = EBattlePhase.ATTACK;
                 else CurrentNation = GetNextNation();
                 return true;
@@ -179,12 +188,11 @@ public class Battle{
                     return true;
                 }
                 RollForHits();
-                if (CheckForOpenHits()) return false;
                 Phase = EBattlePhase.DEFENSE;
                 return true;
             case EBattlePhase.DEFENSE:
-                RollForHits();
                 if (CheckForOpenHits()) return false;
+                RollForHits();
                 if (GetNextNation() == GetAttacker()) Phase = EBattlePhase.RESOLUTION;
                 else CurrentNation = GetNextNation();
                 return true;
@@ -196,7 +204,6 @@ public class Battle{
                 Phase = IsAquaticBattle() ? EBattlePhase.SPECIAL_SUBMARINE : EBattlePhase.ATTACK;
                 return true;
         }
-
         return true;
     }
 
@@ -211,7 +218,8 @@ public class Battle{
 
     public bool PlaceHit(AUnit unit){
         if (!CheckForOpenHits()) return false;
-        if (!GetCurrentNationsEnemies().Contains(unit)) return false;
+        //Todo: dont know why ask luki
+        //if (GetCurrentNationsEnemies().All(u => u.Id != unit.Id)) return false;
         HitUnit(unit);
         return true;
     }

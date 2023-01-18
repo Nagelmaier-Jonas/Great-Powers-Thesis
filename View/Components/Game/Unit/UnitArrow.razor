@@ -48,14 +48,7 @@
     }
     
     private string GetPath(){
-        if (Path.Count is 0) return String.Empty;
-        /*if (Unit is null) return "";
-        var p = Unit.GetPointFromDictionary(TroopPositioning);
-        var x = (p.Value.X + Path[0].X).ToString();
-        var y = (p.Value.Y + Path[0].Y).ToString();
-        var path = $"M {x} {y} ";*/
-        var path = $"M";
-        return Path.Aggregate(path, (current, p) => current + $"{p.X} {p.Y} ");
+        return Path.Count is 0 ? String.Empty : Path.Aggregate($"M", (current, p) => current + $" {p.X} {p.Y}");
     }
 
 }

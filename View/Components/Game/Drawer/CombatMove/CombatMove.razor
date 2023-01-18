@@ -65,7 +65,7 @@ else{
 
     private Dictionary<AUnit, int> Checkout { get; set; } = new();
 
-    private async void SetPossibleTargets(AUnit unit){
+    private async Task SetPossibleTargets(AUnit unit){
         var targets = await GameEngine.GetPossibleTarget(unit);
 
         if (targets.Count > 0){
@@ -83,7 +83,7 @@ else{
     }
 
 
-    private async void FinishPhase(){
+    private async Task FinishPhase(){
         var parameters = new DialogParameters{
             { "SessionInfo", SessionInfo }
         };
@@ -91,7 +91,7 @@ else{
         var dialog = await DialogService.ShowAsync<CombatMoveSummaryDialog>("Zusammenfassung Bewegung", parameters, options);
     }
 
-    private async void RemoveTarget(AUnit unit){
+    private async Task RemoveTarget(AUnit unit){
         await GameEngine.RemovePlannedMovement(unit);
     }
 

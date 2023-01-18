@@ -1,40 +1,80 @@
 ﻿@using Model.Entities
+@using Model.Entities.Units.Abstract
+@using Domain.Repositories.Implementations
 @inject IJSRuntime JSRuntime
+@inject BattleRepository BattleRepository
 
 @if (Battle is not null){
     <MudDialog Class="@RegionType">
         <DialogContent>
+            <MudPaper Height="10vh" Width="100vw" Class="d-flex bg-transparent shadow-none justify-content-around text-center">
+                <MudText Typo="Typo.h3" Color="@Color.Secondary">Angreifer</MudText>
+                <MudText Typo="Typo.h5" Color="@Color.Info">Ihre Armee greift an <br/><MudText Typo="Typo.h3" Color="@Color.Secondary" Class="text-center">@Battle.Location.Name</MudText></MudText>
+                <MudText Typo="Typo.h3" Color="@Color.Secondary">Verteidiger</MudText>
+            </MudPaper>
             @if (Battle.Location.IsLandRegion()){
                 <div id="particles-js"></div>
+                <MudPaper Height="85vh" Width="100vw" Class="d-flex bg-transparent shadow-none position-fixed bottom-0 p-0">
+                    <MudContainer Class="d-flex flex-column p-0">
+                        <CombatCard Label="Nichtkombattanten" Attacker="true" Units="@(new List<AUnit>())" Battle="@Battle"/>
+                        <CombatCard Label="Infantrie" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsInfantry()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Artillerie" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsArtillery()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Panzer & Jäger" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsTank() || t.IsFighter()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Bomber" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsBomber()).ToList()" Battle="@Battle"/>
+                    </MudContainer>
+                    <MudContainer Class="d-flex flex-column p-0 text-center">
+                        @if (Battle.DiceRolls is not null){
+                            <Dices Rolls="@Battle.DiceRolls"/>
+                        }
+                        <MudContainer Class="d-flex mt-10">
+                            <MudText Typo="Typo.h5" Color="@Color.Info">Normale Treffer ausstehend: <br/><MudText Typo="Typo.h3" Color="@Color.Secondary" Class="text-center">@Battle.NormalHits</MudText></MudText>
+                            <MudText Typo="Typo.h5" Color="@Color.Info">Luft Treffer ausstehend: <br/><MudText Typo="Typo.h3" Color="@Color.Secondary" Class="text-center">@Battle.NonAirHits</MudText></MudText>
+                            <MudText Typo="Typo.h5" Color="@Color.Info">U-Boot Treffer ausstehend: <br/><MudText Typo="Typo.h3" Color="@Color.Secondary" Class="text-center">@Battle.NonSubmarineHits</MudText></MudText>
+                        </MudContainer>
+                        <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Color="Color.Error" Label="Kampf beginnen" Class="align-self-center mb-3 mt-3 position-absolute bottom-0" OnClick="StartBattle"/>
+                    </MudContainer>
+                    <MudContainer Class="d-flex flex-column p-0">
+                        <CombatCard Label="Nichtkombattanten" Attacker="false" Units="@(new List<AUnit>())" Battle="@Battle"/>
+                        <CombatCard Label="Flugabwehr & Bomber" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsAntiAir() || t.IsBomber()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Infantrie & Artillerie" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsInfantry() || t.IsArtillery()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Panzer" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsTank()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Jäger" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsFighter()).ToList()" Battle="@Battle"/>
+                    </MudContainer>
+                </MudPaper>
             }
             @if (Battle.Location.IsWaterRegion()){
                 <div class="splat-toggle">
                     <div class="rain front-row"></div>
                     <div class="rain back-row"></div>
                 </div>
+                <MudPaper Height="90vh" Width="100vw" Class="d-flex bg-transparent shadow-none position-fixed bottom-0 p-0">
+                    <MudContainer Class="d-flex flex-column p-0">
+                        <CombatCard Label="Nichtkombattanten" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsTransport()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Flugzeugträger" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsAircraftCarrier()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="U-Boot & Zerstörer" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsSubmarine() || t.IsDestroyer()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Jäger & Kreuzer" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsFighter() || t.IsCruiser()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Bomber & Schlachtschiff" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsBomber() || t.IsBattleship()).ToList()" Battle="@Battle"/>
+                    </MudContainer>
+                    <MudContainer Class="d-flex flex-column p-0 text-center">
+                        @if (Battle.DiceRolls is not null){
+                            <Dices Rolls="@Battle.DiceRolls"/>
+                        }
+                        <MudContainer Class="d-flex mt-10">
+                            <MudText Typo="Typo.h5" Color="@Color.Info">Normale Treffer ausstehend: <br/><MudText Typo="Typo.h3" Color="@Color.Secondary" Class="text-center">@Battle.NormalHits</MudText></MudText>
+                            <MudText Typo="Typo.h5" Color="@Color.Info">Luft Treffer ausstehend: <br/><MudText Typo="Typo.h3" Color="@Color.Secondary" Class="text-center">@Battle.NonAirHits</MudText></MudText>
+                            <MudText Typo="Typo.h5" Color="@Color.Info">U-Boot Treffer ausstehend: <br/><MudText Typo="Typo.h3" Color="@Color.Secondary" Class="text-center">@Battle.NonSubmarineHits</MudText></MudText>
+                        </MudContainer>
+                        <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Color="Color.Error" Label="Kampf beginnen" Class="align-self-center mb-3 mt-3 position-absolute bottom-0" OnClick="StartBattle"/>
+                    </MudContainer>
+                    <MudContainer Class="d-flex flex-column p-0">
+                        <CombatCard Label="Nichtkombattanten" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsTransport()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="U-Boot" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsSubmarine()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Zerstörer & Flugzeugträger" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsDestroyer() || t.IsAircraftCarrier()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Kreuzer" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsCruiser()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Jäger & Schlachtschiff" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsFighter() || t.IsBattleship()).ToList()" Battle="@Battle"/>
+                    </MudContainer>
+                </MudPaper>
             }
-            <MudPaper Height="20vh" Width="100vw" Class="d-flex bg-transparent">
-                <MudContainer>
-
-                </MudContainer>
-                <MudContainer>
-
-                </MudContainer>
-                <MudContainer>
-
-                </MudContainer>
-            </MudPaper>
-            <MudPaper Height="80vh" Width="100vw" Class="d-flex bg-transparent">
-                <MudContainer>
-
-                </MudContainer>
-                <MudContainer>
-
-                </MudContainer>
-                <MudContainer>
-
-                </MudContainer>
-            </MudPaper>
         </DialogContent>
     </MudDialog>
 }
@@ -68,7 +108,14 @@
         IsRendered = true;
     }
 
-    async void Submit(){
+    private async Task StartBattle(){
+        if (Battle is null) return;
+        Battle.AdvanceCombat();
+        await BattleRepository.UpdateAsync(Battle);
+        StateHasChanged();
+    }
+
+    void Submit(){
         MudDialog.Close(DialogResult.Ok(true));
     }
 
