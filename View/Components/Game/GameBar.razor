@@ -70,7 +70,7 @@
     public List<Nation> Nations { get; set; } = new();
 
     private void OpenSettingsDialog(){
-        var options = new DialogOptions{ CloseOnEscapeKey = true, CloseButton = true };
-        DialogService.Show<SettingsDialog>("Menu", options);
+        var options = new DialogOptions{ CloseOnEscapeKey = true, CloseButton = true, DisableBackdropClick = true};
+        DialogService.Show<SettingsDialog>("", options);
     }
 }

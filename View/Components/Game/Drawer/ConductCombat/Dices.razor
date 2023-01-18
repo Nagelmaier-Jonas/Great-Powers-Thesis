@@ -1,25 +1,55 @@
 ﻿@if (Rolls is not null){
     <MudStack Justify="Justify.SpaceEvenly" Spacing="0" AlignItems="AlignItems.Center" Row="true" Class="mt-10">
-        <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[1]">
+        @if (Rolls[1] > 0){
+            <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[1]" Color="Color.Secondary">
+                <MudImage Src="img/dices/dice_one.svg"/>
+            </MudBadge>
+        }
+        else{
             <MudImage Src="img/dices/dice_one.svg"/>
-        </MudBadge>
-        <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[2]">
+        }
+        @if (Rolls[2] > 0){
+            <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[2]" Color="Color.Secondary">
+                <MudImage Src="img/dices/dice_two.svg"/>
+            </MudBadge>
+        }
+        else{
             <MudImage Src="img/dices/dice_two.svg"/>
-        </MudBadge>
-        <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[3]">
+        }
+        @if (Rolls[3] > 0){
+            <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[3]" Color="Color.Secondary">
+                <MudImage Src="img/dices/dice_three.svg"/>
+            </MudBadge>
+        }
+        else{
             <MudImage Src="img/dices/dice_three.svg"/>
-        </MudBadge>
+        }
     </MudStack>
     <MudStack Justify="Justify.SpaceEvenly" Spacing="0" AlignItems="AlignItems.Center" Row="true" Class="mt-10">
-        <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[4]">
+        @if (Rolls[4] > 0){
+            <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[4]" Color="Color.Secondary">
+                <MudImage Src="img/dices/dice_four.svg"/>
+            </MudBadge>
+        }
+        else{
             <MudImage Src="img/dices/dice_four.svg"/>
-        </MudBadge>
-        <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[5]">
+        }
+        @if (Rolls[5] > 0){
+            <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[5]" Color="Color.Secondary">
+                <MudImage Src="img/dices/dice_five.svg"/>
+            </MudBadge>
+        }
+        else{
             <MudImage Src="img/dices/dice_five.svg"/>
-        </MudBadge>
-        <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[6]">
+        }
+        @if (Rolls[6] > 0){
+            <MudBadge Bordered="true" Origin="Origin.BottomRight" Overlap="true" Content="@Rolls[6]" Color="Color.Secondary">
+                <MudImage Src="img/dices/dice_six.svg"/>
+            </MudBadge>
+        }
+        else{
             <MudImage Src="img/dices/dice_six.svg"/>
-        </MudBadge>
+        }
     </MudStack>
 }
 

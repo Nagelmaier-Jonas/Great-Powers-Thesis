@@ -32,4 +32,10 @@ public abstract class ARepository<TEntity> : IRepository<TEntity> where TEntity 
         _set.Update(entity);
         await _context.SaveChangesAsync();
     }
+    public async Task UpdateAsync(List<TEntity> entities)
+    {
+        _context.ChangeTracker.Clear();
+        _set.UpdateRange(entities);
+        await _context.SaveChangesAsync();
+    }
 }

@@ -12,17 +12,16 @@
         <MudContainer Class="p-0">
             @foreach (var unit in Units){
                 @if (unit.Nation != Battle.GetAttacker()){
-                    <MudBadge Class="noselect" Content="@("Hit")" OnClick="@(() => PlaceHit(unit))" Overlap="true" Origin="Origin.BottomCenter" Bordered="true">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@unit.Nation.Name ml-2 mr-2" width="50" height="50">
-                            <g>
-                                <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
-                                <path class="troopbadge-medal"
-                                      d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
-                            </g>
-                            <path class="troopbadge-symbol"
-                                  d="@unit.GetStringFromDictionary(UnitPaths.Paths)"/>
-                        </svg>
-                    </MudBadge>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@unit.Nation.Name ml-2 mr-2" width="50" height="50">
+                        <g>
+                            <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
+                            <path class="troopbadge-medal"
+                                  d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
+                        </g>
+                        <path class="troopbadge-symbol"
+                              d="@unit.GetStringFromDictionary(UnitPaths.Paths)"/>
+                    </svg>
+                    <MudChip OnClick="@(() => PlaceHit(unit))">Hit</MudChip>
                 }
                 else{
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@unit.Nation.Name ml-2 mr-2" width="50" height="50">

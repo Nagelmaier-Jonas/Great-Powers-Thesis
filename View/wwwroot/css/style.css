@@ -204,7 +204,7 @@ span.logo {
 /* -- -------------------------------------------------- -- */
 .settings-dialog {
     margin-bottom: 250px !important;
-    background-color: rgba(0, 0, 0, 0.8) !important;
+    background-color: rgba(0, 0, 0, 0.6) !important;
     color: white !important;
 }
 
@@ -405,6 +405,14 @@ span.logo {
 
 .battleground-drawer-land .mud-dialog-content {
     padding: 0 !important;
+}
+
+.battleground-drawer-water .mud-dialog-title .mud-button-close{
+    color: lightgray !important;
+}
+
+.battleground-drawer-land .mud-dialog-title .mud-button-close{
+    color: lightgray !important;
 }
 
 /* -- -------------------------------------------------- -- */

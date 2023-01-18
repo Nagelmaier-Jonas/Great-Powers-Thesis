@@ -64,9 +64,8 @@ public class GameEngine{
         Init(_ServiceScopeFactory.CreateScope());
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
         List<AUnit> units = await _UnitRepository.ReadAsync(u => u.Target != null);
-        foreach (var unit in units.Where(unit => unit.MoveToTarget(session.Phase))){
-            await _UnitRepository.UpdateAsync(unit);
-        }
+        var unitsToMove = units.Where(unit => unit.MoveToTarget(session.Phase)).ToList();
+        await _UnitRepository.UpdateAsync(unitsToMove);
     }
 
     public async Task<List<ARegion>> GetPossibleTarget(AUnit unit){
@@ -113,14 +112,13 @@ public class GameEngine{
         Init(_ServiceScopeFactory.CreateScope());
         List<AUnit> units = region.GetStationedUnits();
         units.AddRange(region.IncomingUnits);
-       
-
+        
         foreach (var t in units){
             if (t.Target is null) t.DefenderId = battle.Id;
             else t.AggressorId = battle.Id;
-            Init(_ServiceScopeFactory.CreateScope());
-            await _UnitRepository.UpdateAsync(t);
         }
+        Init(_ServiceScopeFactory.CreateScope());
+        await _UnitRepository.UpdateAsync(units);
         Init(_ServiceScopeFactory.CreateScope());
         return await _BattleRepository.GetBattleFromLocation(region);
     }
@@ -133,6 +131,9 @@ public class GameEngine{
     }
 
     public async Task<List<ARegion>> GetBattleLocations(){
+        Init(_ServiceScopeFactory.CreateScope());
+        SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
+        if (session.Phase != EPhase.ConductCombat) return new List<ARegion>();
         Init(_ServiceScopeFactory.CreateScope());
         return await _RegionRepository.ReadAsync(r => r.IncomingUnits.Count > 0);
     }

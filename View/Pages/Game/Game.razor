@@ -2,7 +2,6 @@
 @using Model.Entities
 @using Domain.Repositories
 @using Domain.Repositories.Implementations
-@using EventHandling.EventHandler
 @using Microsoft.CodeAnalysis.CSharp.Syntax
 @using Model.Entities.Regions
 @using Model.Entities.Units.Abstract
@@ -10,10 +9,9 @@
 @inject SessionInfoRepository SessionInfoRepository
 @inject NationRepository NationRepository
 @inject WaterRegionRepository WaterRegionRepository
-@inject UnitRepository UnitRepository
 @inject ViewRefreshService ViewRefreshService
-@inject StateHasChangedEventHandler StateHasChangedEventHandler
-@inject IServiceScopeFactory ServiceScopeFactory
+@inject CombatTargets CombatTargets
+@inject NonCombatTargets NonCombatTargets
 @implements IDisposable
 
 <style>
@@ -31,6 +29,7 @@
         <Purchase SessionInfo="Info" CurrentNation="CurrentNation" MaxTroops="MaxTroops"/>
         <CombatMove SessionInfo="Info"/>
         <ConductCombat SessionInfo="Info"/>
+        <NonCombatMove SessionInfo="Info"/>
         <MobilizeNewUnits SessionInfo="Info"/>
     </MudDrawer>
     <Map Nations="@Nations" SeeZones="@SeeZones" SessionInfo="@Info"/>
@@ -73,6 +72,10 @@
     void CloseDrawer(){
         _open = false;
         Style = "padding-right: 0; transition: padding-right 0.5s;";
+        CombatTargets.ClearRegions();
+        NonCombatTargets.ClearRegions();
+        CombatTargets.ClearUnits();
+        NonCombatTargets.ClearUnits();
     }
     
     private async void HandleViewRefreshChange(){

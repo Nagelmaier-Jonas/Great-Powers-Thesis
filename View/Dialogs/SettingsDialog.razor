@@ -2,19 +2,23 @@
 
 <MudDialog Class="settings-dialog">
     <DialogContent>
-        <MudButton OnClick="BackToMenu" FullWidth="true">Back to Menu</MudButton>
-        <MudButton OnClick="ExitApp" FullWidth="true">Close Application</MudButton>
+        <MudText Class="fw-bold text-center mb-3 mt-5 noselect" Color="Color.Tertiary" Typo="Typo.h4">Simulations Menü</MudText>
     </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Warning" OnClick="BackToMenu">Zurück zum Menü</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="ExitApp">Anwendung beenden</MudButton>
+    </DialogActions>
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
 
     void Submit() => MudDialog.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog.Cancel();
-    
-    void BackToMenu()
-    {
+
+    void BackToMenu(){
         MudDialog.Close(DialogResult.Ok(true));
         NavigationManager.NavigateTo("/");
     }
@@ -22,4 +26,5 @@
     private void ExitApp(){
         Environment.Exit(0);
     }
+
 }
