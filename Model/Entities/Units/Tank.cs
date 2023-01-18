@@ -13,7 +13,7 @@ public class Tank : ALandUnit{
     public override int Attack{ get; protected set; } = 3;
     public override int Defense{ get; protected set; } = 3;
 
-    protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase){
+    protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase,bool planeCheck){
         if (target.Neighbour.IsWaterRegion()){
             if(target.Neighbour.GetOpenTransports(Nation, phase).Count == 0) return false;
             return true;
@@ -26,8 +26,8 @@ public class Tank : ALandUnit{
                 if (neigh.Nation != Nation && neigh.Nation.Allies.All(a => a.Ally != Nation)) break;
                 return true;
             case EPhase.CombatMove:
-                if (GetLocation().Neighbours.All(n => n.Neighbour != Target)){
-                    if (Target is not null && !Target.IsHostile(Nation) && !target.Neighbour.IsHostile(Nation) && target.Neighbour != Target) break;
+                if (Target is not null && GetLocation().Neighbours.All(n => n.Neighbour != Target)){
+                    if (!Target.IsHostile(Nation) && !target.Neighbour.IsHostile(Nation) && target.Neighbour != Target) break;
                     if (distance == 2 && target.Neighbour.ContainsEnemies(Nation)) break;
                 }
                 else{

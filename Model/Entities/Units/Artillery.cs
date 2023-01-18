@@ -12,7 +12,7 @@ public class Artillery : ALandUnit{
     public override int Attack{ get; protected set; } = 2;
     public override int Defense{ get; protected set; } = 2;
 
-    protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase){
+    protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase,bool planeCheck){
         if (target.Neighbour.IsWaterRegion()){
             if(target.Neighbour.GetOpenTransports(Nation, phase).Count == 0) return false;
             return true;

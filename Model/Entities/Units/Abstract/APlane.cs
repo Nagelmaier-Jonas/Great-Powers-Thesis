@@ -37,6 +37,7 @@ public abstract class APlane : AUnit{
         }
         PreviousLocation = Region;
         SetLocation(Target);
+        RemoveTarget();
         CurrentMovement -= GetDistanceToTarget(phase);
         return true;
     }
@@ -54,14 +55,14 @@ public abstract class APlane : AUnit{
         return landingSpots;
     }
     
-    protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase){
+    protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase,bool planeCheck){
         switch (phase){
             case EPhase.NonCombatMove:
                 if (!CanLand(target.Neighbour) && Target is not null && target.Neighbour == Target) break;
                 return true;
             case EPhase.CombatMove:
                 //A Plane can only attack a Field if it will still have enough Movement left to land in the Non Combat Movement Phase
-                if(distance == 1 && GetClosestLandingSpots(target.Neighbour, Movement - GetDistanceToTarget(EPhase.NonCombatMove,1,GetLocation(),true)).Count == 0) break;
+                if(!planeCheck && distance == 1 && GetClosestLandingSpots(target.Neighbour, CurrentMovement - GetDistanceToTarget(EPhase.NonCombatMove, 1,GetLocation(),true)).Count == 0) break;
                 
                 //A Plane cant capture Territory, only fight Units
                 if(distance == 1 && !target.Neighbour.ContainsAnyEnemies(Nation)) break;

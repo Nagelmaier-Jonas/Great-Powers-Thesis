@@ -12,7 +12,7 @@ public class Cruiser : AShip{
     public override int Attack{ get; protected set; } = 3;
     public override int Defense{ get; protected set; } = 3;
 
-    protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase){
+    protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase,bool planeCheck){
         //Ships cant pass through canals if they arent owned by a friendly Nation
         if (target.CanalOwners.Any(o =>
                 o.CanalOwner.Nation != Nation && o.CanalOwner.Nation.Allies.All(a => a.Ally != Nation))) return false;

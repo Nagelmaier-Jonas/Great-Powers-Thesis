@@ -56,61 +56,61 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         builder.Entity<User>().HasIndex(u => new{ u.UserName, u.Email }).IsUnique();
 
         builder.Entity<Nation>().HasOne(n => n.User)
-            .WithMany(u => u.Nations);
+            .WithMany(u => u.Nations).HasForeignKey(n => n.UserId);
 
         builder.Entity<Allies>().HasOne(n => n.Nation)
-            .WithMany(r => r.Allies);
+            .WithMany(r => r.Allies).HasForeignKey(a => a.NationId);
         builder.Entity<Allies>().HasOne(n => n.Ally)
-            .WithMany();
+            .WithMany().HasForeignKey(a => a.AllyId);
         builder.Entity<Allies>().HasKey(n => new{ n.NationId, n.AllyId });
 
         builder.Entity<Capital>().HasIndex(u => u.Name).IsUnique();
         builder.Entity<Capital>().HasOne(f => f.Region).WithOne(r => r.Capital);
 
         builder.Entity<LandRegion>().HasOne(n => n.Nation)
-            .WithMany(u => u.Regions);
+            .WithMany(u => u.Regions).HasForeignKey(l => l.NationId);
 
         builder.Entity<Factory>().HasOne(f => f.Region).WithOne(r => r.Factory);
 
         builder.Entity<Neighbours>().HasOne(n => n.Region)
-            .WithMany(r => r.Neighbours);
+            .WithMany(r => r.Neighbours).HasForeignKey(n => n.RegionId);
         builder.Entity<Neighbours>().HasOne(n => n.Neighbour)
-            .WithMany();
+            .WithMany().HasForeignKey(n => n.NeighbourId);
         builder.Entity<Neighbours>().HasKey(n => new{ n.NeighbourId, n.RegionId });
 
         builder.Entity<CanalOwners>().HasOne(c => c.CanalOwner)
-            .WithMany(r => r.Canals);
+            .WithMany(r => r.Canals).HasForeignKey(c => c.CanalOwnerId);
         builder.Entity<CanalOwners>().HasOne(c => c.Neighbours)
-            .WithMany(n => n.CanalOwners);
+            .WithMany(n => n.CanalOwners).HasForeignKey(c => new {c.NeighboursRegionId,c.NeighboursNeighbourId});
         builder.Entity<CanalOwners>().HasKey(c => new{ c.NeighboursNeighbourId, c.NeighboursRegionId, c.CanalOwnerId });
 
-        builder.Entity<AUnit>().HasOne(u => u.Nation).WithMany(n => n.Units);
+        builder.Entity<AUnit>().HasOne(u => u.Nation).WithMany(n => n.Units).HasForeignKey(u => u.NationId);
         builder.Entity<AUnit>().HasOne(n => n.Target)
-            .WithMany(u => u.IncomingUnits);
-        builder.Entity<AUnit>().HasOne(u => u.Aggressor).WithMany(b => b.Attackers);
-        builder.Entity<AUnit>().HasOne(u => u.Defender).WithMany(b => b.Defenders);
+            .WithMany(u => u.IncomingUnits).HasForeignKey(u => u.TargetId);
+        builder.Entity<AUnit>().HasOne(u => u.Aggressor).WithMany(b => b.Attackers).HasForeignKey(u => u.AggressorId);
+        builder.Entity<AUnit>().HasOne(u => u.Defender).WithMany(b => b.Defenders).HasForeignKey(u => u.DefenderId);
 
         builder.Entity<ALandUnit>().HasOne(n => n.Transport)
-            .WithMany(u => u.Units);
+            .WithMany(u => u.Units).HasForeignKey(l => l.TransportId);
         builder.Entity<ALandUnit>().HasOne(n => n.Region)
-            .WithMany(u => u.StationedUnits);
+            .WithMany(u => u.StationedUnits).HasForeignKey(l => l.RegionId);
         builder.Entity<ALandUnit>().HasOne(n => n.PreviousLocation)
-            .WithMany();
+            .WithMany().HasForeignKey(l => l.PreviousLocationId);
 
         builder.Entity<APlane>().HasOne(n => n.AircraftCarrier)
-            .WithMany(u => u.Planes);
+            .WithMany(u => u.Planes).HasForeignKey(p => p.AircraftCarrierId);
         builder.Entity<APlane>().HasOne(n => n.Region)
-            .WithMany(u => u.StationedPlanes);
+            .WithMany(u => u.StationedPlanes).HasForeignKey(p => p.RegionId);
         builder.Entity<APlane>().HasOne(n => n.PreviousLocation)
-            .WithMany();
+            .WithMany().HasForeignKey(p => p.PreviousLocationId);
 
         builder.Entity<AShip>().HasOne(s => s.Region)
-            .WithMany(w => w.StationedShips);
+            .WithMany(w => w.StationedShips).HasForeignKey(s => s.RegionId);
         builder.Entity<AShip>().HasOne(s => s.PreviousLocation)
-            .WithMany();
+            .WithMany().HasForeignKey(s => s.PreviousLocationId);
 
         builder.Entity<Battle>().HasOne(b => b.Location).WithOne();
-        builder.Entity<Battle>().HasOne(b => b.CurrentNation).WithMany(n => n.Battles);
+        builder.Entity<Battle>().HasOne(b => b.CurrentNation).WithMany(n => n.Battles).HasForeignKey(b => b.CurrentNationId);
 
         builder.Entity<SessionInfo>().HasOne(s => s.Nation).WithOne()
             .HasForeignKey<SessionInfo>(s => s.CurrentNationId);
@@ -173,35 +173,35 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
 
         builder.Entity<Allies>().HasData(new List<Allies>(){
             new Allies(){
-                NationId = 2,
-                AllyId = 2
-            },
-            new Allies(){
-                NationId = 4,
-                AllyId = 1
-            },
-            new Allies(){
                 NationId = 1,
-                AllyId = 4
-            },
-            new Allies(){
-                NationId = 1,
-                AllyId = 5
-            },
-            new Allies(){
-                NationId = 5,
                 AllyId = 3
             },
             new Allies(){
-                NationId = 5,
+                NationId = 1,
                 AllyId = 5
             },
             new Allies(){
-                NationId = 3,
+                NationId = 2,
                 AllyId = 4
             },
             new Allies(){
                 NationId = 3,
+                AllyId = 1
+            },
+            new Allies(){
+                NationId = 3,
+                AllyId = 5
+            },
+            new Allies(){
+                NationId = 4,
+                AllyId = 2
+            },
+            new Allies(){
+                NationId = 5,
+                AllyId = 1
+            },
+            new Allies(){
+                NationId = 5,
                 AllyId = 3
             }
         });

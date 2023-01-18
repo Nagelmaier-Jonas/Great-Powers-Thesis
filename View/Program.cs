@@ -131,9 +131,9 @@ builder.Services.AddSingleton<GameEngine>();
 
 builder.Services.AddScoped<StateHasChangedEventHandler>();
 
-/*builder.Services.AddSingleton<IEventPublisher, EventPublisher>();
+builder.Services.AddSingleton<IEventPublisher, EventPublisher>();
 builder.Services.AddSingleton<IEventProcessor, StateHasChangedEventProcessor>();
-builder.Services.AddHostedService<EventSubscriber>();*/
+builder.Services.AddHostedService<EventSubscriber>();
 
 var app = builder.Build();
 

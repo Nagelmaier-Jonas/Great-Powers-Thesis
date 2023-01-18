@@ -16,6 +16,7 @@ public class EventSubscriber : BackgroundService {
     private IConnection _connection;
     private IModel _channel;
     private string _queueName;
+    private string _exchangeName;
 
     public EventSubscriber(IConfiguration configuration, IEventProcessor processor) {
         _configuration = configuration;
@@ -42,6 +43,11 @@ public class EventSubscriber : BackgroundService {
         }
         _channel = _connection.CreateModel();
         _queueName = _configuration["EventBusQueue"];
+        _exchangeName = _configuration["EventBusExchange"];
+        
+        _channel.QueueDeclare(_queueName,true,false);
+        _channel.ExchangeDeclare(exchange: _exchangeName, type: ExchangeType.Fanout);
+        _channel.QueueBind(_queueName,_exchangeName,"");
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken) {
@@ -50,6 +56,7 @@ public class EventSubscriber : BackgroundService {
         var consumer = new EventingBasicConsumer(_channel);
         
         consumer.Received += (moduleHandle, message) => {
+            Console.WriteLine("Received message");
             var body = message.Body;
             var eventMessage = Encoding.UTF8.GetString(body.ToArray());
             

@@ -32,12 +32,14 @@ public abstract class AShip : AUnit{
             List<ARegion> path = GetPathToTarget(phase);
             PreviousLocation = Region;
             Region = (WaterRegion)path[^2];
+            RemoveTarget();
             CanMove = false;
             return true;
         }
         CurrentMovement -= GetDistanceToTarget(phase);
         PreviousLocation = Region;
         Region = (WaterRegion)Target;
+        RemoveTarget();
         if (phase == EPhase.CombatMove) CanMove = false;
         return true;
     }

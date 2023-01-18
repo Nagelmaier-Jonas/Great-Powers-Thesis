@@ -26,8 +26,8 @@ public class EventPublisher : IEventPublisher {
         try {
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            
             _connection.ConnectionShutdown += ShutDownMessageBroker;
+            _exchangeName = _configuration["EventBusExchange"];
         }
         catch (Exception e) {
             Console.WriteLine(e);

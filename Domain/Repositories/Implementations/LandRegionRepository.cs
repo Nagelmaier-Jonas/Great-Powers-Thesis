@@ -16,6 +16,8 @@ public class LandRegionRepository : ARepository<LandRegion>, ILandRegionReposito
             .Include(i => i.Canals)
             .Include(i => i.StationedUnits)
             .Include(i => i.IncomingUnits)
+            .Include(l => l.Nation)
+            .ThenInclude(n => n.Allies)
             .FirstOrDefaultAsync(l => l.Id == Id);
     }
 }

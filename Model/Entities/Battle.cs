@@ -110,11 +110,9 @@ public class Battle{
             DiceRolls[roll] += 1;
             if (unit.IsPlane()){
                 if (attacker){
-                    
                     if (roll <= unit.Attack) NonSubmarineHits += 1;
                     continue;
                 }
-
                 if (roll <= unit.Defense) NonSubmarineHits += 1;
                 continue;
             }
@@ -141,12 +139,10 @@ public class Battle{
     }
 
     private bool CheckForDefenselessTransports(){
-        if (Attackers.All(att => Defenders.All(def => !def.CanAttack(att)))){
-            Defenders.RemoveAll(u => u.IsTransport());
-            return true;
-        }
+        if (!Attackers.All(att => Defenders.All(def => !def.CanAttack(att)))) return false;
+        Defenders.RemoveAll(u => u.IsTransport());
+        return true;
 
-        return false;
     }
 
     private void ResolveCasualties(){

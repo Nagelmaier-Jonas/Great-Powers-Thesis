@@ -12,7 +12,7 @@ public class Destroyer : AShip{
     public override int Attack{ get; protected set; } = 2;
     public override int Defense{ get; protected set; } = 2;
 
-    protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase){
+    protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase,bool planeCheck){
         if (target.Neighbour.IsLandRegion()) return false;
         //Ships cant pass through canals if they arent owned by a friendly Nation
         if (target.CanalOwners.Any(o =>

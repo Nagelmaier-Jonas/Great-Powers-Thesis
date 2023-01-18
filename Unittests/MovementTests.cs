@@ -1408,7 +1408,9 @@ public class Tests{
             Region = attack14,
             Neighbour = attack9
         });
-        
+
+        fighter.Target = attack1;
+        Assert.That(fighter.GetPathToTarget(EPhase.CombatMove), Is.EqualTo(new List<ARegion>(){source,attack1}));
         Assert.IsFalse(fighter.SetTarget(EPhase.CombatMove, attack1));
         Assert.IsTrue(fighter.SetTarget(EPhase.CombatMove, attack2));
         Assert.IsFalse(fighter.SetTarget(EPhase.CombatMove, attack3));

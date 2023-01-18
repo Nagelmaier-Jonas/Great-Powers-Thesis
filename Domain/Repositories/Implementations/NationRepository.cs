@@ -24,6 +24,7 @@ public class NationRepository : ARepository<Nation>, INationRepository{
             .Include(n => n.Regions)
             .ThenInclude(u => u.Neighbours)
             .Include(u => u.Battles)
+            .Include(n => n.Allies)
             .AsSplitQuery()
             .FirstOrDefaultAsync(n => n.Id == Id);
     }
@@ -41,6 +42,7 @@ public class NationRepository : ARepository<Nation>, INationRepository{
             .Include(n => n.Regions)
             .ThenInclude(u => u.Neighbours)
             .Include(u => u.Battles)
+            .Include(n => n.Allies)
             .AsSplitQuery()
             .ToListAsync();
     }

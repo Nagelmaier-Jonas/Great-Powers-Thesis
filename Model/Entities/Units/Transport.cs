@@ -18,7 +18,7 @@ public class Transport : AShip{
         return Units.Cast<AUnit>().ToList();
     }
 
-    protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase){
+    protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase,bool planeCheck){
         //Ships cant pass through canals if they arent owned by a friendly Nation
         if (target.CanalOwners.Any(o =>
                 o.CanalOwner.Nation != Nation && o.CanalOwner.Nation.Allies.All(a => a.Ally != Nation))) return false;
