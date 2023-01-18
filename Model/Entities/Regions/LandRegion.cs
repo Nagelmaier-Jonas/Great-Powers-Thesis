@@ -17,6 +17,9 @@ public class LandRegion : ARegion{
 
     public Factory? Factory{ get; set; }
 
+    [Column("TROOPS_MOBILIZED")]
+    public int TroopsMobilized{ get; set; }
+
     public List<ALandUnit> StationedUnits{ get; set; } = new List<ALandUnit>();
 
     public List<CanalOwners> Canals{ get; set; } = new List<CanalOwners>();
@@ -29,8 +32,11 @@ public class LandRegion : ARegion{
     }
 
     public override Nation GetOwner() => Nation;
+    
+    public override int? GetOwnerId() => NationId;
     public override int GetIncome() => Income;
     public override Capital GetCapital() => Capital;
     public override Factory GetFactory() => Factory;
     public override bool IsLandRegion() => true;
+    public void ResetTroopsMobilized() => TroopsMobilized = 0;
 }

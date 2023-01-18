@@ -21,6 +21,7 @@ using View;
 using View.Components.Game.Channel;
 using View.Components.Game.Drawer.CombatMove;
 using View.Components.Game.Drawer.ConductCombat;
+using View.Components.Game.Drawer.MobilizeNewUnits;
 using View.Components.Game.Drawer.NonCombatMove;
 using View.Services;
 
@@ -128,6 +129,7 @@ builder.Services.AddScoped<ViewRefreshService>();
 builder.Services.AddScoped<CombatTargets>();
 builder.Services.AddScoped<Battlegrounds>();
 builder.Services.AddScoped<NonCombatTargets>();
+builder.Services.AddScoped<MobilizeUnit>();
 
 builder.Services.AddSingleton<GameEngine>();
 

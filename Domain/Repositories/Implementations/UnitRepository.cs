@@ -70,6 +70,34 @@ public class UnitRepository : ACreatableRepository<AUnit>, IUnitRepository{
 
         return result;
     }
+    
+    public async Task<List<AUnit>> GetPlaceableUnits(){
+        List<AUnit> units = await ReadAllAsync();
+        
+        List<AUnit> placeableUnits = new List<AUnit>();
+
+        foreach (var u in units){
+            if (u.IsPlane()){
+                var p = u as APlane;
+                if (p.GetLocation() is null && p.GetAircraftCarrier() is null){
+                    placeableUnits.Add(p);
+                }
+            }
+            if (u.IsLandUnit()){
+                var l = u as ALandUnit;
+                if (l.GetLocation() is null && l.GetTransporter() is null){
+                    placeableUnits.Add(l);
+                }
+            }
+            if (u.IsShip()){
+                var s = u as AShip;
+                if (s.GetLocation() is null){
+                    placeableUnits.Add(s);
+                }
+            }
+        }
+        return placeableUnits;
+    }
 
     public async Task RemoveTargetAsync(AUnit unit){
         _context.ChangeTracker.Clear();

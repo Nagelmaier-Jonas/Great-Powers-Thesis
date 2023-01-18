@@ -1,0 +1,33 @@
+﻿@using Model.Entities
+@using Model.Entities.Regions
+@using View.Dialogs
+@inject IDialogService DialogService
+@inject GameEngine GameEngine
+
+@if (SessionInfo.Phase is not EPhase.CollectIncome){
+    return;
+}
+@if (CurrentNation is null){
+    return;
+}
+<MudText Class="fw-bold text-center mb-3 mt-5 noselect" Color="Color.Secondary" Typo="Typo.h4">Rundenergebnis</MudText>
+
+<MudText Class="text-center" Color="Color.Info">Verdiente IPP: @CurrentNation.GetIncomeValue()</MudText>
+<MudText Class="text-center" Color="Color.Info">Bilanz: @CurrentNation.GetBalance()</MudText>
+
+<MudFab StartIcon="@Icons.Material.Filled.NextPlan" Label="Finish Phase" Color="Color.Error" Class="w-50 align-self-center mb-3 mt-3" OnClick="FinishPhase"/>
+
+@code {
+
+    [Parameter]
+    public SessionInfo? SessionInfo { get; set; }
+
+    [Parameter]
+    public Nation? CurrentNation { get; set; }
+
+
+    private async Task FinishPhase(){
+        await GameEngine.EndPhase();
+    }
+
+}

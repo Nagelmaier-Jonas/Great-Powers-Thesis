@@ -36,4 +36,6 @@ public class Nation{
     public List<Battle> Battles{ get; set; } = new List<Battle>();
 
     public void CollectIncome() => Treasury += Regions.Sum(r => r.Income);
+    public int GetIncomeValue() => Regions.Sum(r => r.Income);
+    public int GetBalance() => Treasury + Regions.Sum(r => r.Income);
 }

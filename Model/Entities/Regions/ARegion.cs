@@ -138,6 +138,7 @@ public abstract class ARegion{
     public virtual List<AUnit> GetStationedUnits() => null;
 
     public virtual Nation? GetOwner() => null;
+    public virtual int? GetOwnerId() => null;
     public virtual int GetIncome() => 0;
     public virtual Capital GetCapital() => null;
     public virtual Factory GetFactory() => null;

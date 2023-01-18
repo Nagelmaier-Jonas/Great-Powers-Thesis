@@ -10,8 +10,10 @@
 @inject ViewRefreshService ViewRefreshService
 @inject CombatTargets CombatTargets
 @inject NonCombatTargets NonCombatTargets
+@inject MobilizeUnit MobilizeUnit
 @inject GameEngine GameEngine
 @inject IDialogService DialogService
+@inject ISnackbar Snackbar
 
 @if (Region is not null){
     @if (Region.IsLandRegion()){
@@ -23,7 +25,7 @@
                 <path d="@CountryPaths[Region.Identifier]" class="active_country svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
             }
             else{
-                if ((CombatTargets.Regions is not null && CombatTargets.Regions.Contains(Region)) || (NonCombatTargets.Regions is not null && NonCombatTargets.Regions.Contains(Region))){
+                if ((CombatTargets.Regions is not null && CombatTargets.Regions.Contains(Region)) || (NonCombatTargets.Regions is not null && NonCombatTargets.Regions.Contains(Region) || (MobilizeUnit.Regions is not null && MobilizeUnit.Regions.Any(r => r.Id == Region.Id)))){
                     <path d="@CountryPaths[Region.Identifier]" class="combat_target svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
                 }
                 else{
@@ -42,7 +44,7 @@
             <path d="@CountryPaths[Region.Identifier]" class="active_country svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="1" @onclick="UpdateRegion"/>
         }
         else{
-            if ((CombatTargets.Regions is not null && CombatTargets.Regions.Contains(Region)) || (NonCombatTargets.Regions is not null && NonCombatTargets.Regions.Contains(Region))){
+            if ((CombatTargets.Regions is not null && CombatTargets.Regions.Contains(Region)) || (NonCombatTargets.Regions is not null && NonCombatTargets.Regions.Contains(Region) || (MobilizeUnit.Regions is not null && MobilizeUnit.Regions.Any(r => r.Id == Region.Id)))){
                 <path d="@CountryPaths[Region.Identifier]" class="combat_target svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="1" @onclick="UpdateRegion"/>
             }
             else{
@@ -85,6 +87,10 @@
             return;
         }
         await PlanNonCombatMovements();
+        if (await MobilizeNewUnits()){
+            ViewRefreshService.Refresh();
+            return;
+        }
         if (ActiveRegion.Region == Region){
             ActiveRegion.ClearRegion();
         }
@@ -107,7 +113,7 @@
         CombatTargets.ClearUnits();
         ViewRefreshService.Refresh();
     }
-    
+
     private async Task PlanNonCombatMovements(){
         if (SessionInfo?.Phase != EPhase.NonCombatMove) return;
         if (NonCombatTargets.Regions is null) return;
@@ -120,6 +126,27 @@
         NonCombatTargets.ClearRegions();
         NonCombatTargets.ClearUnits();
         ViewRefreshService.Refresh();
+    }
+
+    private async Task<bool> MobilizeNewUnits(){
+        if (SessionInfo?.Phase != EPhase.MobilizeNewUnits) return false;
+        if (Region is null) return false;
+        if (MobilizeUnit.Regions is null) return false;
+        if (MobilizeUnit.Unit is null) return false;
+        if (MobilizeUnit.Regions.All(r => r.Id != Region.Id)) return false;
+        if (!Region.IsLandRegion()) return false;
+        if (Region.IsLandRegion()){
+            var r = Region as LandRegion;
+            if (r.Income <= r.TroopsMobilized){
+                Snackbar.Add("Maximale Anzahl an Einheiten in dieser Region mobilisiert", Severity.Info);
+                return false;
+            }
+        }
+        await GameEngine.PlaceUnit(MobilizeUnit.Unit, (Region as LandRegion)!);
+        MobilizeUnit.ClearRegions();
+        MobilizeUnit.ClearUnit();
+        ViewRefreshService.Refresh();
+        return true;
     }
 
     private async Task<bool> StartBattle(ARegion region){

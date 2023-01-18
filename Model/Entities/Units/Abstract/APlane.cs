@@ -17,7 +17,8 @@ public abstract class APlane : AUnit{
     [Column("AIRCRAFT_CARRIER_ID")] public int? AircraftCarrierId{ get; set; }
 
     public AircraftCarrier? AircraftCarrier{ get; set; }
-
+    
+    public AircraftCarrier? GetAircraftCarrier() => AircraftCarrier;
     public override ARegion? GetLocation() => Region;
     
     public override ARegion? GetPreviousLocation() => PreviousLocation;
@@ -73,9 +74,6 @@ public abstract class APlane : AUnit{
     }
     
     public override bool IsPlane() => true;
-
-
     public override bool IsCargo() => AircraftCarrier is not null;
-
     public override bool CanAttack(AUnit unit) => !unit.IsSubmarine();
 }

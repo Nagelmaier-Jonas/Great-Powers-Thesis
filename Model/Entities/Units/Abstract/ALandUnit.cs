@@ -17,6 +17,7 @@ public abstract class ALandUnit : AUnit{
     [Column("TRANSPORT_ID")] public int? TransportId{ get; set; }
 
     public Transport? Transport{ get; set; }
+    public Transport? GetTransporter() => Transport;
 
     public override bool MoveToTarget(EPhase phase){
         if (GetPathToTarget(phase).Count == 0) return false;

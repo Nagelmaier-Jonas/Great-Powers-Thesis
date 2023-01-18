@@ -6,7 +6,6 @@ namespace View.Components.Game.Drawer.CombatMove;
 public class CombatTargets{
     public List<ARegion>? Regions{ get; set; }
     public List<AUnit>? Units{ get; set; }
-
     public event Action? HandleTargetChange;
     public event Action? HandleUnitChange;
     

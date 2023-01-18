@@ -1,6 +1,7 @@
 ﻿@using View.Dialogs
 @using Model.Entities
 @using Domain.Repositories
+@using Vanara.Extensions
 @inject IDialogService DialogService
 
 @if (Info is not null){
@@ -9,7 +10,7 @@
             <MudIcon Icon="@Icons.Material.Filled.Settings"/>
         </MudAvatar>
         <MudText Color="Color.Secondary" Class="ml-3 fw-bold">
-            Round @Info?.Round
+            Runde @Info?.Round
         </MudText>
         <MudSpacer/>
         @foreach (var nation in Nations.Where(i => i.Id is not 6).OrderBy(n => n.Type)){
@@ -23,8 +24,8 @@
             }
         }
         <MudSpacer/>
-        <MudText Class="fw-bold" Color="Color.Secondary">
-            @Info?.Phase.ToString()
+        <MudText Class="fw-bold text-center" Style="width: 7vw" Color="Color.Secondary">
+            @Info?.Phase.GetDescription()
             <br/>
             <span class="d-flex justify-content-around">
                 @for (int i = 0; i < 6; i++){

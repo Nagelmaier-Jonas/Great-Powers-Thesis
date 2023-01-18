@@ -1,0 +1,17 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudText Class="fw-bold text-center mb-3 mt-5 noselect" Color="Color.Tertiary" Typo="Typo.h4">Mobilisierung</MudText>
+        <MudText Class="text-center">Achtung! Es sind nicht alle Einheiten mobilisiert.</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Warning" OnClick="Cancel">Änderungen vornehmen</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    void Cancel() => MudDialog.Cancel();
+}
