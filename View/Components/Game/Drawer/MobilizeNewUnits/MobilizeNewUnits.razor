@@ -1,4 +1,5 @@
 ﻿@using Model.Entities
+@using Model.Entities.Units
 @using Model.Entities.Units.Abstract
 @using View.Dialogs
 @using View.Services
@@ -11,29 +12,55 @@
     return;
 }
 <MudText Class="fw-bold text-center mb-3 mt-5 noselect" Color="Color.Secondary" Typo="Typo.h4">Mobilisierung</MudText>
-@if (PlaceableUnits.Count > 0){
-    <MudTable Items="PlaceableUnits" Class="border-none purchase-table" Dense="true" FixedHeader="true" Height="60vh">
-        <HeaderContent>
-            <MudTh></MudTh>
-            <MudTh>Mobilisieren</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="" Class="text-center border-none">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@context.Nation.Name" width="50" height="50">
-                    <g>
-                        <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
-                        <path class="troopbadge-medal"
-                              d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
-                    </g>
-                    <path class="troopbadge-symbol"
-                          d="@context.GetStringFromDictionary(UnitPaths.Paths)"/>
-                </svg>
-            </MudTd>
-            <MudTd DataLabel="Mobilisieren">
-                <MudIconButton Icon="@Icons.Material.Filled.Map" OnClick="() => Mobilize(context)"/>
-            </MudTd>
-        </RowTemplate>
-    </MudTable>
+@if (PlaceableUnits.Count + PlaceableFactories.Count > 0){
+    @if (PlaceableUnits.Count > 0){
+        <MudTable Items="PlaceableUnits" Class="border-none purchase-table" Dense="true" FixedHeader="true" Height="60vh">
+                <HeaderContent>
+                    <MudTh></MudTh>
+                    <MudTh>Mobilisieren</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="" Class="text-center border-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@CurrentNation.Name" width="50" height="50">
+                            <g>
+                                <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
+                                <path class="troopbadge-medal"
+                                      d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
+                            </g>
+                            <path class="troopbadge-symbol"
+                                  d="@context.GetStringFromDictionary(UnitPaths.Paths)"/>
+                        </svg>
+                    </MudTd>
+                    <MudTd DataLabel="Mobilisieren">
+                        <MudIconButton Icon="@Icons.Material.Filled.Map" OnClick="() => Mobilize(context)"/>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+    }
+    @if (PlaceableFactories.Count > 0){
+          <MudTable Items="PlaceableFactories" Class="border-none purchase-table" Dense="true" FixedHeader="true" Height="20vh">
+              <HeaderContent>
+                  <MudTh></MudTh>
+                  <MudTh>Mobilisieren</MudTh>
+              </HeaderContent>
+              <RowTemplate>
+                  <MudTd DataLabel="" Class="text-center border-none">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@CurrentNation.Name" width="50" height="50">
+                          <g>
+                              <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
+                              <path class="troopbadge-medal"
+                                    d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
+                          </g>
+                          <path class="troopbadge-symbol"
+                                d="@context.GetStringFromDictionary(UnitPaths.Paths)"/>
+                      </svg>
+                  </MudTd>
+                  <MudTd DataLabel="Mobilisieren">
+                      <MudIconButton Icon="@Icons.Material.Filled.Map" OnClick="() => MobilizeFactory(context)"/>
+                  </MudTd>
+              </RowTemplate>
+          </MudTable>  
+    }
 }
 else{
     <MudContainer Class="d-flex justify-content-around noselect">
@@ -46,17 +73,30 @@ else{
 
     [Parameter]
     public SessionInfo? SessionInfo { get; set; }
+    
+    [Parameter]
+    public Nation? CurrentNation { get; set; }
 
     private List<AUnit> PlaceableUnits { get; set; } = new();
 
+    private List<AUnit> PlaceableFactories { get; set; } = new();
+
     protected override async Task OnInitializedAsync(){
         PlaceableUnits = await GameEngine.GetPlaceableUnits();
+        PlaceableFactories = await GameEngine.GetPlaceableFactories();
     }
-    
+
     private async Task Mobilize(AUnit unit){
         MobilizeUnit.SetUnit(unit);
         MobilizeUnit.SetRegions(await GameEngine.GetCountryWithFactory());
         PlaceableUnits = await GameEngine.GetPlaceableUnits();
+        ViewRefreshService.Refresh();
+    }
+    
+    private async Task MobilizeFactory(AUnit factory){
+        MobilizeUnit.SetUnit(factory);
+        MobilizeUnit.SetRegions(await GameEngine.GetCountryWithoutFactory());
+        PlaceableFactories = await GameEngine.GetPlaceableFactories();
         ViewRefreshService.Refresh();
     }
 
@@ -72,4 +112,3 @@ else{
     }
 
 }
-

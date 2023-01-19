@@ -25,9 +25,15 @@ public class Factory : AUnit{
     public override ARegion? GetLocation() => Region;
     
     public override ARegion? GetPreviousLocation() => null;
+    public override bool SetLocation(ARegion region){
+        if (region.IsLandRegion()){
+            Region = (LandRegion)region;
+            RegionId = region.Id;
+            return true;
+        }
 
-    public override bool SetLocation(ARegion region) => false;
-
+        return false;
+    }
     public override List<AUnit> GetSubUnits() => null;
 
     protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase,bool planeCheck) => false;

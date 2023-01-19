@@ -3,6 +3,7 @@ using Domain.Repositories.Implementations;
 using Domain.Services;
 using Model.Entities;
 using Model.Entities.Regions;
+using Model.Entities.Units;
 using Model.Entities.Units.Abstract;
 using View.Components.Game.Drawer.ConductCombat;
 using View.Services;
@@ -12,6 +13,8 @@ namespace View;
 public class GameEngine{
     public SessionInfoRepository _SessionInfoRepository{ get; set; }
     public UnitRepository _UnitRepository{ get; set; }
+
+    public FactoryRepository _FactoryRepository{ get; set; }
     public NationRepository _NationRepository{ get; set; }
     public BattleRepository _BattleRepository{ get; set; }
     public IServiceScopeFactory _ServiceScopeFactory{ get; set; }
@@ -35,6 +38,7 @@ public class GameEngine{
         FileService = scope.ServiceProvider.GetRequiredService<FileService>();
         _RegionRepository = scope.ServiceProvider.GetRequiredService<RegionRepository>();
         _Battlegrounds = scope.ServiceProvider.GetRequiredService<Battlegrounds>();
+        _FactoryRepository = scope.ServiceProvider.GetRequiredService<FactoryRepository>();
     }
 
     public async Task PlanMovement(AUnit unit, ARegion target){
@@ -92,19 +96,32 @@ public class GameEngine{
         var sessionInfo = await _SessionInfoRepository.ReadAsync();
         if (sessionInfo == null) return new List<ARegion>();
         Init(_ServiceScopeFactory.CreateScope());
-        return await _RegionRepository.GetCountryFactoryRegions(sessionInfo.CurrentNationId);
+        return await _RegionRepository.GetCountryRegionsWithFactory(sessionInfo.CurrentNationId);
+    }
+    
+    public async Task<List<ARegion>> GetCountryWithoutFactory(){
+        Init(_ServiceScopeFactory.CreateScope());
+        var sessionInfo = await _SessionInfoRepository.ReadAsync();
+        if (sessionInfo == null) return new List<ARegion>();
+        Init(_ServiceScopeFactory.CreateScope());
+        return await _RegionRepository.GetCountryRegionsWithoutFactory(sessionInfo.CurrentNationId);
     }
 
     public async Task<List<AUnit>> GetPlaceableUnits(){
         Init(_ServiceScopeFactory.CreateScope());
         return await _UnitRepository.GetPlaceableUnits();
     }
+    
+    public async Task<List<AUnit>> GetPlaceableFactories(){
+        Init(_ServiceScopeFactory.CreateScope());
+        return await _FactoryRepository.GetPlaceableFactories();
+    }
 
     public async Task PlaceUnit(AUnit unit, LandRegion region){
         Init(_ServiceScopeFactory.CreateScope());
         if (unit.SetLocation(region)) await _UnitRepository.UpdateAsync(unit);
-        region.TroopsMobilized++;
         Init(_ServiceScopeFactory.CreateScope());
+        region.TroopsMobilized++;
         await _RegionRepository.UpdateAsync(region);
     }
 
@@ -159,10 +176,10 @@ public class GameEngine{
         if (battle is null) return await StartBattle(region);
         return battle;
     }
-
+ 
     public async Task<List<ARegion>> GetBattleLocations(){
         Init(_ServiceScopeFactory.CreateScope());
-        SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
+        SessionInfo? session = await _SessionInfoRepository.ReadAsync();
         if (session.Phase != EPhase.ConductCombat) return new List<ARegion>();
         Init(_ServiceScopeFactory.CreateScope());
         return await _RegionRepository.ReadAsync(r => r.IncomingUnits.Count > 0);
@@ -178,7 +195,6 @@ public class GameEngine{
             select u.GetPreviousLocation()).ToList();
         return unit.GetPossibleRetreatTargets(previosRegions);
     }
-
     public async Task<bool> EndPhase(){
         Init(_ServiceScopeFactory.CreateScope());
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
@@ -211,7 +227,8 @@ public class GameEngine{
                 await _NationRepository.UpdateAsync(nation);
                 session.Phase = EPhase.PurchaseUnits;
                 if (session.CurrentNationId == 5) session.CurrentNationId = 1;
-                if (session.CurrentNationId != 5) session.CurrentNationId++;
+                else session.CurrentNationId++;
+                session.Round++;
                 break;
         }
 

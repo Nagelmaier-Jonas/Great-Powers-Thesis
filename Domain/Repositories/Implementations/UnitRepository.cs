@@ -7,15 +7,18 @@ using Model.Entities.Units.Abstract;
 namespace Domain.Repositories.Implementations;
 
 public class UnitRepository : ACreatableRepository<AUnit>, IUnitRepository{
-
     public LandUnitRepository _LandUnitRepository{ get; set; }
     public PlaneRepository _PlaneRepository{ get; set; }
     public ShipRepository _ShipRepository{ get; set; }
-    
-    public UnitRepository(GreatPowersDbContext context, LandUnitRepository landUnitRepository, PlaneRepository planeRepository, ShipRepository shipRepository) : base(context){
+
+    public FactoryRepository _FactoryRepository{ get; set; }
+
+    public UnitRepository(GreatPowersDbContext context, LandUnitRepository landUnitRepository,
+        PlaneRepository planeRepository, ShipRepository shipRepository, FactoryRepository factoryRepository) : base(context){
         _LandUnitRepository = landUnitRepository;
         _PlaneRepository = planeRepository;
         _ShipRepository = shipRepository;
+        _FactoryRepository = factoryRepository;
     }
 
     public override async Task<AUnit?> ReadAsync(int id){
@@ -37,16 +40,16 @@ public class UnitRepository : ACreatableRepository<AUnit>, IUnitRepository{
             if (unit.IsPlane()) result.Add(await _PlaneRepository.ReadGraphAsync(unit.Id));
             if (unit.IsShip()) result.Add(await _ShipRepository.ReadGraphAsync(unit.Id));
         }
-        
+
         return result;
     }
 
     public override async Task<List<AUnit>> ReadAllAsync(){
         List<AUnit> units = await base.ReadAllAsync();
         if (units.Count == 0) return units;
-        
+
         List<AUnit> result = new List<AUnit>();
-        
+
         foreach (var unit in units){
             if (unit.IsLandUnit()) result.Add(await _LandUnitRepository.ReadGraphAsync(unit.Id));
             if (unit.IsPlane()) result.Add(await _PlaneRepository.ReadGraphAsync(unit.Id));
@@ -57,11 +60,12 @@ public class UnitRepository : ACreatableRepository<AUnit>, IUnitRepository{
     }
 
     public override async Task<List<AUnit>> ReadAsync(int start, int count){
-        List<AUnit> units = await base.ReadAsync(start, count);
+        List<AUnit> units = new List<AUnit>();
+        units = await base.ReadAsync(start, count);
         if (units.Count == 0) return units;
-        
+
         List<AUnit> result = new List<AUnit>();
-        
+
         foreach (var unit in units){
             if (unit.IsLandUnit()) result.Add(await _LandUnitRepository.ReadGraphAsync(unit.Id));
             if (unit.IsPlane()) result.Add(await _PlaneRepository.ReadGraphAsync(unit.Id));
@@ -70,10 +74,11 @@ public class UnitRepository : ACreatableRepository<AUnit>, IUnitRepository{
 
         return result;
     }
-    
+
     public async Task<List<AUnit>> GetPlaceableUnits(){
-        List<AUnit> units = await ReadAllAsync();
-        
+        List<AUnit> units = new List<AUnit>();
+        units = await ReadAllAsync();
+
         List<AUnit> placeableUnits = new List<AUnit>();
 
         foreach (var u in units){
@@ -83,12 +88,14 @@ public class UnitRepository : ACreatableRepository<AUnit>, IUnitRepository{
                     placeableUnits.Add(p);
                 }
             }
+
             if (u.IsLandUnit()){
                 var l = u as ALandUnit;
                 if (l.GetLocation() is null && l.GetTransporter() is null){
                     placeableUnits.Add(l);
                 }
             }
+
             if (u.IsShip()){
                 var s = u as AShip;
                 if (s.GetLocation() is null){
@@ -96,13 +103,14 @@ public class UnitRepository : ACreatableRepository<AUnit>, IUnitRepository{
                 }
             }
         }
+
         return placeableUnits;
     }
 
     public async Task RemoveTargetAsync(AUnit unit){
         _context.ChangeTracker.Clear();
         unit.TargetId = null;
-        unit.Target = null; 
+        unit.Target = null;
         _set.Update(unit);
         await _context.SaveChangesAsync();
     }

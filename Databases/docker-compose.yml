@@ -3,7 +3,7 @@ services:
   db:
     image: mysql
     container_name: 'greatpowers_db'
-    ports:  
+    ports:
       - "26280:3306"
     command: mysqld --default-authentication-plugin=mysql_native_password
     environment:
@@ -21,9 +21,9 @@ services:
       - "5672:5672"
       - "15672:15672"
     environment:
-        RABBITMQ_DEFAULT_USER: greatpowers
-        RABBITMQ_DEFAULT_PASS: greatpowers
-        RABBITMQ_DEFAULT_VHOST: greatpowers
+      RABBITMQ_DEFAULT_USER: greatpowers
+      RABBITMQ_DEFAULT_PASS: greatpowers
+      RABBITMQ_DEFAULT_VHOST: greatpowers
     volumes:
       - ./default/rabbitmq:/var/lib/rabbitmq
 volumes:

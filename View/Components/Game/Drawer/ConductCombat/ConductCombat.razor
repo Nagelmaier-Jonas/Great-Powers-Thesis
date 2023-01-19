@@ -24,7 +24,6 @@ else{
     private List<ARegion> Battlegrounds { get; set; } = new();
 
     protected override async Task OnInitializedAsync(){
-        await base.OnInitializedAsync();
         Battlegrounds = await GameEngine.GetBattleLocations();
     }
 
