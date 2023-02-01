@@ -23,9 +23,14 @@ public abstract class APlane : AUnit{
     
     public override ARegion? GetPreviousLocation() => PreviousLocation;
 
-    public override bool SetLocation(ARegion target){
-        Region = target;
-        return true;
+    public override bool SetLocation(ARegion region){
+        if (region.IsLandRegion()){
+            Region = (LandRegion)region;
+            RegionId = region.Id;
+            return true;
+        }
+
+        return false;
     }
     
     public override bool MoveToTarget(EPhase phase){

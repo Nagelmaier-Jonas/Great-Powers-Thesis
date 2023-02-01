@@ -38,5 +38,7 @@ public class LandRegion : ARegion{
     public override Capital GetCapital() => Capital;
     public override Factory GetFactory() => Factory;
     public override bool IsLandRegion() => true;
-    public void ResetTroopsMobilized() => TroopsMobilized = 0;
+    public override int GetTroopsMobilized() => TroopsMobilized;
+    public override void ResetTroopsMobilized() => TroopsMobilized = 0;
+    public override void IncreaseTroopsMobilized() => TroopsMobilized++;
 }

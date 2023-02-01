@@ -10,6 +10,7 @@ public class LandRegionRepository : ARepository<LandRegion>, ILandRegionReposito
     }
     
     public async Task<LandRegion?> ReadGraphAsync(int Id){
+        _context.ChangeTracker.Clear();
         return await _set
             .Include(l => l.Neighbours)
             .Include(i => i.StationedPlanes)
@@ -18,6 +19,7 @@ public class LandRegionRepository : ARepository<LandRegion>, ILandRegionReposito
             .Include(i => i.IncomingUnits)
             .Include(l => l.Nation)
             .ThenInclude(n => n.Allies)
+            .Include(f => f.Factory)
             .FirstOrDefaultAsync(l => l.Id == Id);
     }
 }

@@ -125,7 +125,7 @@ builder.Services.AddScoped<CountryPaths>();
 builder.Services.AddScoped<ChannelPaths>();
 
 builder.Services.AddScoped<ActiveRegion>();
-builder.Services.AddScoped<ViewRefreshService>();
+builder.Services.AddSingleton<ViewRefreshService>();
 builder.Services.AddScoped<CombatTargets>();
 builder.Services.AddScoped<Battlegrounds>();
 builder.Services.AddScoped<NonCombatTargets>();
@@ -133,7 +133,7 @@ builder.Services.AddScoped<MobilizeUnit>();
 
 builder.Services.AddSingleton<GameEngine>();
 
-builder.Services.AddScoped<StateHasChangedEventHandler>();
+builder.Services.AddSingleton<StateHasChangedEventHandler>();
 
 builder.Services.AddSingleton<IEventPublisher, EventPublisher>();
 builder.Services.AddSingleton<IEventProcessor, StateHasChangedEventProcessor>();

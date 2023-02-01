@@ -70,7 +70,10 @@ public class GameEngine{
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
         List<AUnit> units = await _UnitRepository.ReadAsync(u => u.Target != null);
         var unitsToMove = units.Where(unit => unit.MoveToTarget(session.Phase)).ToList();
-        await _UnitRepository.UpdateAsync(unitsToMove);
+        foreach (var unit in unitsToMove){
+            Init(_ServiceScopeFactory.CreateScope());
+            await _UnitRepository.UpdateAsync(unit);
+        }
     }
 
     public async Task<List<ARegion>> GetPossibleTarget(AUnit unit){
@@ -107,6 +110,20 @@ public class GameEngine{
         return await _RegionRepository.GetCountryRegionsWithoutFactory(sessionInfo.CurrentNationId);
     }
 
+    public async Task<List<ARegion>> GetRegionsForShipPlacement(){
+        Init(_ServiceScopeFactory.CreateScope());
+        var regions = await _RegionRepository.ReadAllAsync();
+        var validSeaRegions = new List<ARegion>();
+        foreach (var r in regions.Where(r => r.IsWaterRegion())){
+            Init(_ServiceScopeFactory.CreateScope());
+            var canPlaceShip = await CanPlaceShip(r);
+            if (canPlaceShip){
+                validSeaRegions.Add(r);
+            }
+        }
+        return validSeaRegions;
+    }
+
     public async Task<List<AUnit>> GetPlaceableUnits(){
         Init(_ServiceScopeFactory.CreateScope());
         return await _UnitRepository.GetPlaceableUnits();
@@ -117,12 +134,23 @@ public class GameEngine{
         return await _FactoryRepository.GetPlaceableFactories();
     }
 
-    public async Task PlaceUnit(AUnit unit, LandRegion region){
+    public async Task PlaceUnit(AUnit unit, ARegion region){
         Init(_ServiceScopeFactory.CreateScope());
         if (unit.SetLocation(region)) await _UnitRepository.UpdateAsync(unit);
         Init(_ServiceScopeFactory.CreateScope());
-        region.TroopsMobilized++;
+        if (region.IsLandRegion()){
+            region.IncreaseTroopsMobilized();
+        }
         await _RegionRepository.UpdateAsync(region);
+    }
+    public async Task<bool> CanPlaceShip(ARegion region){
+        Init(_ServiceScopeFactory.CreateScope());
+        var sessionInfo = await _SessionInfoRepository.ReadAsync();
+        if (sessionInfo == null) return false;
+        Init(_ServiceScopeFactory.CreateScope());
+        var neighbors = region.Neighbours;
+        var neighborLandRegions = await _RegionRepository.GetNeighborsLandRegions(neighbors);
+        return neighborLandRegions.Any(r => r.GetOwnerId() == sessionInfo.CurrentNationId && r.GetFactory() is not null);
     }
 
     private async Task<bool> CheckIfAllUnitsAreMobilized(){
@@ -133,13 +161,11 @@ public class GameEngine{
     private async Task ResetAllFactoryRegions(){
         Init(_ServiceScopeFactory.CreateScope());
         var regions = await _RegionRepository.ReadAllAsync();
-        var landRegions = regions.Where(r => r is LandRegion).Cast<LandRegion>().ToList();
+        var landRegions = regions.Where(r => r is LandRegion && r.GetTroopsMobilized() is not 0).Cast<LandRegion>().ToList();
         foreach (var region in landRegions){
-            region.ResetTroopsMobilized();
+            Init(_ServiceScopeFactory.CreateScope());
+            await _RegionRepository.ResetTroopsMobilized(region.Id);
         }
-
-        Init(_ServiceScopeFactory.CreateScope());
-        await _RegionRepository.UpdateAsync(landRegions.Cast<ARegion>().ToList());
     }
 
     private async Task<Battle> StartBattle(ARegion region){
@@ -185,6 +211,19 @@ public class GameEngine{
         return await _RegionRepository.ReadAsync(r => r.IncomingUnits.Count > 0);
     }
 
+    public async Task AttackerRetreats(Battle battle){
+        battle.AttackerRetreats();
+        Init(_ServiceScopeFactory.CreateScope());
+        await _BattleRepository.UpdateAsync(battle);
+        _ViewRefreshService.Refresh();
+    }
+    public async Task AttackerContinues(Battle battle){
+        battle.AttackerContinues();
+        Init(_ServiceScopeFactory.CreateScope());
+        await _BattleRepository.UpdateAsync(battle);
+        _ViewRefreshService.Refresh();
+    }
+
     public async Task<List<ARegion>> GetPossibleRetreatTargets(AUnit unit){
         Init(_ServiceScopeFactory.CreateScope());
         Battle battle = (await _BattleRepository.ReadAsync(b => b.Location == unit.GetLocation())).FirstOrDefault();
@@ -221,17 +260,15 @@ public class GameEngine{
                 break;
             case EPhase.CollectIncome:
                 Init(_ServiceScopeFactory.CreateScope());
-                Nation nation = await _NationRepository.ReadAsync(session.CurrentNationId);
-                nation.CollectIncome();
-                Init(_ServiceScopeFactory.CreateScope());
-                await _NationRepository.UpdateAsync(nation);
+                await _NationRepository.CollectNationIncome(session.CurrentNationId);
                 session.Phase = EPhase.PurchaseUnits;
-                if (session.CurrentNationId == 5) session.CurrentNationId = 1;
+                if (session.CurrentNationId == 5){
+                    session.CurrentNationId = 1;
+                    session.Round++;
+                }
                 else session.CurrentNationId++;
-                session.Round++;
                 break;
         }
-
         FileService.WriteSessionInfoToFile(session.Path, session);
         Init(_ServiceScopeFactory.CreateScope());
         await _SessionInfoRepository.UpdateAsync(session);

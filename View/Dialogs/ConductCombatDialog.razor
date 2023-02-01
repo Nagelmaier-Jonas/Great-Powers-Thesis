@@ -3,6 +3,7 @@
 @using Domain.Repositories.Implementations
 @inject IJSRuntime JSRuntime
 @inject BattleRepository BattleRepository
+@inject GameEngine GameEngine
 
 @if (Battle is not null){
     <MudDialog Class="@RegionType">
@@ -77,6 +78,10 @@
             }
         </DialogContent>
     </MudDialog>
+    @if (Battle.Phase == EBattlePhase.RESOLUTION && Battle.AttackerDecided == false){
+        <MudButton Color="Color.Error" OnClick="Continue">Weitermachen</MudButton>
+        <MudButton Color="Color.Error" OnClick="Retreat">Rückzug</MudButton>
+    }
 }
 
 
@@ -111,8 +116,25 @@
     private async Task StartBattle(){
         if (Battle is null) return;
         Battle.AdvanceCombat();
-        await BattleRepository.UpdateAsync(Battle);
+        if (Battle.IsDecided){
+            await BattleRepository.DeleteAsync(Battle);
+            Submit();
+        }
+        else{
+           await BattleRepository.UpdateAsync(Battle); 
+        }
+        
         StateHasChanged();
+    }
+    
+    private async Task Retreat(){
+        if (Battle is null) return;
+        await GameEngine.AttackerRetreats(Battle);
+    }
+    
+    private async Task Continue(){
+        if (Battle is null) return;
+        await GameEngine.AttackerContinues(Battle);
     }
 
     void Submit(){

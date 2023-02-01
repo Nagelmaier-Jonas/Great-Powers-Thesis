@@ -1,5 +1,4 @@
-﻿
-@using Model.Entities.Regions
+﻿@using Model.Entities.Regions
 @using Model.Entities
 @using Domain.Services
 @using View.Services
@@ -75,7 +74,6 @@
 
     protected override async Task OnInitializedAsync(){
         Battlegrounds = await GameEngine.GetBattleLocations();
-        ViewRefreshService.HandleViewRefreshChange += Refresh;
     }
 
     private async Task UpdateRegion(MouseEventArgs args){
@@ -132,9 +130,23 @@
 
     private async Task<bool> MobilizeNewUnits(){
         if (SessionInfo?.Phase != EPhase.MobilizeNewUnits) return false;
-        if (Region is null) return false;
-        if (MobilizeUnit.Regions is null) return false;
-        if (MobilizeUnit.Unit is null) return false;
+        if (Region is null || MobilizeUnit.Regions is null || MobilizeUnit.Unit is null) return false;
+        if (MobilizeUnit.Unit.IsLandUnit() || MobilizeUnit.Unit.IsPlane()){
+            await MobilizeLandUnit();
+        }
+        if (MobilizeUnit.Unit.IsShip()){
+            await MobilizeShip();
+        }
+        if (MobilizeUnit.Unit.IsFactory()){
+            await MobilizeFactory();
+        }
+        MobilizeUnit.ClearRegions();
+        MobilizeUnit.ClearUnit();
+        ViewRefreshService.Refresh();
+        return true;
+    }
+
+    private async Task<bool> MobilizeLandUnit(){
         if (MobilizeUnit.Regions.All(r => r.Id != Region.Id)) return false;
         if (!Region.IsLandRegion()) return false;
         if (Region.IsLandRegion()){
@@ -145,9 +157,26 @@
             }
         }
         await GameEngine.PlaceUnit(MobilizeUnit.Unit, (Region as LandRegion)!);
-        MobilizeUnit.ClearRegions();
-        MobilizeUnit.ClearUnit();
-        ViewRefreshService.Refresh();
+        return true;
+    }
+
+    private async Task<bool> MobilizeFactory(){
+        if (MobilizeUnit.Regions.All(r => r.Id != Region.Id)) return false;
+        if (!Region.IsLandRegion()) return false;
+        if (Region.GetFactory() is not null){
+            Snackbar.Add("In dieser Region ist bereits eine Fabrik", Severity.Warning);
+            return false;
+        }
+        await GameEngine.PlaceUnit(MobilizeUnit.Unit, (Region as LandRegion)!);
+        return true;
+    }
+
+    private async Task<bool> MobilizeShip(){
+        var canPlace = await GameEngine.CanPlaceShip(Region);
+        if (!canPlace) return false;
+        if (MobilizeUnit.Regions.All(r => r.Id != Region.Id)) return false;
+        if (!Region.IsWaterRegion()) return false;
+        await GameEngine.PlaceUnit(MobilizeUnit.Unit, (Region as WaterRegion)!);
         return true;
     }
 
@@ -162,10 +191,6 @@
         var options = new DialogOptions{ FullScreen = true, CloseButton = true };
         DialogService.Show<ConductCombatDialog>("", parameters, options);
         return true;
-    }
-
-    public void Refresh(){
-        ViewRefreshService.Refresh();
     }
 
 }

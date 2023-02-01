@@ -88,7 +88,12 @@ else{
 
     private async Task Mobilize(AUnit unit){
         MobilizeUnit.SetUnit(unit);
-        MobilizeUnit.SetRegions(await GameEngine.GetCountryWithFactory());
+        if (unit.IsShip()){
+            MobilizeUnit.SetRegions(await GameEngine.GetRegionsForShipPlacement());
+        }
+        else{
+            MobilizeUnit.SetRegions(await GameEngine.GetCountryWithFactory());
+        }
         PlaceableUnits = await GameEngine.GetPlaceableUnits();
         ViewRefreshService.Refresh();
     }

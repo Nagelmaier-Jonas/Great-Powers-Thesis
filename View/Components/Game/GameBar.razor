@@ -12,7 +12,7 @@
         <MudText Color="Color.Secondary" Class="ml-3 fw-bold">
             Runde @Info?.Round
         </MudText>
-        <MudSpacer/>
+        <MudSpacer/> 
         @foreach (var nation in Nations.Where(i => i.Id is not 6).OrderBy(n => n.Type)){
             @if (nation.Id == Info.CurrentNationId){
                 <MudBadge Color="Color.Success" Overlap="true" Dot="true">

@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Drawing;
-using System.Diagnostics;
 using Model.Entities.Units;
 using Model.Entities.Units.Abstract;
 
@@ -17,7 +15,7 @@ public abstract class ARegion{
     [Column("NAME", TypeName = "VARCHAR(45)")]
     public string Name{ get; set; } = String.Empty;
 
-    public List<Neighbours> Neighbours{ get; set; } = new List<Neighbours>();
+    public List<Neighbours> Neighbours{ get; set; } = new();
 
     [Column("IDENTIFIER", TypeName = "VARCHAR(45)")] 
     public ERegion Identifier{ get; set; }
@@ -28,9 +26,9 @@ public abstract class ARegion{
     [Column("POSITION_Y")]
     public int? PositionY{ get; set; }
 
-    public List<APlane> StationedPlanes{ get; set; } = new List<APlane>();
+    public List<APlane> StationedPlanes{ get; set; } = new();
     
-    public List<AUnit> IncomingUnits{ get; set; } = new List<AUnit>();
+    public List<AUnit> IncomingUnits{ get; set; } = new();
 
     public List<AUnit> GetStationedFriendlyUnits(Nation nation) => GetStationedUnits()
         .Where(u => u.Nation == nation || u.Nation.Allies.Any(a => a.Ally == nation)).ToList();
@@ -142,7 +140,9 @@ public abstract class ARegion{
     public virtual int GetIncome() => 0;
     public virtual Capital GetCapital() => null;
     public virtual Factory GetFactory() => null;
-
     public virtual bool IsLandRegion() => false;
     public virtual bool IsWaterRegion() => false;
+    public virtual int GetTroopsMobilized() => 0;
+    public virtual void IncreaseTroopsMobilized(){}
+    public virtual void ResetTroopsMobilized(){}
 }

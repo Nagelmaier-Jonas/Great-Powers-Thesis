@@ -199,6 +199,10 @@ span.logo {
     fill: #962d2d !important;
 }
 
+.troop_damaged {
+    fill: #4d4d4d !important;
+}
+
 /* -- -------------------------------------------------- -- */
 /*                  Style: Setting Dialog                   */
 /* -- -------------------------------------------------- -- */
@@ -245,11 +249,11 @@ span.logo {
 /* -- -------------------------------------------------- -- */
 
 .Germany .troopbadge-medal {
-    fill: #353535;
+    fill: #4b5764;
 }
 
 .Germany .troopbadge-symbol {
-    fill: #b5b7b6;
+    fill: #71979a;
 }
 
 .Soviet_Union .troopbadge-medal {

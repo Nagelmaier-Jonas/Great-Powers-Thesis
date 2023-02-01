@@ -4,8 +4,7 @@ using Model.Configuration;
 
 namespace Domain.Repositories;
 
-public abstract class ARepository<TEntity> : IRepository<TEntity> where TEntity : class
-{
+public abstract class ARepository<TEntity> : IRepository<TEntity> where TEntity : class{
     protected readonly GreatPowersDbContext _context;
     protected readonly DbSet<TEntity> _set;
 
@@ -15,26 +14,27 @@ public abstract class ARepository<TEntity> : IRepository<TEntity> where TEntity 
     }
 
     public virtual async Task<TEntity?> ReadAsync(int id) => await _set.FindAsync(id);
-    
 
-    public virtual async Task<List<TEntity>> ReadAsync(Expression<Func<TEntity, bool>> filter)=> await _set.Where(filter).ToListAsync();
-    
 
-    public virtual async Task<List<TEntity>> ReadAllAsync()=> await _set.ToListAsync();
-    
+    public virtual async Task<List<TEntity>> ReadAsync(Expression<Func<TEntity, bool>> filter) =>
+        await _set.Where(filter).ToListAsync();
 
-    public virtual async Task<List<TEntity>> ReadAsync(int start, int count)=> await _set.Skip(start).Take(count).ToListAsync();
-    
 
-    public async Task UpdateAsync(TEntity entity)
-    {
+    public virtual async Task<List<TEntity>> ReadAllAsync() => await _set.ToListAsync();
+
+
+    public virtual async Task<List<TEntity>> ReadAsync(int start, int count) =>
+        await _set.Skip(start).Take(count).ToListAsync();
+
+
+    public async Task UpdateAsync(TEntity entity){
         _context.ChangeTracker.Clear();
         _set.Update(entity);
         await _context.SaveChangesAsync();
     }
-    public async Task UpdateAsync(List<TEntity> entities)
-    {
-        _context.ChangeTracker.Clear();
+
+    public async Task UpdateAsync(List<TEntity> entities){
+        _context.Entry(entities).State = EntityState.Modified;
         _set.UpdateRange(entities);
         await _context.SaveChangesAsync();
     }

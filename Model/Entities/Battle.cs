@@ -31,6 +31,9 @@ public class Battle{
     public int NonAirHits{ get; set; }
     public int NonSubmarineHits{ get; set; }
     public int NormalHits{ get; set; }
+    
+    [Column("IS_DECIDED", TypeName = "TINYINT")]
+    public bool IsDecided{ get; set; } = false;
 
     [NotMapped] public Dictionary<int, int> DiceRolls{ get; set; } = new (){
         {1,0},
@@ -57,7 +60,6 @@ public class Battle{
     }
 
     private List<AUnit> GetCurrentNationsEnemies(){
-        //Todo: make work
         List<AUnit> units = new List<AUnit>();
         units.AddRange(Attackers);
         units.AddRange(Defenders);
@@ -66,7 +68,6 @@ public class Battle{
     }
 
     private void HitUnit(AUnit unit){
-        //Todo: make work
         if (!CheckForOpenHits()) return;
 
         bool hit = false;
@@ -179,6 +180,7 @@ public class Battle{
                 else CurrentNation = GetNextNation();
                 return true;
             case EBattlePhase.ATTACK:
+                if (CheckForOpenHits()) return false;
                 if (CheckForDefenselessTransports()){
                     Phase = EBattlePhase.RESOLUTION;
                     return true;
@@ -197,7 +199,11 @@ public class Battle{
                 CurrentNation = GetNextNation();
                 Round += 1;
                 ResolveCasualties();
+                if (CheckForWinner()){
+                    IsDecided = true;
+                }
                 Phase = IsAquaticBattle() ? EBattlePhase.SPECIAL_SUBMARINE : EBattlePhase.ATTACK;
+                AttackerDecided = false;
                 return true;
         }
         return true;
@@ -214,8 +220,7 @@ public class Battle{
 
     public bool PlaceHit(AUnit unit){
         if (!CheckForOpenHits()) return false;
-        //Todo: dont know why ask luki
-        //if (GetCurrentNationsEnemies().All(u => u.Id != unit.Id)) return false;
+        if (GetCurrentNationsEnemies().All(u => u.Id != unit.Id)) return false;
         HitUnit(unit);
         return true;
     }

@@ -103,4 +103,24 @@ public class RegionRepository : ARepository<ARegion>, IRegionRepository{
 
         return result;
     }
+
+    public async Task<List<ARegion>> GetNeighborsLandRegions(List<Neighbours> neighbours){
+        List<ARegion> regions = await base.ReadAllAsync();
+        regions = regions.Where(r => r.IsLandRegion()).ToList();
+        if (regions.Count == 0) return new List<ARegion>();
+
+        var result = new List<ARegion>();
+
+        foreach (var region in regions.Where(region => neighbours.Any(n => n.NeighbourId == region.Id))){
+            result.Add(await _LandRegionRepository.ReadGraphAsync(region.Id));
+        }
+
+        return result;
+    }
+    public async Task ResetTroopsMobilized(int regionId){
+        var region = await _set.FindAsync(regionId);
+        region.ResetTroopsMobilized();
+        _context.Entry(region).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+    }
 }

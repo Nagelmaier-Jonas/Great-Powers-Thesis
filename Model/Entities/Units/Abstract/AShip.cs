@@ -16,9 +16,10 @@ public abstract class AShip : AUnit{
     public override ARegion? GetLocation() => Region;
     public override ARegion? GetPreviousLocation() => PreviousLocation;
  
-    public override bool SetLocation(ARegion target){
-        if (target.IsWaterRegion()){
-            Region = (WaterRegion)target;
+    public override bool SetLocation(ARegion region){
+        if (region.IsWaterRegion()){
+            Region = (WaterRegion)region;
+            RegionId = region.Id;
             return true;
         }
 
