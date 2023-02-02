@@ -3,7 +3,6 @@ using Domain.Repositories.Implementations;
 using Domain.Services;
 using Model.Entities;
 using Model.Entities.Regions;
-using Model.Entities.Units;
 using Model.Entities.Units.Abstract;
 using View.Components.Game.Drawer.ConductCombat;
 using View.Services;
@@ -48,7 +47,6 @@ public class GameEngine{
             Init(_ServiceScopeFactory.CreateScope());
             await _UnitRepository.UpdateAsync(unit);
         }
-
         _ViewRefreshService.Refresh();
     }
 
@@ -58,10 +56,10 @@ public class GameEngine{
         await _UnitRepository.UpdateAsync(unit);
         _ViewRefreshService.Refresh();
     }
-
+    
     public async Task<List<ARegion>> GetPathForUnit(AUnit unit){
         Init(_ServiceScopeFactory.CreateScope());
-        SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
+        SessionInfo session = await _SessionInfoRepository.ReadAsync();
         return unit.GetPathToTarget(session.Phase);
     }
 
@@ -224,7 +222,7 @@ public class GameEngine{
         _ViewRefreshService.Refresh();
     }
 
-    public async Task<List<ARegion>> GetPossibleRetreatTargets(AUnit unit){
+    /*public async Task<List<ARegion>> GetPossibleRetreatTargets(AUnit unit){
         Init(_ServiceScopeFactory.CreateScope());
         Battle battle = (await _BattleRepository.ReadAsync(b => b.Location == unit.GetLocation())).FirstOrDefault();
         if (battle is null) return new List<ARegion>();
@@ -233,7 +231,8 @@ public class GameEngine{
             where u.GetPreviousLocation() is not null
             select u.GetPreviousLocation()).ToList();
         return unit.GetPossibleRetreatTargets(previosRegions);
-    }
+    }*/
+
     public async Task<bool> EndPhase(){
         Init(_ServiceScopeFactory.CreateScope());
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;

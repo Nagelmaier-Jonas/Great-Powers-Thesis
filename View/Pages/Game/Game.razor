@@ -3,19 +3,14 @@
 @using Domain.Repositories
 @using Domain.Repositories.Implementations
 @using EventHandling.EventHandler
-@using Microsoft.CodeAnalysis.CSharp.Syntax
 @using Model.Entities.Regions
 @using Model.Entities.Units.Abstract
 @using View.Services
-@inject SessionInfoRepository SessionInfoRepository
-@inject NationRepository NationRepository
-@inject WaterRegionRepository WaterRegionRepository
 @inject ViewRefreshService ViewRefreshService
 @inject StateHasChangedEventHandler StateHasChangedEventHandler
 @inject IServiceScopeFactory ServiceScopeFactory
 @inject CombatTargets CombatTargets
 @inject NonCombatTargets NonCombatTargets
-@inject NavigationManager NavigationManager
 @implements IDisposable
 
 <style>
@@ -46,7 +41,6 @@
     private List<Nation> Nations { get; set; } = new();
     private List<WaterRegion> SeeZones { get; set; } = new();
     private Nation CurrentNation { get; set; } = new();
-    private List<AUnit> PlaceableUnits { get; set; } = new();
     private int MaxTroops { get; set; }
 
     bool _open = false;

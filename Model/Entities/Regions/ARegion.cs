@@ -17,14 +17,12 @@ public abstract class ARegion{
 
     public List<Neighbours> Neighbours{ get; set; } = new();
 
-    [Column("IDENTIFIER", TypeName = "VARCHAR(45)")] 
+    [Column("IDENTIFIER", TypeName = "VARCHAR(45)")]
     public ERegion Identifier{ get; set; }
-    
-    [Column("POSITION_X")]
-    public int? PositionX{ get; set; }
-    
-    [Column("POSITION_Y")]
-    public int? PositionY{ get; set; }
+
+    [Column("POSITION_X")] public int? PositionX{ get; set; }
+
+    [Column("POSITION_Y")] public int? PositionY{ get; set; }
 
     public List<APlane> StationedPlanes{ get; set; } = new();
     
@@ -37,7 +35,8 @@ public abstract class ARegion{
         .Any(u => u.Nation != nation && u.Nation.Allies.All(a => a.Ally != nation));
 
     public bool ContainsEnemies(Nation nation) => GetStationedUnits()
-        .Any(u => u.Nation != nation && u.Nation.Allies.All(a => a.Ally != nation) && !u.IsSubmarine() && !u.IsTransport());
+        .Any(u => u.Nation != nation && u.Nation.Allies.All(a => a.Ally != nation) && !u.IsSubmarine() &&
+                  !u.IsTransport());
 
     public bool IsHostile(Nation nation){
         if (IsWaterRegion()) return ContainsEnemies(nation);
@@ -47,38 +46,42 @@ public abstract class ARegion{
     public List<AircraftCarrier> GetOpenAircraftCarriers(Nation nation){
         List<AUnit> carriers = GetStationedUnits().Where(u =>
             u.IsAircraftCarrier() &&
-            (u.Nation == nation || nation.Allies.Any(a => a.Ally == u.Nation)) && u.Target == null).ToList();
-        
+            u.Nation == nation && u.Target == null).ToList();
+
         carriers.AddRange(IncomingUnits.Where(u =>
-                u.IsAircraftCarrier() &&
-                (u.Nation == nation || nation.Allies.Any(a => a.Ally == u.Nation))).ToList());
-        
+            u.IsAircraftCarrier() &&
+            u.Nation == nation).ToList());
+
         List<AircraftCarrier> result = carriers.Cast<AircraftCarrier>().ToList();
-        
-        int incomingUnits = IncomingUnits.Where(u => u.IsFighter() ||u.IsBomber()).ToList().Count;
-        
+
+        int incomingUnits = IncomingUnits.Where(u => u.IsFighter() || u.IsBomber()).ToList().Count;
+
         List<AircraftCarrier> openCarriers = new List<AircraftCarrier>();
-        
+
         foreach (var aircraftCarrier in result){
             incomingUnits += aircraftCarrier.Planes.Count - 2;
             if (incomingUnits < 0) openCarriers.Add(aircraftCarrier);
         }
-        
+
         return openCarriers;
     }
-    
+
     public List<Transport> GetOpenTransports(Nation nation, EPhase phase){
         List<AUnit> transports = GetStationedUnits().Where(u =>
-            u.IsTransport() &&
-            (u.Nation == nation || nation.Allies.Any(a => a.Ally == u.Nation) && ((u.Target != null && u.Target.IsLandRegion()) || phase == EPhase.NonCombatMove))).ToList();
-        
+                u.IsTransport() &&
+                u.Nation == nation &&
+                ((u.Target != null && u.Target.IsLandRegion()) || phase == EPhase.NonCombatMove))
+            .ToList();
+
         transports.AddRange(IncomingUnits.Where(u =>
-            u.IsTransport() &&
-            (u.Nation == nation || nation.Allies.Any(a => a.Ally == u.Nation))).ToList());
-        
+                u.IsTransport() &&
+                u.Nation == nation &&
+                phase == EPhase.NonCombatMove)
+            .ToList());
+
         List<Transport> result = transports.Cast<Transport>().ToList();
-        
-        int incomingUnits = IncomingUnits.Where(u => u.IsTank() || u.IsInfantry() || u.IsArtillery() || u.IsAntiAir()).ToList().Count;
+
+        int incomingUnits = IncomingUnits.Where(u => u.IsLandUnit()).ToList().Count;
 
         List<Transport> openTransports = new List<Transport>();
 
@@ -86,13 +89,13 @@ public abstract class ARegion{
             incomingUnits += transporter.Units.Count - 2;
             if (incomingUnits < 0) openTransports.Add(transporter);
         }
-        
+
         return openTransports;
     }
 
     public int GetUnitCount(AUnit unit) => GetStationedUnitCounts().Where(d => d.Key.IsSameType(unit))
         .ToDictionary(p => unit).Values.First().Value;
-    
+
     public int GetMovableUnitCount(AUnit unit) => GetMovableUnitCounts().Where(d => d.Key.IsSameType(unit))
         .ToDictionary(p => unit).Values.First().Value;
 
@@ -101,38 +104,42 @@ public abstract class ARegion{
         foreach (var type in GetOneStationedUnitPerType()){
             if(counts.Keys.Any(u => u.IsSameType(type))) continue;
             int count = GetStationedUnits().Count(unit => unit.IsSameType(type));
-           counts[type] = count;
+            counts[type] = count;
         }
+
         return counts;
     }
-    
+
     public Dictionary<AUnit, int> GetMovableUnitCounts(){
         Dictionary<AUnit, int> counts = new Dictionary<AUnit, int>();
         foreach (var type in GetOneMovableUnitPerType()){
-            if(counts.Keys.Any(u => u.IsSameType(type))) continue;
+            if (counts.Keys.Any(u => u.IsSameType(type))) continue;
             int count = GetStationedUnits().Count(unit => unit.IsSameType(type) && unit.CanMove);
             counts[type] = count;
         }
+
         return counts;
     }
 
     public List<AUnit> GetOneStationedUnitPerType(){
         List<AUnit> oneUnitPerType = new List<AUnit>();
-        foreach (var unit in GetStationedUnits()){
-            if (oneUnitPerType.Any(u => unit.IsSameType(u))) continue;
+        foreach (var unit in GetStationedUnits().Where(unit => !oneUnitPerType.Any(u => unit.IsSameType(u)))){
             oneUnitPerType.Add(unit);
         }
+
         return oneUnitPerType;
     }
-    
+
     public List<AUnit> GetOneMovableUnitPerType(){
         List<AUnit> oneUnitPerType = new List<AUnit>();
         foreach (var unit in GetStationedUnits().Where(u => u.CanMove)){
             if (oneUnitPerType.Any(u => unit.IsSameType(u))) continue;
             oneUnitPerType.Add(unit);
         }
+
         return oneUnitPerType;
     }
+
     public virtual List<AUnit> GetStationedUnits() => null;
 
     public virtual Nation? GetOwner() => null;

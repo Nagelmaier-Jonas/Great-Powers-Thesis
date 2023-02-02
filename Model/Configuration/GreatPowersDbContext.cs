@@ -109,10 +109,10 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
         builder.Entity<AShip>().HasOne(s => s.PreviousLocation)
             .WithMany().HasForeignKey(s => s.PreviousLocationId);
 
-        builder.Entity<Battle>().HasOne(b => b.Location).WithOne();
+        builder.Entity<Battle>().HasOne<ARegion>(b => b.Location).WithOne().HasForeignKey<Battle>(b => b.LocationId);
         builder.Entity<Battle>().HasOne(b => b.CurrentNation).WithMany(n => n.Battles).HasForeignKey(b => b.CurrentNationId);
 
-        builder.Entity<SessionInfo>().HasOne(s => s.Nation).WithOne()
+        builder.Entity<SessionInfo>().HasOne<Nation>(s => s.Nation).WithOne()
             .HasForeignKey<SessionInfo>(s => s.CurrentNationId);
 
         #region Nations
@@ -3342,6 +3342,10 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
                 NeighbourId = 90
             },
             new Neighbours(){
+                RegionId = 74,
+                NeighbourId = 95
+            },
+            new Neighbours(){
                 RegionId = 84,
                 NeighbourId = 72
             },
@@ -3753,6 +3757,10 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             new Neighbours(){
                 RegionId = 105,
                 NeighbourId = 106
+            },
+            new Neighbours(){
+                RegionId = 105,
+                NeighbourId = 107
             },
             new Neighbours(){
                 RegionId = 106,

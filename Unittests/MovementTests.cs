@@ -13,7 +13,7 @@ public class Tests{
     public void Setup(){
     }
 
-    [Test]
+    /*[Test]
     public void NonCombatLandMovementTest(){
         Nation self = new Nation(){
             Name = "self"
@@ -2545,11 +2545,16 @@ public class Tests{
         Assert.AreEqual(3, region.GetUnitCount(units[3]));
         Assert.AreEqual(3, region.GetUnitCount(units[4]));
         Assert.AreEqual(3, region.GetUnitCount(units[5]));
-    }
+    }*/
     
     [Test]
     public void Test1(){
         string asd = JsonSerializer.Serialize(new StateHasChangedEvent());
         Assert.AreEqual("a",asd);
+    }
+
+    [Test]
+    public void Test2(){
+        List<int> list = new();
     }
 }

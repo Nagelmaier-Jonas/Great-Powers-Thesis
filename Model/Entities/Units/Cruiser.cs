@@ -12,32 +12,27 @@ public class Cruiser : AShip{
     public override int Attack{ get; protected set; } = 3;
     public override int Defense{ get; protected set; } = 3;
 
-    protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase,bool planeCheck){
+    protected override bool CheckForMovementRestrictions(Node target, Node previous, EPhase phase){
         //Ships cant pass through canals if they arent owned by a friendly Nation
-        if (target.CanalOwners.Any(o =>
-                o.CanalOwner.Nation != Nation && o.CanalOwner.Nation.Allies.All(a => a.Ally != Nation))) return false;
+        if (target.Region.Neighbours.Any(n => n.Neighbour == previous.Region && n.CanalOwners.Any(c => c.CanalOwner.IsHostile(Nation)))) return false;
         switch (phase){
             case EPhase.NonCombatMove:
                 if (!CanMove) break;
-                if (target.Neighbour.IsLandRegion()) break;
-                if (target.Neighbour.ContainsEnemies(Nation)) break;
+                if (target.Region.IsHostile(Nation)) break;
+                if (target.Region.IsLandRegion()) break;
                 
                 return true;
             case EPhase.CombatMove:
                 //Battleships and Cruisers can attack coastal Land Regions to support amphibious assaults, Transporters conduct the Amphibious assaults
-                if (distance != 1 && target.Neighbour.IsLandRegion()) break;
-
-                //Battleships and Cruisers can attack coastal Land Regions to support amphibious assaults, but only if a Transporter is conducting one
-                if (distance == 1 && target.Neighbour.IsLandRegion() && !target.Neighbour.IncomingUnits.Any(u =>
-                        u.IsTransport() && u.Nation == Nation ||
-                        u.Nation.Allies.Any(a => a.Ally == Nation))) break;
+                if (target.Region.IsLandRegion() && !target.Region.IsHostile(Nation)) break;
+                if (target.Region.IsLandRegion() && previous.Region.IsLandRegion()) break;
+                if (target.Region.IsLandRegion() && target.Region.IncomingUnits.All(u => !u.IsTransport() || u.Nation != Nation)) break;
             
                 //If a Ship doesnt support an amphibious assault, it has to end its attack on a Field containing Enemies, unless it started in an enemy Field and is escaping elsewhere
-                if (distance == 1 &&
-                    !target.Neighbour.ContainsAnyEnemies(Nation) && !Region.IsHostile(Nation)) break;
+                if (!target.Region.ContainsAnyEnemies(Nation) && !previous.Region.ContainsAnyEnemies(Nation) && previous.Distance != 0) break;
             
                 //A Ship cant move through enemy Fields to attack, unless its a Submarine
-                if (distance != 1 && target.Neighbour.IsHostile(Nation)) break;
+                if (target.Region.IsHostile(Nation) && previous.Region.IsHostile(Nation)) break;
             
                 return true;
         }

@@ -47,19 +47,14 @@ public abstract class AUnit{
     public abstract bool SetLocation(ARegion region);
     public virtual List<AUnit> GetSubUnits() => null;
 
-    public List<ARegion> GetPossibleRetreatTargets(List<ARegion> previousRegions) =>
-        GetTargetsForMovement(1, GetLocation(), EPhase.NonCombatMove).Where(previousRegions.Contains)
-            .ToList();
+    public List<ARegion> GetPossibleRetreatTargetsList(List<ARegion> previousRegions) =>
+        throw new NotImplementedException();
 
 
     private bool CanTarget(EPhase phase, ARegion target){
-        ARegion temp = Target;
-        Target = target;
-        List<ARegion> path = GetPathToTarget(phase);
-        Target = temp;
-        return path.Contains(target);
+        List<ARegion> path = GetPath(phase, target);
+        return path.Contains(target) && path.Last() == target;
     }
-
 
     public bool SetTarget(EPhase phase, ARegion target){
         if (!CanTarget(phase, target)) return false;
@@ -75,78 +70,86 @@ public abstract class AUnit{
 
     public virtual bool MoveToTarget(EPhase phase) => false;
 
-    public List<ARegion> GetPossibleTargets(EPhase phase) =>
-        GetTargetsForMovement(CurrentMovement, GetLocation(), phase).Where(region => CanTarget(phase, region)).ToList();
+    public List<ARegion> GetPossibleTargets(EPhase phase){
+        List<ARegion> regions = GetPath(phase);
+        if (phase == EPhase.CombatMove) return regions.Where(r => r.IsHostile(Nation) ||r.ContainsAnyEnemies(Nation)).ToList();
+        if (!IsPlane() || phase != EPhase.NonCombatMove) return regions;
+        APlane plane = (APlane)this;
+        return regions.Where(r => plane.CanLand(r)).ToList();
+    }
+
+    public List<ARegion> GetPathToTarget(EPhase phase) => Target is null ? new List<ARegion>() : GetPath(phase, Target);
 
 
-    protected abstract bool
-        CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase, bool planeCheck);
+    protected abstract bool CheckForMovementRestrictions(Node target, Node previous, EPhase phase);
 
-    protected List<ARegion> GetTargetsForMovement(int distance, ARegion region, EPhase phase, bool planeCheck = false,
-        List<ARegion>? previous = null){
-        if (distance <= 0) return new List<ARegion>();
-        if (region == null) return new List<ARegion>();
-        HashSet<ARegion> regions = new HashSet<ARegion>();
-        regions.Add(region);
+    public List<ARegion> GetAllegibleNeighbours(Node region, EPhase phase) => region.Region.Neighbours
+        .Select(n => n.Neighbour)
+        .Where(r => CheckForMovementRestrictions(new Node(r, region.Distance + 1), region, phase))
+        .ToList();
 
-        region.Neighbours.ForEach(n => {
-            if (previous is not null){
-                regions.UnionWith(previous);
-                if (regions.Contains(n.Neighbour)) return;
+    public List<ARegion> GetPath(EPhase phase, ARegion? target = null, ARegion? start = null){
+        if (GetLocation() is null && start is null) return new List<ARegion>();
+
+        ARegion source = start ?? GetLocation();
+
+        List<Node> travelled = new List<Node>();
+        travelled.Add(new Node(source, 0));
+
+        List<Node> next = GetAllegibleNeighbours(new Node(source, 0), phase).Select(neigh => new Node(neigh, 1))
+            .ToList();
+
+        while (next.Count > 0){
+            Node current = next.First();
+            next.Remove(current);
+
+            travelled.Add(current);
+
+            travelled.ForEach(t => {
+                if (!t.Equals(current)) return;
+                if (t.Distance > current.Distance) t.Distance = current.Distance;
+            });
+
+            if (current.Distance == CurrentMovement) continue;
+
+            List<Node> neighbours = GetAllegibleNeighbours(current, phase)
+                .Select(neigh => new Node(neigh, current.Distance + 1))
+                .Where(nextNode => travelled.All(t => !t.Equals(nextNode) || t.Distance > nextNode.Distance)).ToList();
+
+            next.InsertRange(0, neighbours);
+        }
+
+        if (travelled.Count == 0) return new List<ARegion>();
+
+        travelled.OrderBy(t => t.Distance);
+
+        //Path to specified Target
+        if (target is not null){
+            List<List<Node>> permutations = new List<List<Node>>();
+            permutations.Add(new List<Node>{ travelled.First() });
+
+            List<List<Node>> temp = new List<List<Node>>();
+
+            foreach (var n in travelled.Where(n => permutations.All(p => !p.Last().Equals(n)))){
+                temp = permutations.Where(p =>
+                    p.Last().Region.Neighbours.Any(neigh => neigh.Neighbour == n.Region) &&
+                    n.Distance > p.Last().Distance).ToList();
+                foreach (var copy in temp.Select(t => new List<Node>(t))){
+                    copy.Add(n);
+                    permutations.Add(copy);
+                }
             }
 
-            if (!CheckForMovementRestrictions(distance, n, phase, planeCheck) && !planeCheck) return;
+            temp = permutations.Where(p => p.Last().Region == target).ToList();
 
-            regions.Add(n.Neighbour);
-            regions.UnionWith(GetTargetsForMovement(distance - 1, n.Neighbour, phase, planeCheck,
-                regions.ToList()));
-        });
+            List<Node> temp2 = temp.FirstOrDefault(t1 => temp.All(t2 => t2.Count >= t1.Count));
 
-        regions.Remove(region);
-        return regions.ToList();
-    }
-
-    protected int GetDistanceToTarget(EPhase phase, int distance = 1, ARegion? region = null, bool planeCheck = false){
-        while (true){
-            if (Target == null) return 0;
-            if (distance > CurrentMovement) return 0;
-            if (GetLocation() == null) return 0;
-
-            ARegion location = region ?? GetLocation();
-
-            if (GetTargetsForMovement(distance, location, phase, planeCheck).Contains(Target)) return distance;
-
-            distance += 1;
-            region = location;
-        }
-    }
-
-    public List<ARegion> GetPathToTarget(EPhase phase, ARegion? region = null){
-        if (Target == null) return new List<ARegion>();
-        if (GetLocation() == null) return new List<ARegion>();
-
-        ARegion location = region ?? GetLocation();
-
-        int distance = GetDistanceToTarget(phase, 1, location);
-
-        if (distance == 0) return new List<ARegion>();
-
-        List<ARegion> path = new List<ARegion>(){
-            location
-        };
-
-        List<ARegion> neighbours = GetTargetsForMovement(distance, location, phase);
-        neighbours.Insert(0,location);
-
-        while (true){
-            distance -= 1;
-            neighbours.ForEach(n => {
-                if(!path.Contains(n) && GetDistanceToTarget(phase, 1, n) == distance) path.Add(n);
-            });
-            if (distance == 0) break;
+            return temp2 is null ? new List<ARegion>() : temp2.Select(n => n.Region).ToList();
         }
 
-        return path;
+        //All regions if target not defined
+        travelled.RemoveAll(p => p.Region == source);
+        return travelled.Select(p => p.Region).ToList();
     }
 
     public virtual bool IsLandUnit() => false;

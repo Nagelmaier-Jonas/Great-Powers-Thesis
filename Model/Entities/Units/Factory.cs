@@ -36,7 +36,7 @@ public class Factory : AUnit{
     }
     public override List<AUnit> GetSubUnits() => null;
 
-    protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase,bool planeCheck) => false;
+    protected override bool CheckForMovementRestrictions(Node target, Node previous, EPhase phase) => false;
     
     public override bool IsFactory() => true;
     

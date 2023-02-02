@@ -12,16 +12,15 @@ public class AntiAir : ALandUnit{
     public override int Attack{ get; protected set; } = 0;
     public override int Defense{ get; protected set; } = 0;
 
-    protected override bool CheckForMovementRestrictions(int distance, Neighbours target, EPhase phase,bool planeCheck){
+    protected override bool CheckForMovementRestrictions(Node target, Node previous, EPhase phase){
         switch (phase){
             case EPhase.NonCombatMove:
                 if (!CanMove) break;
-                if (target.Neighbour.IsWaterRegion()){
-                    if(target.Neighbour.GetOpenTransports(Nation, phase).Count == 0) return false;
-                    return true;
+                if (target.Region.IsWaterRegion()){
+                    return target.Region.GetOpenTransports(Nation, phase).Count != 0;
                 }
-                LandRegion neigh = (LandRegion)target.Neighbour;
-                if (target.Neighbour.ContainsEnemies(Nation)) break;
+                LandRegion neigh = (LandRegion)target.Region;
+                if (target.Region.ContainsEnemies(Nation)) break;
                 if (neigh.Nation != Nation && neigh.Nation.Allies.All(a => a.Ally != Nation)) break;
                 return true;
             case EPhase.CombatMove:

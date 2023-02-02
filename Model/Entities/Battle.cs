@@ -228,7 +228,7 @@ public class Battle{
     public bool AttackerRetreats(){
         if (Phase != EBattlePhase.RESOLUTION) return false;
         AttackerDecided = true;
-        List<AUnit> retreatingUnits = Attackers.Where(unit => unit.GetPossibleRetreatTargets((from u in Attackers select u.GetPreviousLocation()).ToList()).Count > 0).ToList();
+        //List<AUnit> retreatingUnits = Attackers.Where(unit => unit.GetPossibleRetreatTargets((from u in Attackers select u.GetPreviousLocation()).ToList()).Count > 0).ToList();
         return true;
     }
 
