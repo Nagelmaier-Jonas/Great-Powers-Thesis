@@ -25,7 +25,7 @@
                 <path d="@CountryPaths[Region.Identifier]" class="active_country svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
             }
             else{
-                if ((CombatTargets.Regions is not null && CombatTargets.Regions.Contains(Region)) || (NonCombatTargets.Regions is not null && NonCombatTargets.Regions.Contains(Region) || (MobilizeUnit.Regions is not null && MobilizeUnit.Regions.Any(r => r.Id == Region.Id)))){
+                if ((CombatTargets.Regions is not null && CombatTargets.Regions.Any(r => r.Id == Region.Id)) || (NonCombatTargets.Regions is not null && NonCombatTargets.Regions.Any(r => r.Id == Region.Id) || (MobilizeUnit.Regions is not null && MobilizeUnit.Regions.Any(r => r.Id == Region.Id)))){
                     <path d="@CountryPaths[Region.Identifier]" class="combat_target svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
                 }
                 else{
@@ -44,7 +44,7 @@
             <path d="@CountryPaths[Region.Identifier]" class="active_country svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="1" @onclick="UpdateRegion"/>
         }
         else{
-            if ((CombatTargets.Regions is not null && CombatTargets.Regions.Contains(Region)) || (NonCombatTargets.Regions is not null && NonCombatTargets.Regions.Contains(Region) || (MobilizeUnit.Regions is not null && MobilizeUnit.Regions.Any(r => r.Id == Region.Id)))){
+            if ((CombatTargets.Regions is not null && CombatTargets.Regions.Any(r => r.Id == Region.Id)) || (NonCombatTargets.Regions is not null && NonCombatTargets.Regions.Any(r => r.Id == Region.Id) || (MobilizeUnit.Regions is not null && MobilizeUnit.Regions.Any(r => r.Id == Region.Id)))){
                 <path d="@CountryPaths[Region.Identifier]" class="combat_target svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="1" @onclick="UpdateRegion"/>
             }
             else{
@@ -105,7 +105,7 @@
         if (CombatTargets.Regions is null) return;
         if (CombatTargets.Units is null) return;
         if (Region is null) return;
-        if (!CombatTargets.Regions.Contains(Region)) return;
+        if (CombatTargets.Regions.All(r => r.Id != Region.Id)) return;
         foreach (var u in CombatTargets.Units){
             await GameEngine.PlanMovement(u, Region);
         }
@@ -119,7 +119,7 @@
         if (NonCombatTargets.Regions is null) return;
         if (NonCombatTargets.Units is null) return;
         if (Region is null) return;
-        if (!NonCombatTargets.Regions.Contains(Region)) return;
+        if (NonCombatTargets.Regions.All(r => r.Id == Region.Id)) return;
         foreach (var u in NonCombatTargets.Units){
             await GameEngine.PlanMovement(u, Region);
         }

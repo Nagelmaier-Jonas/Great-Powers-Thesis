@@ -188,7 +188,10 @@ public class GameEngine{
         }
 
         Init(_ServiceScopeFactory.CreateScope());
-        await _UnitRepository.UpdateAsync(units);
+        foreach (var unit in units){
+            Init(_ServiceScopeFactory.CreateScope());
+            await _UnitRepository.UpdateAsync(unit);
+        }
         Init(_ServiceScopeFactory.CreateScope());
         return await _BattleRepository.GetBattleFromLocation(region);
     }
