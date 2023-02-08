@@ -21,7 +21,7 @@
             <path d="@CountryPaths[Region.Identifier]" class="svg_country @Owner.Name" style="fill: url(#neutral)" stroke="grey" stroke-width="2"/>
         }
         else{
-            @if (ActiveRegion.Region == Region){
+            @if (ActiveRegion.Region?.Id == Region.Id){
                 <path d="@CountryPaths[Region.Identifier]" class="active_country svg_country @Owner.Name" fill="@Owner.Color" stroke="grey" stroke-width="2" @onclick="UpdateRegion"/>
             }
             else{
@@ -40,7 +40,7 @@
         }
     }
     else{
-        @if (ActiveRegion.Region == Region){
+        @if (ActiveRegion.Region?.Id == Region.Id){
             <path d="@CountryPaths[Region.Identifier]" class="active_country svg_country seezone" style="fill: url(#water)" stroke="grey" stroke-width="1" @onclick="UpdateRegion"/>
         }
         else{
@@ -91,7 +91,7 @@
             ViewRefreshService.Refresh();
             return;
         }
-        if (ActiveRegion.Region == Region){
+        if (ActiveRegion.Region?.Id == Region.Id){
             ActiveRegion.ClearRegion();
         }
         else{

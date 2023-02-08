@@ -12,7 +12,6 @@ namespace View;
 public class GameEngine{
     public SessionInfoRepository _SessionInfoRepository{ get; set; }
     public UnitRepository _UnitRepository{ get; set; }
-
     public FactoryRepository _FactoryRepository{ get; set; }
     public NationRepository _NationRepository{ get; set; }
     public BattleRepository _BattleRepository{ get; set; }
