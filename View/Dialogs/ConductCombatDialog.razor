@@ -25,7 +25,7 @@
                         <CombatCard Label="Bomber" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsBomber()).ToList()" Battle="@Battle"/>
                     </MudContainer>
                     <MudContainer Class="d-flex flex-column p-0 text-center">
-                        <MudText Color="Color.Default">@Battle.CurrentNation.Name</MudText>
+                        <MudText Color="Color.Secondary">@Battle.CurrentNation.Name</MudText>
                         <MudText Color="Color.Info">@Battle.Phase.GetDescription()</MudText>
                         @if (Battle.DiceRolls is not null){
                             <Dices Rolls="@Battle.DiceRolls"/>
@@ -63,7 +63,7 @@
                         <CombatCard Label="Bomber & Schlachtschiff" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsBomber() || t.IsBattleship()).ToList()" Battle="@Battle"/>
                     </MudContainer>
                     <MudContainer Class="d-flex flex-column p-0 text-center">
-                        <MudText Color="Color.Default">@Battle.CurrentNation.Name</MudText>
+                        <MudText Color="Color.Secondary">@Battle.CurrentNation.Name</MudText>
                         <MudText Color="Color.Info">@Battle.Phase.GetDescription()</MudText>
                         @if (Battle.DiceRolls is not null){
                             <Dices Rolls="@Battle.DiceRolls"/>
