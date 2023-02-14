@@ -120,7 +120,7 @@
 
     private async Task StartBattle(){
         if (Battle is null) return;
-        Battle.AdvanceCombat();
+        if(!Battle.AdvanceCombat()) return;
         if (Battle.IsDecided){
             await BattleRepository.DeleteAsync(Battle);
             Submit();

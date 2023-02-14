@@ -52,8 +52,8 @@ public class Battle{
     };
 
     public int GetInfantryRolls(Nation nation){
-        if (GetAttacker() == nation) return Attackers.Any(u => u.IsArtillery()) ? 1 : 2;
-        if (GetAttacker() != nation) return Defenders.Any(u => u.IsArtillery()) ? 1 : 2;
+        if (GetAttacker() == nation) return Attackers.Any(u => u.IsArtillery()) ? 2 : 1;
+        if (GetAttacker() != nation) return Defenders.Any(u => u.IsArtillery()) ? 2 : 1;
         return 1;
     }
 
@@ -210,15 +210,14 @@ public class Battle{
                     Phase = EBattlePhase.RESOLUTION;
                     return true;
                 }
-
                 RollForHits();
                 Phase = EBattlePhase.DEFENSE;
                 return true;
             case EBattlePhase.DEFENSE:
                 if (CheckForOpenHits()) return false;
-                RollForHits();
                 if (GetNextNation() == GetAttacker()) Phase = EBattlePhase.RESOLUTION;
                 else CurrentNation = GetNextNation();
+                Phase = EBattlePhase.ATTACK;
                 return true;
             case EBattlePhase.RESOLUTION:
                 if (!AttackerDecided) return false;
