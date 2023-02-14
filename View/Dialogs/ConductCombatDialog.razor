@@ -25,7 +25,8 @@
                         <CombatCard Label="Bomber" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsBomber()).ToList()" Battle="@Battle"/>
                     </MudContainer>
                     <MudContainer Class="d-flex flex-column p-0 text-center">
-                        <MudText>@Battle.Phase.GetDescription()</MudText>
+                        <MudText Color="Color.Default">@Battle.CurrentNation.Name</MudText>
+                        <MudText Color="Color.Info">@Battle.Phase.GetDescription()</MudText>
                         @if (Battle.DiceRolls is not null){
                             <Dices Rolls="@Battle.DiceRolls"/>
                         }
@@ -62,7 +63,8 @@
                         <CombatCard Label="Bomber & Schlachtschiff" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsBomber() || t.IsBattleship()).ToList()" Battle="@Battle"/>
                     </MudContainer>
                     <MudContainer Class="d-flex flex-column p-0 text-center">
-                        <MudText>@Battle.Phase.GetDescription()</MudText>
+                        <MudText Color="Color.Default">@Battle.CurrentNation.Name</MudText>
+                        <MudText Color="Color.Info">@Battle.Phase.GetDescription()</MudText>
                         @if (Battle.DiceRolls is not null){
                             <Dices Rolls="@Battle.DiceRolls"/>
                         }
@@ -120,7 +122,7 @@
 
     private async Task StartBattle(){
         if (Battle is null) return;
-        if(!Battle.AdvanceCombat()) return;
+        if (!Battle.AdvanceCombat()) return;
         if (Battle.IsDecided){
             await BattleRepository.DeleteAsync(Battle);
             Submit();

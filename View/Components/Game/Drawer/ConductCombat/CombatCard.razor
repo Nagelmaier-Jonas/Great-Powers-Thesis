@@ -26,12 +26,12 @@
                 </svg>
                 @if (Battle.IsAttacker(Battle.CurrentNation)){
                     @if(Battle.Defenders.Any(x => x.Id == unit.Id)){
-                        <MudChip OnClick="@(() => PlaceHit(unit))">Hit</MudChip>
+                        <MudChip Color="Color.Info" OnClick="@(() => PlaceHit(unit))">Hit</MudChip>
                     }
                 }
                 else{
                     @if(Battle.Attackers.Any(x => x.Id == unit.Id)){
-                        <MudChip OnClick="@(() => PlaceHit(unit))">Hit</MudChip>
+                        <MudChip Color="Color.Info" OnClick="@(() => PlaceHit(unit))">Hit</MudChip>
                     }
                 }
             }
