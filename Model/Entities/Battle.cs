@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Model.Entities.Regions;
+using Model.Entities.Units;
 using Model.Entities.Units.Abstract;
 
 namespace Model.Entities;
@@ -18,7 +19,8 @@ public class Battle{
     [Column("LOCATION_ID")] public int LocationId{ get; set; }
     public ARegion Location{ get; set; }
 
-    [Column("BATTLE_PHASE", TypeName = "VARCHAR(45)")] public EBattlePhase Phase{ get; set; }
+    [Column("BATTLE_PHASE", TypeName = "VARCHAR(45)")]
+    public EBattlePhase Phase{ get; set; }
 
     [Column("BATTLE_ROUND")] public int Round{ get; set; } = 1;
 
@@ -31,18 +33,39 @@ public class Battle{
     public int NonAirHits{ get; set; }
     public int NonSubmarineHits{ get; set; }
     public int NormalHits{ get; set; }
-    
+
+    private int _AttackingInfantryRolls;
+
+    private int _DefendingInfantryRolls;
+
+    public int AttackingInfantryRolls{
+        get => _AttackingInfantryRolls;
+        init => GetInfantryRolls(GetAttacker());
+    }
+
+    public int DefendingInfantryRolls{
+        get => _DefendingInfantryRolls;
+        init => GetInfantryRolls(GetDefendingNations().FirstOrDefault());
+    }
+
     [Column("IS_DECIDED", TypeName = "TINYINT")]
     public bool IsDecided{ get; set; } = false;
 
-    [NotMapped] public Dictionary<int, int> DiceRolls{ get; set; } = new (){
-        {1,0},
-        {2,0},
-        {3,0},
-        {4,0},
-        {5,0},
-        {6,0}
+    [NotMapped]
+    public Dictionary<int, int> DiceRolls{ get; set; } = new(){
+        { 1, 0 },
+        { 2, 0 },
+        { 3, 0 },
+        { 4, 0 },
+        { 5, 0 },
+        { 6, 0 }
     };
+
+    public int GetInfantryRolls(Nation nation){
+        if (GetAttacker() == nation) return Attackers.Any(u => u.IsArtillery()) ? 1 : 2;
+        if (GetAttacker() != nation) return Defenders.Any(u => u.IsArtillery()) ? 1 : 2;
+        return 1;
+    }
 
     private bool CheckForDestroyers(AUnit submarine){
         if (!submarine.IsSubmarine()) return true;
@@ -63,7 +86,8 @@ public class Battle{
         List<AUnit> units = new List<AUnit>();
         units.AddRange(Attackers);
         units.AddRange(Defenders);
-        units.RemoveAll(u => u.Nation.Id != CurrentNation.Id && CurrentNation.Allies.All(a => a.Ally.Id != u.Nation.Id));
+        units.RemoveAll(u =>
+            u.Nation.Id != CurrentNation.Id && CurrentNation.Allies.All(a => a.Ally.Id != u.Nation.Id));
         return units;
     }
 
@@ -114,6 +138,7 @@ public class Battle{
                     if (roll <= unit.Attack) NonSubmarineHits += 1;
                     continue;
                 }
+
                 if (roll <= unit.Defense) NonSubmarineHits += 1;
                 continue;
             }
@@ -131,10 +156,17 @@ public class Battle{
             }
 
             if (attacker){
+                if (unit.IsInfantry()){
+                    if (roll <= AttackingInfantryRolls) NormalHits += 1;
+                    continue;
+                }
                 if (roll <= unit.Attack) NormalHits += 1;
                 continue;
             }
-
+            if (unit.IsInfantry()){
+                if (roll <= DefendingInfantryRolls) NormalHits += 1;
+                continue;
+            }
             if (roll <= unit.Defense) NormalHits += 1;
         }
     }
@@ -143,7 +175,6 @@ public class Battle{
         if (!Attackers.All(att => Defenders.All(def => !def.CanAttack(att)))) return false;
         Defenders.RemoveAll(u => u.IsTransport());
         return true;
-
     }
 
     private void ResolveCasualties(){
@@ -174,6 +205,7 @@ public class Battle{
                     Phase = EBattlePhase.ATTACK;
                     return true;
                 }
+
                 if (CheckForOpenHits()) return false;
                 RollForHits();
                 if (GetNextNation() == GetAttacker()) Phase = EBattlePhase.ATTACK;
@@ -185,6 +217,7 @@ public class Battle{
                     Phase = EBattlePhase.RESOLUTION;
                     return true;
                 }
+
                 RollForHits();
                 Phase = EBattlePhase.DEFENSE;
                 return true;
@@ -199,13 +232,17 @@ public class Battle{
                 CurrentNation = GetNextNation();
                 Round += 1;
                 ResolveCasualties();
+                _AttackingInfantryRolls = GetInfantryRolls(GetAttacker());
+                _DefendingInfantryRolls = GetInfantryRolls(GetDefendingNations().FirstOrDefault());
                 if (CheckForWinner()){
                     IsDecided = true;
                 }
+
                 Phase = IsAquaticBattle() ? EBattlePhase.SPECIAL_SUBMARINE : EBattlePhase.ATTACK;
                 AttackerDecided = false;
                 return true;
         }
+
         return true;
     }
 

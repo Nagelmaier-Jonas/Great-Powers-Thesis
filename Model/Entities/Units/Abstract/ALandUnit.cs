@@ -20,7 +20,7 @@ public abstract class ALandUnit : AUnit{
     public Transport? GetTransporter() => Transport;
 
     public override bool MoveToTarget(EPhase phase){
-        List<ARegion> path = GetPath(phase);
+        List<ARegion> path = GetPathToTarget(phase);
         if (path.Count == 0) return false;
         if (Target.IsWaterRegion()){
             Transport transport = Target.GetOpenTransports(Nation, phase).FirstOrDefault();

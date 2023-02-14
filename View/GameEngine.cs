@@ -243,11 +243,11 @@ public class GameEngine{
                 session.Phase = EPhase.CombatMove;
                 break;
             case EPhase.CombatMove:
-                await MoveUnits();
                 _Battlegrounds.Battleground = await GetBattleLocations();
                 session.Phase = EPhase.ConductCombat;
                 break;
             case EPhase.ConductCombat:
+                await MoveUnits();
                 session.Phase = EPhase.NonCombatMove;
                 break;
             case EPhase.NonCombatMove:
