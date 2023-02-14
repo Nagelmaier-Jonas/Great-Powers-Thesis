@@ -90,7 +90,7 @@
 
     private async Task PlaceHit(AUnit unit){
         if (Battle is null) return;
-        Battle.PlaceHit(unit);
+        if(!Battle.PlaceHit(unit)) return;
         await BattleRepository.UpdateAsync(Battle);
         StateHasChanged();
     }
