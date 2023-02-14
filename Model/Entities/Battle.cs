@@ -34,19 +34,9 @@ public class Battle{
     public int NonSubmarineHits{ get; set; }
     public int NormalHits{ get; set; }
 
-    private int _AttackingInfantryRolls;
+    public int AttackingInfantryRolls{ get; set; }
 
-    private int _DefendingInfantryRolls;
-
-    public int AttackingInfantryRolls{
-        get => _AttackingInfantryRolls;
-        init => GetInfantryRolls(GetAttacker());
-    }
-
-    public int DefendingInfantryRolls{
-        get => _DefendingInfantryRolls;
-        init => GetInfantryRolls(GetDefendingNations().FirstOrDefault());
-    }
+    public int DefendingInfantryRolls{ get; set; }
 
     [Column("IS_DECIDED", TypeName = "TINYINT")]
     public bool IsDecided{ get; set; } = false;
@@ -160,13 +150,16 @@ public class Battle{
                     if (roll <= AttackingInfantryRolls) NormalHits += 1;
                     continue;
                 }
+
                 if (roll <= unit.Attack) NormalHits += 1;
                 continue;
             }
+
             if (unit.IsInfantry()){
                 if (roll <= DefendingInfantryRolls) NormalHits += 1;
                 continue;
             }
+
             if (roll <= unit.Defense) NormalHits += 1;
         }
     }
@@ -232,8 +225,8 @@ public class Battle{
                 CurrentNation = GetNextNation();
                 Round += 1;
                 ResolveCasualties();
-                _AttackingInfantryRolls = GetInfantryRolls(GetAttacker());
-                _DefendingInfantryRolls = GetInfantryRolls(GetDefendingNations().FirstOrDefault());
+                AttackingInfantryRolls = GetInfantryRolls(GetAttacker());
+                DefendingInfantryRolls = GetInfantryRolls(GetDefendingNations().FirstOrDefault());
                 if (CheckForWinner()){
                     IsDecided = true;
                 }

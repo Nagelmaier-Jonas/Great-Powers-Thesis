@@ -176,6 +176,8 @@ public class GameEngine{
             Phase = region.IsWaterRegion() ? EBattlePhase.SPECIAL_SUBMARINE : EBattlePhase.ATTACK,
             CurrentNationId = sessionInfo.CurrentNationId
         };
+        battle.AttackingInfantryRolls = battle.GetInfantryRolls(battle.GetAttacker());
+        battle.DefendingInfantryRolls = battle.GetInfantryRolls(battle.GetDefendingNations().FirstOrDefault());
         Init(_ServiceScopeFactory.CreateScope());
         await _BattleRepository.CreateAsync(battle);
         Init(_ServiceScopeFactory.CreateScope());
@@ -208,6 +210,7 @@ public class GameEngine{
         SessionInfo? session = await _SessionInfoRepository.ReadAsync();
         if (session.Phase != EPhase.ConductCombat) return new List<ARegion>();
         Init(_ServiceScopeFactory.CreateScope());
+        //TODO: Change from Incoming Units to where theres Enemy Units present once Movement works
         return await _RegionRepository.ReadAsync(r => r.IncomingUnits.Count > 0);
     }
 
@@ -244,10 +247,10 @@ public class GameEngine{
                 break;
             case EPhase.CombatMove:
                 _Battlegrounds.Battleground = await GetBattleLocations();
+                await MoveUnits();
                 session.Phase = EPhase.ConductCombat;
                 break;
             case EPhase.ConductCombat:
-                await MoveUnits();
                 session.Phase = EPhase.NonCombatMove;
                 break;
             case EPhase.NonCombatMove:
