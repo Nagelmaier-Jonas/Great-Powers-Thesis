@@ -176,8 +176,6 @@ public class GameEngine{
             Phase = region.IsWaterRegion() ? EBattlePhase.SPECIAL_SUBMARINE : EBattlePhase.ATTACK,
             CurrentNationId = sessionInfo.CurrentNationId
         };
-        battle.AttackingInfantryRolls = battle.GetInfantryRolls(battle.GetAttacker());
-        battle.DefendingInfantryRolls = battle.GetInfantryRolls(battle.GetDefendingNations().FirstOrDefault());
         Init(_ServiceScopeFactory.CreateScope());
         await _BattleRepository.CreateAsync(battle);
         Init(_ServiceScopeFactory.CreateScope());
@@ -195,7 +193,12 @@ public class GameEngine{
             await _UnitRepository.UpdateAsync(unit);
         }
         Init(_ServiceScopeFactory.CreateScope());
-        return await _BattleRepository.GetBattleFromLocation(region);
+        var result = await _BattleRepository.GetBattleFromLocation(region);
+        result.AttackingInfantryRolls = result.GetInfantryRolls(result.GetAttacker());
+        result.DefendingInfantryRolls = result.GetInfantryRolls(result.GetDefendingNations().FirstOrDefault());
+        Init(_ServiceScopeFactory.CreateScope());
+        await _BattleRepository.UpdateAsync(result);
+        return result;
     }
 
     public async Task<Battle> GetBattle(ARegion region){
