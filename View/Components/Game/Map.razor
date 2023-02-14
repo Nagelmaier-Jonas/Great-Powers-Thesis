@@ -14,6 +14,7 @@
 @using BlazorPanzoom.Options
 @using BlazorPanzoom.Options.Enums
 @inject ActiveRegion ActiveRegion
+@inject ViewRefreshService ViewRefreshService
 @implements IDisposable
 
 <div class="panzoom-parent" style="height: 100vh; @Style">
@@ -115,6 +116,7 @@
 
     protected override Task OnInitializedAsync(){
         ActiveRegion.HandleRegionChange += HandleRegionChange;
+        ViewRefreshService.HandleViewRefreshChange += HandleViewRefreshChange;
         _panzoomOptions = new PanzoomOptions(){
             Contain = Contain.Outside,
             Cursor = Cursor.Auto,
@@ -123,9 +125,14 @@
         };
         return Task.CompletedTask;
     }
+    
+    private async void HandleViewRefreshChange(){
+        await InvokeAsync(StateHasChanged);
+    }
 
     public void Dispose(){
         ActiveRegion.HandleRegionChange -= HandleRegionChange;
+        ViewRefreshService.HandleViewRefreshChange -= HandleViewRefreshChange;
     }
 
 }

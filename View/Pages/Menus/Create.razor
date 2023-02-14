@@ -11,23 +11,32 @@
 @inject FileService FileService
 @inject SessionInfoRepository SessionInfoRepository
 @inject NationRepository NationRepository
+@inject UserRepository UserRepository
 
 <style>
     body {
         background-image: url('img/menu/paper-bg.jpg')
     }
 </style>
-<MudForm>
-    <MudGrid>
-        <MudItem xs="12" sm="6">
-            <MudPaper Class="pa-4">
-                <MudText>Session Name</MudText>
-                <MudTextField T="string" Label="Name" Required="true" RequiredError="Name is required!" @bind-Value="SessionName"/>
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
-    <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="() => CreateNewGame(SessionName)">Create Session</MudButton>
-</MudForm>
+<MudCard Style="width: 20vw; margin-top: 10vh;" Class="m-auto">
+    <MudCardMedia Image="img/menu/create.png" Height="200" />
+    <MudCardContent>
+        <MudTextField T="string" HelperText="Session Name" Label="Name" Required="true" RequiredError="Name is required!" @bind-Value="SessionName"/>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Primary" OnClick="() => CreateNewGame(SessionName)">
+            @if (_processing)
+                {
+                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                    <MudText Class="ms-2">Creating ...</MudText>
+                }
+                else
+                {
+                    <MudText>Create</MudText>
+                }
+        </MudButton>
+    </MudCardActions>
+</MudCard>
 
 @code {
     [Parameter]
@@ -38,8 +47,10 @@
     
     private static readonly Random Random = new ();
     private string SessionName { get; set; } = "NewSimulation";
+    bool _processing = false;
 
     private async Task CreateNewGame(string SessionName){
+        _processing = true;
         SessionName = SessionName.Replace(" ", "");
         var portmySql = DockerService.GetPortMySql().ToString();
         var portRabbitMqS = DockerService.GetPortRabbitMqS().ToString();
@@ -69,6 +80,8 @@
 
     private async void SetPlayers(){
         if(!Local) return;
+        if (CurrentUser is null) return;
+        await UserRepository.CreateAsync(CurrentUser);
         var nations = await NationRepository.ReadAllGraphAsync();
         foreach (var nation in nations){
             nation.UserId = CurrentUser!.Id;
