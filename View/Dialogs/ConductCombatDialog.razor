@@ -1,6 +1,7 @@
 ﻿@using Model.Entities
 @using Model.Entities.Units.Abstract
 @using Domain.Repositories.Implementations
+@using Vanara.Extensions
 @inject IJSRuntime JSRuntime
 @inject BattleRepository BattleRepository
 @inject GameEngine GameEngine
@@ -24,6 +25,7 @@
                         <CombatCard Label="Bomber" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsBomber()).ToList()" Battle="@Battle"/>
                     </MudContainer>
                     <MudContainer Class="d-flex flex-column p-0 text-center">
+                        <MudText>@Battle.Phase.GetDescription()</MudText>
                         @if (Battle.DiceRolls is not null){
                             <Dices Rolls="@Battle.DiceRolls"/>
                         }
@@ -33,6 +35,9 @@
                             <MudText Typo="Typo.h5" Color="@Color.Info">U-Boot Treffer ausstehend: <br/><MudText Typo="Typo.h3" Color="@Color.Secondary" Class="text-center">@Battle.NonSubmarineHits</MudText></MudText>
                         </MudContainer>
                         <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Color="Color.Error" Label="Kampf beginnen" Class="align-self-center mb-3 mt-3 position-absolute bottom-0" OnClick="StartBattle"/>
+                        @if (Battle.Phase == EBattlePhase.RESOLUTION && Battle.AttackerDecided == false){
+                            <MudButton Color="Color.Error" OnClick="Continue">Weitermachen</MudButton>
+                        }
                     </MudContainer>
                     <MudContainer Class="d-flex flex-column p-0">
                         <CombatCard Label="Nichtkombattanten" Attacker="false" Units="@(new List<AUnit>())" Battle="@Battle"/>
@@ -57,6 +62,7 @@
                         <CombatCard Label="Bomber & Schlachtschiff" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsBomber() || t.IsBattleship()).ToList()" Battle="@Battle"/>
                     </MudContainer>
                     <MudContainer Class="d-flex flex-column p-0 text-center">
+                        <MudText>@Battle.Phase.GetDescription()</MudText>
                         @if (Battle.DiceRolls is not null){
                             <Dices Rolls="@Battle.DiceRolls"/>
                         }
@@ -66,6 +72,9 @@
                             <MudText Typo="Typo.h5" Color="@Color.Info">U-Boot Treffer ausstehend: <br/><MudText Typo="Typo.h3" Color="@Color.Secondary" Class="text-center">@Battle.NonSubmarineHits</MudText></MudText>
                         </MudContainer>
                         <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Color="Color.Error" Label="Kampf beginnen" Class="align-self-center mb-3 mt-3 position-absolute bottom-0" OnClick="StartBattle"/>
+                        @if (Battle.Phase == EBattlePhase.RESOLUTION && Battle.AttackerDecided == false){
+                            <MudButton Color="Color.Error" OnClick="Continue">Weitermachen</MudButton>
+                        }
                     </MudContainer>
                     <MudContainer Class="d-flex flex-column p-0">
                         <CombatCard Label="Nichtkombattanten" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsTransport()).ToList()" Battle="@Battle"/>
@@ -78,10 +87,6 @@
             }
         </DialogContent>
     </MudDialog>
-    @if (Battle.Phase == EBattlePhase.RESOLUTION && Battle.AttackerDecided == false){
-        <MudButton Color="Color.Error" OnClick="Continue">Weitermachen</MudButton>
-        <MudButton Color="Color.Error" OnClick="Retreat">Rückzug</MudButton>
-    }
 }
 
 
@@ -121,17 +126,16 @@
             Submit();
         }
         else{
-           await BattleRepository.UpdateAsync(Battle); 
+            await BattleRepository.UpdateAsync(Battle);
         }
-        
         StateHasChanged();
     }
-    
+
     private async Task Retreat(){
         if (Battle is null) return;
         await GameEngine.AttackerRetreats(Battle);
     }
-    
+
     private async Task Continue(){
         if (Battle is null) return;
         await GameEngine.AttackerContinues(Battle);

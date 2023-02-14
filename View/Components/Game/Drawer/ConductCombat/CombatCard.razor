@@ -43,7 +43,22 @@
         <MudContainer Class="p-0 text-center" Style="@(Attacker ? "border-left: 1px solid grey; width:5vw; padding-left: 10px !important;" : "border-right: 1px solid grey; width:5vw; padding-right: 10px !important;")">
             @if (Units.Count > 0){
                 <MudText Color="Color.Info">Wirf</MudText>
-                <MudImage Src="img/dices/dice_one.svg"></MudImage>
+                @if (Attacker){
+                    if (Units.Any(unit => unit.IsInfantry())){
+                        <MudImage Src="@_dicePaths[Battle.AttackingInfantryRolls]"/>
+                    }
+                    else{
+                        <MudImage Src="@_dicePaths[Units[0].Attack]"/>
+                    }
+                }
+                else{
+                    if (Units.Any(unit => unit.IsInfantry())){
+                        <MudImage Src="@_dicePaths[Battle.DefendingInfantryRolls]"/>
+                    }
+                    else{
+                        <MudImage Src="@_dicePaths[Units[0].Defense]"/>
+                    }
+                }
                 <MudText Color="Color.Info">oder weniger</MudText>
             }
             else{
@@ -67,6 +82,15 @@
 
     [Parameter]
     public Battle? Battle { get; set; }
+
+    Dictionary<int, string> _dicePaths = new Dictionary<int, string>(){
+        { 1, "img/dices/dice_one.svg" },
+        { 2, "img/dices/dice_two.svg" },
+        { 3, "img/dices/dice_three.svg" },
+        { 4, "img/dices/dice_four.svg" },
+        { 5, "img/dices/dice_five.svg" },
+        { 6, "img/dices/dice_six.svg" }
+    };
 
     private async Task PlaceHit(AUnit unit){
         if (Battle is null) return;

@@ -20,19 +20,19 @@ public class DockerService{
     };
     
     public List<int> PortsRabbitMqS{ get; set; } = new(){
-        26285,
-        26286,
-        26287,
-        26288,
-        26289
+        5672,
+        5673,
+        5674,
+        5675,
+        5676
     };
     
     public List<int> PortsRabbitMqW{ get; set; } = new(){
-        26290,
-        26291,
-        26292,
-        26293,
-        26294
+        15672,
+        15673,
+        15674,
+        15675,
+        15676
     };
 
     public DockerService(GreatPowersDbContext greatPowersDbContext, ILogger<DockerService> logger){
@@ -81,8 +81,8 @@ public class DockerService{
         var dockerComposeFile = File.ReadAllText("..\\Databases\\docker-compose.yml");
         dockerComposeFile = dockerComposeFile.Replace("./default:/var/lib/mysql", $"./{name}:/var/lib/mysql");
         dockerComposeFile = dockerComposeFile.Replace("26280", portmySql);
-        dockerComposeFile = dockerComposeFile.Replace("26285", portRabbitMqS);
-        dockerComposeFile = dockerComposeFile.Replace("26290", portRabbitMqW);
+        dockerComposeFile = dockerComposeFile.Replace("5672:", portRabbitMqS + ":");
+        dockerComposeFile = dockerComposeFile.Replace("15672:", portRabbitMqW + ":");
         dockerComposeFile = dockerComposeFile.Replace("greatpowers_db", $"greatpowers_db_{name}");
         dockerComposeFile = dockerComposeFile.Replace("greatpowers_queue", $"greatpowers_queue_{name}");
         dockerComposeFile =
