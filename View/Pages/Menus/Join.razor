@@ -1,6 +1,7 @@
 ﻿@page "/Join"
 @inherits SidebarComponent
 @using Domain.Services
+@using Model.Entities
 @inject NavigationManager NavigationManager
 @inject ILogger<Join> Logger
 @inject DockerService DockerService
@@ -46,6 +47,14 @@
             Logger.Log(LogLevel.Critical,  "Cannot connect to the server");
         }
         StateHasChanged();
+    }
+    
+    protected override void OnInitialized(){
+        Items.Add(new SidebarItem(){
+            Name = "MainMenu",
+            Link = "/"
+        });
+        base.OnInitialized();
     }
 
 }

@@ -1,14 +1,16 @@
-﻿@page "/Create"
+﻿@page "/Create/{Local:bool}"
 @inherits SidebarComponent
 @using Microsoft.AspNetCore.Components
 @using Domain.Services
 @using Model.Configuration
 @using Model.Entities
 @using Domain.Repositories
+@using Domain.Repositories.Implementations
 @inject NavigationManager NavigationManager
 @inject DockerService DockerService
 @inject FileService FileService
 @inject SessionInfoRepository SessionInfoRepository
+@inject NationRepository NationRepository
 
 <style>
     body {
@@ -28,10 +30,17 @@
 </MudForm>
 
 @code {
+    [Parameter]
+    public bool Local { get; set; }
+    
+    [CascadingParameter]
+    public User? CurrentUser { get; set; }
+    
     private static readonly Random Random = new ();
-    private string SessionName { get; set; } = new (Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 10).Select(s => s[Random.Next(s.Length)]).ToArray());
+    private string SessionName { get; set; } = "NewSimulation";
 
     private async Task CreateNewGame(string SessionName){
+        SessionName = SessionName.Replace(" ", "");
         var portmySql = DockerService.GetPortMySql().ToString();
         var portRabbitMqS = DockerService.GetPortRabbitMqS().ToString();
         var portRabbitMqW = DockerService.GetPortRabbitMqW().ToString();
@@ -53,7 +62,25 @@
         };
         FileService.WriteSessionInfoToFile(Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, $"Databases\\{SessionName}\\"),sessionInfo);
         await SessionInfoRepository.UpdateAsync(sessionInfo);
+        SetPlayers();
         NavigationManager.NavigateTo("/game");
         StateHasChanged();
+    }
+
+    private async void SetPlayers(){
+        if(!Local) return;
+        var nations = await NationRepository.ReadAllGraphAsync();
+        foreach (var nation in nations){
+            nation.UserId = CurrentUser!.Id;
+            await NationRepository.UpdateAsync(nation);
+        }
+    }
+    
+    protected override void OnInitialized(){
+        Items.Add(new SidebarItem(){
+            Name = "MainMenu",
+            Link = "/"
+        });
+        base.OnInitialized();
     }
 }

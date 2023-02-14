@@ -3,6 +3,7 @@
 @using Model.Configuration
 @inherits SidebarComponent
 @inject GreatPowersDbContext GreatPowersDbContext
+@inject NavigationManager NavigationManager
 
 <style>
     body {
@@ -14,7 +15,22 @@
 </MudContainer>
 
 @code {
+    
+    [CascadingParameter]
+    public User? CurrentUser { get; set; }
+
     protected override void OnInitialized(){
+        if(CurrentUser == null){
+            NavigationManager.NavigateTo("/Identity/Account/Login");
+            Items.Add(new SidebarItem(){
+                Name = "Register",
+                Link = "/Identity/Account/Register"
+            });
+            Items.Add(new SidebarItem(){
+                Name = "Login",
+                Link = "/Identity/Account/Login"
+            });
+        }
         Items.Add(new SidebarItem(){
             Name = "Online",
             Link = "/OnlineMenu"
@@ -22,14 +38,6 @@
         Items.Add(new SidebarItem(){
             Name = "Local",
             Link = "/LocalMenu"
-        });
-        Items.Add(new SidebarItem(){
-            Name = "Register",
-            Link = "/Identity/Account/Register"
-        });
-        Items.Add(new SidebarItem(){
-            Name = "Login",
-            Link = "/Identity/Account/Login"
         });
         base.OnInitialized();
     }
