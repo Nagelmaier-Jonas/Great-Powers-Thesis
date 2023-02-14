@@ -60,8 +60,7 @@ public class Battle{
     private bool CheckForDestroyers(AUnit submarine){
         if (!submarine.IsSubmarine()) return true;
         if (Attackers.Contains(submarine)) return Defenders.Any(u => u.IsDestroyer());
-        if (Defenders.Contains(submarine)) return Attackers.Any(u => u.IsDestroyer());
-        return false;
+        return Defenders.Contains(submarine) && Attackers.Any(u => u.IsDestroyer());
     }
 
     private List<AUnit> GetCurrentNationsUnits(){
@@ -98,12 +97,10 @@ public class Battle{
         if (!hit) NormalHits -= 1;
 
         unit.HitPoints -= 1;
-        if (Phase == EBattlePhase.SPECIAL_SUBMARINE){
-            if (unit.HitPoints == 0){
-                Attackers.Remove(unit);
-                Defenders.Remove(unit);
-            }
-        }
+        if (Phase != EBattlePhase.SPECIAL_SUBMARINE) return;
+        if (unit.HitPoints != 0) return;
+        Attackers.Remove(unit);
+        Defenders.Remove(unit);
     }
 
     private List<AUnit> GetTargetsForHits() => GetCurrentNationsEnemies().Where(u => u.HitPoints > 0).ToList();
@@ -112,11 +109,10 @@ public class Battle{
         if (GetTargetsForHits().Count == 0) return false;
         if (NormalHits > 0) return true;
         if (GetCurrentNationsEnemies().Any(u => !u.IsPlane()) && NonAirHits > 0) return true;
-        if (GetCurrentNationsEnemies().Any(u => !u.IsSubmarine()) && NonSubmarineHits > 0) return true;
-        return false;
+        return GetCurrentNationsEnemies().Any(u => !u.IsSubmarine()) && NonSubmarineHits > 0;
     }
 
-    private bool IsAttacker(Nation nation) => Attackers.Any(u => u.Nation == nation);
+    public bool IsAttacker(Nation nation) => Attackers.Any(u => u.Nation == nation);
 
     private void RollForHits(){
         bool attacker = IsAttacker(CurrentNation);
@@ -175,7 +171,7 @@ public class Battle{
         Defenders.RemoveAll(u => u.HitPoints == 0);
     }
 
-    private bool AreSubamrinesInvolved() => Attackers.Any(u => u.IsSubmarine()) || Defenders.Any(u => u.IsSubmarine());
+    private bool AreSubmarinesInvolved() => Attackers.Any(u => u.IsSubmarine()) || Defenders.Any(u => u.IsSubmarine());
 
     public List<Nation> GetDefendingNations() =>
         (from u in Defenders.DistinctBy(u => u.Nation) select u.Nation).ToList();
@@ -194,15 +190,14 @@ public class Battle{
     public bool AdvanceCombat(){
         switch (Phase){
             case EBattlePhase.SPECIAL_SUBMARINE:
-                if (!AreSubamrinesInvolved()){
+                if (!AreSubmarinesInvolved()){
                     Phase = EBattlePhase.ATTACK;
                     return true;
                 }
 
                 if (CheckForOpenHits()) return false;
                 RollForHits();
-                if (GetNextNation() == GetAttacker()) Phase = EBattlePhase.ATTACK;
-                else CurrentNation = GetNextNation();
+                Phase = EBattlePhase.DEFENSE;
                 return true;
             case EBattlePhase.ATTACK:
                 if (CheckForOpenHits()) return false;
