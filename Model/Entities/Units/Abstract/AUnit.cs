@@ -53,7 +53,7 @@ public abstract class AUnit{
 
     private bool CanTarget(EPhase phase, ARegion target){
         List<ARegion> path = GetPath(phase, target);
-        return path.Contains(target) && path.Last() == target;
+        return path.Last().Id == target.Id;
     }
 
     public bool SetTarget(EPhase phase, ARegion target){
@@ -72,7 +72,7 @@ public abstract class AUnit{
 
     public List<ARegion> GetPossibleTargets(EPhase phase){
         List<ARegion> regions = GetPath(phase);
-        if (phase == EPhase.CombatMove) return regions.Where(r => r.IsHostile(Nation) ||r.ContainsAnyEnemies(Nation)).ToList();
+        if (phase == EPhase.CombatMove) return regions.Where(r => r.IsHostile(Nation) || r.ContainsAnyEnemies(Nation)).ToList();
         if (!IsPlane() || phase != EPhase.NonCombatMove) return regions;
         APlane plane = (APlane)this;
         return regions.Where(r => plane.CanLand(r)).ToList();
@@ -140,7 +140,7 @@ public abstract class AUnit{
                 }
             }
 
-            temp = permutations.Where(p => p.Last().Region == target).ToList();
+            temp = permutations.Where(p => p.Last().Region.Id == target.Id).ToList();
 
             List<Node> temp2 = temp.FirstOrDefault(t1 => temp.All(t2 => t2.Count >= t1.Count));
 

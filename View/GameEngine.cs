@@ -46,7 +46,7 @@ public class GameEngine{
             Init(_ServiceScopeFactory.CreateScope());
             await _UnitRepository.UpdateAsync(unit);
         }
-        _ViewRefreshService.Refresh();
+        _ViewRefreshService.Refresh(); 
     }
 
     public async Task RemovePlannedMovement(AUnit unit){
