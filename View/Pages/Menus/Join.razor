@@ -9,7 +9,7 @@
 @inject DockerService DockerService
 @inject ISnackbar Snackbar
 @inject UserRepository UserRepository
-@inject EventSubscriber EventSubscriber
+@inject EventSubscriberHelper EventSubscriberHelper
 
 <style>
     body {
@@ -57,7 +57,7 @@
         if (Port == null || IpAddress == null || RabbitPortS == null || RabbitPortW == null) return;
         if (DockerService.CheckConnection(IpAddress, Port)){
             await DockerService.ChangeDbContext(IpAddress, Port, RabbitPortS, RabbitPortW);
-            EventSubscriber.Init();
+            EventSubscriberHelper.Init();
             var user = await UserRepository.ReadGraphAsync(CurrentUser!.Id);
             if (user == null){
                 await UserRepository.CreateAsync(CurrentUser);

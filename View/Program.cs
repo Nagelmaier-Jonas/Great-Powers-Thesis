@@ -139,6 +139,7 @@ builder.Services.AddSingleton<ReadyEventHandler>();
 builder.Services.AddSingleton<EventPublisher>();
 builder.Services.AddSingleton<IEventProcessor, StateHasChangedEventProcessor>();
 builder.Services.AddHostedService<EventSubscriber>();
+builder.Services.AddSingleton<EventSubscriberHelper>();
 
 var app = builder.Build();
 
