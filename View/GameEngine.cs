@@ -1,6 +1,9 @@
-﻿using Domain.Repositories;
+﻿using System.Text.Json;
+using DataTransfer;
+using Domain.Repositories;
 using Domain.Repositories.Implementations;
 using Domain.Services;
+using EventBus.Clients;
 using Model.Entities;
 using Model.Entities.Regions;
 using Model.Entities.Units.Abstract;
@@ -20,6 +23,7 @@ public class GameEngine{
     public RegionRepository _RegionRepository{ get; set; }
     public Battlegrounds _Battlegrounds{ get; set; }
     public FileService FileService{ get; set; }
+    public EventPublisher _EventPublisher{ get; set; }
 
     public GameEngine(IServiceScopeFactory serviceScopeFactory){
         _ServiceScopeFactory = serviceScopeFactory;
@@ -37,6 +41,7 @@ public class GameEngine{
         _RegionRepository = scope.ServiceProvider.GetRequiredService<RegionRepository>();
         _Battlegrounds = scope.ServiceProvider.GetRequiredService<Battlegrounds>();
         _FactoryRepository = scope.ServiceProvider.GetRequiredService<FactoryRepository>();
+        _EventPublisher = scope.ServiceProvider.GetRequiredService<EventPublisher>();
     }
 
     public async Task PlanMovement(AUnit unit, ARegion target){
@@ -46,14 +51,14 @@ public class GameEngine{
             Init(_ServiceScopeFactory.CreateScope());
             await _UnitRepository.UpdateAsync(unit);
         }
-        _ViewRefreshService.Refresh(); 
+        _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
 
     public async Task RemovePlannedMovement(AUnit unit){
         Init(_ServiceScopeFactory.CreateScope());
         unit.RemoveTarget();
         await _UnitRepository.UpdateAsync(unit);
-        _ViewRefreshService.Refresh();
+        _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
     
     public async Task<List<ARegion>> GetPathForUnit(AUnit unit){
@@ -221,13 +226,13 @@ public class GameEngine{
         battle.AttackerRetreats();
         Init(_ServiceScopeFactory.CreateScope());
         await _BattleRepository.UpdateAsync(battle);
-        _ViewRefreshService.Refresh();
+        _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
     public async Task AttackerContinues(Battle battle){
         battle.AttackerContinues();
         Init(_ServiceScopeFactory.CreateScope());
         await _BattleRepository.UpdateAsync(battle);
-        _ViewRefreshService.Refresh();
+        _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
 
     /*public async Task<List<ARegion>> GetPossibleRetreatTargets(AUnit unit){
@@ -281,7 +286,7 @@ public class GameEngine{
         FileService.WriteSessionInfoToFile(session.Path, session);
         Init(_ServiceScopeFactory.CreateScope());
         await _SessionInfoRepository.UpdateAsync(session);
-        _ViewRefreshService.Refresh();
+        _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
         return true;
     }
 }

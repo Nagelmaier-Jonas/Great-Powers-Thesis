@@ -2,6 +2,7 @@
 @using Model.Entities
 @using Domain.Repositories
 @using Domain.Repositories.Implementations
+@using Domain.Services
 @using EventHandling.EventHandler
 @using Model.Entities.Regions
 @using View.Services
@@ -48,7 +49,6 @@
 
     protected override void OnInitialized(){
         ViewRefreshService.HandleViewRefreshChange += HandleViewRefreshChange;
-        StateHasChangedEventHandler.HandleViewRefreshChange += HandleViewRefreshChange;
     }
 
     protected override async Task OnInitializedAsync(){
@@ -88,7 +88,6 @@
 
     public void Dispose(){
         ViewRefreshService.HandleViewRefreshChange -= HandleViewRefreshChange;
-        StateHasChangedEventHandler.HandleViewRefreshChange -= HandleViewRefreshChange;
     }
 
 }

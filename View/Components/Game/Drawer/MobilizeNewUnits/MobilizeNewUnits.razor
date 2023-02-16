@@ -3,10 +3,15 @@
 @using Model.Entities.Units.Abstract
 @using View.Dialogs
 @using View.Services
+@using System.Text.Json
+@using DataTransfer
+@using Domain.Services
+@using EventBus.Clients
 @inject GameEngine GameEngine
 @inject MobilizeUnit MobilizeUnit
 @inject ViewRefreshService ViewRefreshService
 @inject IDialogService DialogService
+@inject EventPublisher EventPublisher
 
 @if (SessionInfo.Phase is not EPhase.MobilizeNewUnits){
     return;
@@ -95,20 +100,20 @@ else{
             MobilizeUnit.SetRegions(await GameEngine.GetCountryWithFactory());
         }
         PlaceableUnits = await GameEngine.GetPlaceableUnits();
-        ViewRefreshService.Refresh();
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
     
     private async Task MobilizeFactory(AUnit factory){
         MobilizeUnit.SetUnit(factory);
         MobilizeUnit.SetRegions(await GameEngine.GetCountryWithoutFactory());
         PlaceableFactories = await GameEngine.GetPlaceableFactories();
-        ViewRefreshService.Refresh();
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
 
     private async Task FinishPhase(){
         if (PlaceableUnits.Count == 0){
             await GameEngine.EndPhase();
-            ViewRefreshService.Refresh();
+            EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
         }
         else{
             var options = new DialogOptions{ CloseOnEscapeKey = true, NoHeader = true, DisableBackdropClick = true };

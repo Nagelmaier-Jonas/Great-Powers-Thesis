@@ -5,6 +5,9 @@
 @using Microsoft.AspNetCore.Components.Web
 @using View.Components.Game.Drawer.ConductCombat
 @using View.Dialogs
+@using System.Text.Json
+@using DataTransfer
+@using EventBus.Clients
 @inject CountryPaths CountryPaths
 @inject ActiveRegion ActiveRegion
 @inject ViewRefreshService ViewRefreshService
@@ -14,6 +17,7 @@
 @inject GameEngine GameEngine
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
+@inject EventPublisher EventPublisher
 
 @if (Region is not null){
     @if (Region.IsLandRegion()){
@@ -83,12 +87,12 @@
         if (Region is null) return;
         await PlanCombatMovements();
         if (await StartBattle(Region)){
-            ViewRefreshService.Refresh();
+            EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
             return;
         }
         await PlanNonCombatMovements();
         if (await MobilizeNewUnits()){
-            ViewRefreshService.Refresh();
+            EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
             return;
         }
         if (ActiveRegion.Region?.Id == Region.Id){
@@ -97,7 +101,7 @@
         else{
             ActiveRegion.RefreshRegion(Region);
         }
-        ViewRefreshService.Refresh();
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
 
     private async Task PlanCombatMovements(){
@@ -111,7 +115,7 @@
         }
         CombatTargets.ClearRegions();
         CombatTargets.ClearUnits();
-        ViewRefreshService.Refresh();
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
 
     private async Task PlanNonCombatMovements(){
@@ -125,7 +129,7 @@
         }
         NonCombatTargets.ClearRegions();
         NonCombatTargets.ClearUnits();
-        ViewRefreshService.Refresh();
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
 
     private async Task<bool> MobilizeNewUnits(){
@@ -142,7 +146,7 @@
         }
         MobilizeUnit.ClearRegions();
         MobilizeUnit.ClearUnit();
-        ViewRefreshService.Refresh();
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
         return true;
     }
 

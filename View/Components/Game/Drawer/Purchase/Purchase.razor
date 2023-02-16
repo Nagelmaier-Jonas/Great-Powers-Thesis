@@ -6,11 +6,16 @@
 @using Model.Entities.Units.Abstract
 @using View.Dialogs
 @using View.Services
+@using System.Text.Json
+@using DataTransfer
+@using Domain.Services
+@using EventBus.Clients
 @inject SessionInfoRepository SessionInfoRepository
 @inject NationRepository NationRepository
 @inject IDialogService DialogService
 @inject ViewRefreshService ViewRefreshService
 @inject GameEngine GameEngine
+@inject EventPublisher EventPublisher
 
 @if (SessionInfo.Phase is not EPhase.PurchaseUnits){
     return;
@@ -145,7 +150,7 @@
         var result = await dialog.Result;
         if (result.Cancelled) return;
         await GameEngine.EndPhase();
-        ViewRefreshService.Refresh();
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
 
 }

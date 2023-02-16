@@ -4,11 +4,15 @@
 @using Model.Entities.Units.Abstract
 @using View.Dialogs
 @using EventBus.Clients
+@using Domain.Services
+@using System.Text.Json
+@using DataTransfer
 @inject ActiveRegion ActiveRegion
 @inject CombatTargets CombatTargets
 @inject GameEngine GameEngine
 @inject ViewRefreshService ViewRefreshService
 @inject IDialogService DialogService
+@inject EventPublisher EventPublisher
 
 @if (SessionInfo.Phase is not EPhase.CombatMove){
     return;
@@ -74,7 +78,7 @@ else{
                 unit
             });
         }
-        ViewRefreshService.Refresh();
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
 
 
