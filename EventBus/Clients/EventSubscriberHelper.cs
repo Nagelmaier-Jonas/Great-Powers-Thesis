@@ -1,5 +1,6 @@
 ﻿using EventBus.Events;
 using Microsoft.Extensions.Configuration;
+using Model.Configuration;
 using RabbitMQ.Client;
 
 namespace EventBus.Clients;
@@ -23,8 +24,8 @@ public class EventSubscriberHelper{
 
     public void Init() {
         var factory = new ConnectionFactory() {
-            HostName = _configuration["RabbitMQHost"],
-            Port = int.Parse(_configuration["RabbitMQPort"]),
+            HostName = AppSettings.IpAddress,
+            Port = int.Parse(AppSettings.RabbitPort),
             UserName = "greatpowers",
             Password = "greatpowers",
             VirtualHost = "greatpowers"
