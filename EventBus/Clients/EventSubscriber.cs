@@ -26,7 +26,7 @@ public class EventSubscriber : BackgroundService {
         Init();
     }
 
-    private void Init() {
+    public void Init() {
         var factory = new ConnectionFactory() {
             HostName = _configuration["RabbitMQHost"],
             Port = int.Parse(_configuration["RabbitMQPort"]),
