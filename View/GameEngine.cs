@@ -246,7 +246,7 @@ public class GameEngine{
         return unit.GetPossibleRetreatTargets(previosRegions);
     }*/
 
-    public async Task<bool> EndPhase(){
+    public async Task<bool> EndPhase(User CurrentUser){
         Init(_ServiceScopeFactory.CreateScope());
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
         switch (session.Phase){
@@ -283,7 +283,10 @@ public class GameEngine{
                 else session.CurrentNationId++;
                 break;
         }
-        FileService.WriteSessionInfoToFile(session.Path, session);
+
+        if (CurrentUser.IsOwner){
+            FileService.WriteSessionInfoToFile(session.Path, session);
+        }
         Init(_ServiceScopeFactory.CreateScope());
         await _SessionInfoRepository.UpdateAsync(session);
         _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  

@@ -23,19 +23,24 @@
     @if (!_open){
         <MudIconButton Icon="@Icons.Material.Filled.ArrowLeft" Size="Size.Large" Class="position-fixed top-50 end-0 z-index-1 p-1 border-dotted" Style="color: #000000; background-color: rgba(0,0,0,0.2);" OnClick="OpenDrawer"/>
     }
-    <MudDrawer @bind-Open="@_open" Anchor="Anchor.End" ClipMode="DrawerClipMode.Always" Variant="@DrawerVariant.Responsive" Class="bg-opacity-60 game-drawer" Width="25vw">
-        <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" Class="position-absolute top-0 end-0 mt-3" OnClick="CloseDrawer"/>
-        <Purchase SessionInfo="Info" CurrentNation="CurrentNation" MaxTroops="MaxTroops"/>
-        <CombatMove SessionInfo="Info"/>
-        <ConductCombat SessionInfo="Info"/>
-        <NonCombatMove SessionInfo="Info"/>
-        <MobilizeNewUnits SessionInfo="Info" CurrentNation="CurrentNation"/>
-        <CollectIncome SessionInfo="Info" CurrentNation="CurrentNation"/>
-    </MudDrawer>
+    @if (CurrentUser.Nations.Any(n => n.Id == CurrentNation.Id)){
+        <MudDrawer @bind-Open="@_open" Anchor="Anchor.End" ClipMode="DrawerClipMode.Always" Variant="@DrawerVariant.Responsive" Class="bg-opacity-60 game-drawer" Width="25vw">
+            <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" Class="position-absolute top-0 end-0 mt-3" OnClick="CloseDrawer"/>
+            <Purchase SessionInfo="Info" CurrentNation="CurrentNation" MaxTroops="MaxTroops"/>
+            <CombatMove SessionInfo="Info"/>
+            <ConductCombat SessionInfo="Info"/>
+            <NonCombatMove SessionInfo="Info"/>
+            <MobilizeNewUnits SessionInfo="Info" CurrentNation="CurrentNation"/>
+            <CollectIncome SessionInfo="Info" CurrentNation="CurrentNation"/>
+        </MudDrawer>
+    }
     <Map Nations="@Nations" SeeZones="@SeeZones" SessionInfo="@Info" Style="@Style" ChildStyle="@ChildStyle"/>
 </MudLayout>
 
 @code {
+    
+    [CascadingParameter]
+    public User? CurrentUser { get; set; }
 
     private SessionInfo Info { get; set; } = new();
     private List<Nation> Nations { get; set; } = new();

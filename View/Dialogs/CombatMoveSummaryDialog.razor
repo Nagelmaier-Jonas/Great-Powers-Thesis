@@ -42,6 +42,9 @@
 
     [CascadingParameter]
     public MudDialogInstance MudDialog { get; set; }
+    
+    [CascadingParameter]
+    public User? CurrentUser { get; set; }
 
     [Parameter]
     public SessionInfo? SessionInfo { get; set; }
@@ -59,7 +62,7 @@
     }
 
     async Task Submit(){
-        await GameEngine.EndPhase();
+        await GameEngine.EndPhase(CurrentUser);
         MudDialog.Close(DialogResult.Ok(true));
     }
 

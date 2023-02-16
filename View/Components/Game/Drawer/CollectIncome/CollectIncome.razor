@@ -18,6 +18,9 @@
 <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Label="Finish Phase" Color="Color.Error" Class="w-50 align-self-center mb-3 mt-3" OnClick="FinishPhase"/>
 
 @code {
+    
+    [CascadingParameter]
+    public User? CurrentUser { get; set; }
 
     [Parameter]
     public SessionInfo? SessionInfo { get; set; }
@@ -27,7 +30,7 @@
 
 
     private async Task FinishPhase(){
-        await GameEngine.EndPhase();
+        await GameEngine.EndPhase(CurrentUser);
     }
 
 }

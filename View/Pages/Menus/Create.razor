@@ -79,6 +79,8 @@
         else{
             NavigationManager.NavigateTo("/lobby");
         }
+        CurrentUser.IsOwner = true;
+        await UserRepository.UpdateAsync(CurrentUser);
         StateHasChanged();
     }
 

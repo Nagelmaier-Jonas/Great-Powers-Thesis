@@ -10,4 +10,7 @@ public class User : IdentityUser{
 
     [Column("READY", TypeName = "TINYINT(1)")]
     public bool Ready{ get; set; } = false;
+    
+    [Column("IS_OWNER", TypeName = "TINYINT(1)")]
+    public bool IsOwner{ get; set; } = false;
 }

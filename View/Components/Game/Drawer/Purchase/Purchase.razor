@@ -70,6 +70,9 @@
 }
 
 @code {
+    
+    [CascadingParameter]
+    public User? CurrentUser { get; set; }
 
     [Parameter]
     public SessionInfo? SessionInfo { get; set; }
@@ -149,7 +152,7 @@
         var dialog = DialogService.Show<PurchaseSummaryDialog>("Zusammenfassung Kaufen", parameters, options);
         var result = await dialog.Result;
         if (result.Cancelled) return;
-        await GameEngine.EndPhase();
+        await GameEngine.EndPhase(CurrentUser);
         EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
 
