@@ -52,8 +52,8 @@ public class Battle{
     };
 
     public int GetInfantryRolls(Nation nation){
-        if (GetAttacker() == nation) return Attackers.Any(u => u.IsArtillery()) ? 2 : 1;
-        if (GetAttacker() != nation) return Defenders.Any(u => u.IsArtillery()) ? 2 : 1;
+        if (IsAttacker(nation)) return Attackers.Any(u => u.IsArtillery()) ? 2 : 1;
+        if (!IsAttacker(nation)) return Defenders.Any(u => u.IsArtillery()) ? 3 : 2;
         return 1;
     }
 
@@ -63,22 +63,9 @@ public class Battle{
         return Defenders.Contains(submarine) && Attackers.Any(u => u.IsDestroyer());
     }
 
-    private List<AUnit> GetCurrentNationsUnits(){
-        List<AUnit> units = new List<AUnit>();
-        units.AddRange(Attackers);
-        units.AddRange(Defenders);
-        units.RemoveAll(u => u.Nation != CurrentNation);
-        return units;
-    }
+    private List<AUnit> GetCurrentNationsUnits() => IsAttacker(CurrentNation) ? Attackers : Defenders.Where(u => u.NationId == CurrentNationId).ToList();
 
-    private List<AUnit> GetCurrentNationsEnemies(){
-        List<AUnit> units = new List<AUnit>();
-        units.AddRange(Attackers);
-        units.AddRange(Defenders);
-        units.RemoveAll(u =>
-            u.Nation.Id != CurrentNation.Id && CurrentNation.Allies.All(a => a.Ally.Id != u.Nation.Id));
-        return units;
-    }
+    private List<AUnit> GetCurrentNationsEnemies() => IsAttacker(CurrentNation) ? Defenders : Attackers;
 
     private void HitUnit(AUnit unit){
         if (!CheckForOpenHits()) return;
@@ -183,8 +170,7 @@ public class Battle{
         defenders.Sort();
         if (IsAttacker(CurrentNation)) return defenders.FirstOrDefault();
         int index = defenders.IndexOf(CurrentNation);
-        if (index == defenders.Count - 1) return GetAttacker();
-        return defenders.ElementAt(index + 1);
+        return index == defenders.Count - 1 ? GetAttacker() : defenders.ElementAt(index + 1);
     }
 
     public bool AdvanceCombat(){
@@ -210,20 +196,30 @@ public class Battle{
                 return true;
             case EBattlePhase.DEFENSE:
                 if (CheckForOpenHits()) return false;
-                if (GetNextNation() == GetAttacker()) Phase = EBattlePhase.RESOLUTION;
-                else CurrentNation = GetNextNation();
-                Phase = EBattlePhase.ATTACK;
+                DiceRolls = new Dictionary<int, int>{
+                    { 1, 0 },
+                    { 2, 0 },
+                    { 3, 0 },
+                    { 4, 0 },
+                    { 5, 0 },
+                    { 6, 0 }
+                };
+                Nation next = GetNextNation();
+                CurrentNation = next;
+                CurrentNationId = next.Id;
+                Phase = next == GetAttacker() ? EBattlePhase.RESOLUTION : EBattlePhase.ATTACK;
                 return true;
             case EBattlePhase.RESOLUTION:
+                ResolveCasualties();
+                if (CheckForWinner()){
+                    IsDecided = true;
+                    return true;
+                }
                 if (!AttackerDecided) return false;
                 CurrentNation = GetNextNation();
                 Round += 1;
-                ResolveCasualties();
                 AttackingInfantryRolls = GetInfantryRolls(GetAttacker());
                 DefendingInfantryRolls = GetInfantryRolls(GetDefendingNations().FirstOrDefault());
-                if (CheckForWinner()){
-                    IsDecided = true;
-                }
 
                 Phase = IsAquaticBattle() ? EBattlePhase.SPECIAL_SUBMARINE : EBattlePhase.ATTACK;
                 AttackerDecided = false;
@@ -252,6 +248,7 @@ public class Battle{
     public bool AttackerRetreats(){
         if (Phase != EBattlePhase.RESOLUTION) return false;
         AttackerDecided = true;
+        AdvanceCombat();
         //List<AUnit> retreatingUnits = Attackers.Where(unit => unit.GetPossibleRetreatTargets((from u in Attackers select u.GetPreviousLocation()).ToList()).Count > 0).ToList();
         return true;
     }
@@ -259,6 +256,7 @@ public class Battle{
     public bool AttackerContinues(){
         if (Phase != EBattlePhase.RESOLUTION) return false;
         AttackerDecided = true;
+        AdvanceCombat();
         return true;
     }
 
