@@ -2,10 +2,12 @@
 @inherits SidebarComponent
 @using Domain.Services
 @using Model.Entities
+@using Domain.Repositories.Implementations
 @inject NavigationManager NavigationManager
 @inject ILogger<Join> Logger
 @inject DockerService DockerService
 @inject ISnackbar Snackbar
+@inject UserRepository UserRepository
 
 <style>
     body {
@@ -34,6 +36,10 @@
 </MudCard>
 
 @code {
+    
+    [CascadingParameter]
+    public User? CurrentUser { get; set; }
+    
     private string? IpAddress { get; set; }
 
     private string? Port { get; set; }
@@ -49,6 +55,7 @@
         if (Port == null || IpAddress == null || RabbitPortS == null || RabbitPortW == null) return;
         if (DockerService.CheckConnection(IpAddress, Port)){
             await DockerService.ChangeDbContext(IpAddress, Port, RabbitPortS, RabbitPortW);
+            await UserRepository.UpdateAsync(CurrentUser);
             NavigationManager.NavigateTo("/lobby");
         }
         else{
