@@ -18,34 +18,33 @@
         background-image: url('img/menu/paper-bg.jpg')
     }
 </style>
-<MudCard Style="width: 20vw; margin-top: 10vh;" Class="m-auto">
-    <MudCardMedia Image="img/menu/create.png" Height="200" />
+<MudCard Style="width: 20vw; margin-top: 10vh !important;" Class="m-auto">
+    <MudCardMedia Image="img/menu/create.png" Height="200"/>
     <MudCardContent>
         <MudTextField T="string" HelperText="Session Name" Label="Name" Required="true" RequiredError="Name is required!" @bind-Value="SessionName"/>
     </MudCardContent>
     <MudCardActions>
         <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Primary" OnClick="() => CreateNewGame(SessionName)">
-            @if (_processing)
-                {
-                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
-                    <MudText Class="ms-2">Creating ...</MudText>
-                }
-                else
-                {
-                    <MudText>Create</MudText>
-                }
+            @if (_processing){
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                <MudText Class="ms-2">Creating ...</MudText>
+            }
+            else{
+                <MudText>Create</MudText>
+            }
         </MudButton>
     </MudCardActions>
 </MudCard>
 
 @code {
+
     [Parameter]
     public bool Local { get; set; }
-    
+
     [CascadingParameter]
     public User? CurrentUser { get; set; }
-    
-    private static readonly Random Random = new ();
+
+    private static readonly Random Random = new();
     private string SessionName { get; set; } = "NewSimulation";
     bool _processing = false;
 
@@ -71,15 +70,19 @@
             AlliesCapitals = 6,
             Path = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, $"Databases\\{SessionName}\\")
         };
-        FileService.WriteSessionInfoToFile(Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, $"Databases\\{SessionName}\\"),sessionInfo);
+        FileService.WriteSessionInfoToFile(Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, $"Databases\\{SessionName}\\"), sessionInfo);
         await SessionInfoRepository.UpdateAsync(sessionInfo);
-        SetPlayers();
-        NavigationManager.NavigateTo("/game");
+        if (Local){
+            SetPlayers();
+            NavigationManager.NavigateTo("/game");
+        }
+        else{
+            NavigationManager.NavigateTo("/lobby");
+        }
         StateHasChanged();
     }
 
     private async void SetPlayers(){
-        if(!Local) return;
         if (CurrentUser is null) return;
         await UserRepository.CreateAsync(CurrentUser);
         var nations = await NationRepository.ReadAllGraphAsync();
@@ -88,7 +91,7 @@
             await NationRepository.UpdateAsync(nation);
         }
     }
-    
+
     protected override void OnInitialized(){
         Items.Add(new SidebarItem(){
             Name = "MainMenu",
@@ -96,4 +99,5 @@
         });
         base.OnInitialized();
     }
+
 }

@@ -18,7 +18,7 @@ public class DockerService{
         26283,
         26284
     };
-    
+
     public List<int> PortsRabbitMqS{ get; set; } = new(){
         5672,
         5673,
@@ -26,7 +26,7 @@ public class DockerService{
         5675,
         5676
     };
-    
+
     public List<int> PortsRabbitMqW{ get; set; } = new(){
         15672,
         15673,
@@ -47,7 +47,7 @@ public class DockerService{
 
         throw new Exception("No Ports Available");
     }
-    
+
     public int GetPortRabbitMqS(){
         foreach (var p in PortsRabbitMqS.Where(IsPortFree)){
             return p;
@@ -55,7 +55,7 @@ public class DockerService{
 
         throw new Exception("No Ports Available");
     }
-    
+
     public int GetPortRabbitMqW(){
         foreach (var p in PortsRabbitMqW.Where(IsPortFree)){
             return p;

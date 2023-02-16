@@ -5,29 +5,33 @@
 @inject NavigationManager NavigationManager
 @inject ILogger<Join> Logger
 @inject DockerService DockerService
+@inject ISnackbar Snackbar
 
 <style>
     body {
         background-image: url('img/menu/paper-bg.jpg')
     }
 </style>
-<MudForm>
-    <MudGrid>
-        <MudItem xs="12" sm="6">
-            <MudPaper Class="pa-4">
-                <MudText>Ip Adress</MudText>
-                <MudTextField T="string" Label="IpAddress" Required="true" RequiredError="Ip Address is required!" @bind-Value="IpAddress"/>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="6">
-            <MudPaper Class="pa-4">
-                <MudText>Port</MudText>
-                <MudTextField T="string" Label="Port" Required="true" RequiredError="Port is required!" @bind-Value="Port"/>
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
-    <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="JoinGame">Join Session</MudButton>
-</MudForm>
+<MudCard Style="width: 20vw; margin-top: 10vh !important;" Class="m-auto">
+    <MudCardMedia Image="img/menu/create.png" Height="200"/>
+    <MudCardContent>
+        <MudTextField T="string" Label="Port" HelperText="Port" Required="true" RequiredError="Port is required!" @bind-Value="Port"/>
+        <MudTextField T="string" Label="IpAddress" HelperText="Ip Address" Required="true" RequiredError="Ip Address is required!" @bind-Value="IpAddress"/>
+        <MudTextField T="string" Label="RabbitPortS" HelperText="RabbitPortS" Required="true" RequiredError="RabbitPortS is required!" @bind-Value="RabbitPortS"/>
+        <MudTextField T="string" Label="RabbitPortW" HelperText="RabbitPortW" Required="true" RequiredError="RabbitPortW is required!" @bind-Value="RabbitPortW"/>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="JoinGame">
+            @if (_processing){
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                <MudText Class="ms-2">Joining ...</MudText>
+            }
+            else{
+                <MudText>Join Session</MudText>
+            }
+        </MudButton>
+    </MudCardActions>
+</MudCard>
 
 @code {
     private string? IpAddress { get; set; }
@@ -35,20 +39,25 @@
     private string? Port { get; set; }
 
     public string? RabbitPortS { get; set; }
-    
+
     public string? RabbitPortW { get; set; }
 
+    private bool _processing { get; set; }
+
     private async Task JoinGame(){
+        _processing = true;
         if (Port == null || IpAddress == null || RabbitPortS == null || RabbitPortW == null) return;
         if (DockerService.CheckConnection(IpAddress, Port)){
             await DockerService.ChangeDbContext(IpAddress, Port, RabbitPortS, RabbitPortW);
+            NavigationManager.NavigateTo("/lobby");
         }
         else{
-            Logger.Log(LogLevel.Critical,  "Cannot connect to the server");
+            Logger.Log(LogLevel.Critical, "Cannot connect to the server");
+            Snackbar.Add("Cannot connect to the server", Severity.Error);
         }
         StateHasChanged();
     }
-    
+
     protected override void OnInitialized(){
         Items.Add(new SidebarItem(){
             Name = "MainMenu",
