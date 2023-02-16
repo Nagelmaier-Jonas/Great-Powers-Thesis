@@ -136,7 +136,6 @@ public class DockerService{
             _greatPowersDbContext.Database.SetConnectionString(
                 $"server={ipAddress}; port={port}; database=greatpowers; user=greatpowers; password=greatpowers; Persist Security Info=False; Connect Timeout=300");
             _greatPowersDbContext.Database.OpenConnection();
-            EventSubscriber.Init();
             Logger.Log(LogLevel.Information,
                 "New Connection String: " + _greatPowersDbContext.Database.GetDbConnection().ConnectionString);
             return Task.CompletedTask;
