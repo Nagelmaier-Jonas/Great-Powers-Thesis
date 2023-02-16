@@ -22,4 +22,10 @@ public abstract class ACreatableRepository<TEntity> : ARepository<TEntity>,ICrea
         _set.Remove(entity);
         await _context.SaveChangesAsync();
     }
+    
+    public async Task DeleteAsync(List<TEntity> entities)
+    {
+        _set.RemoveRange(entities);
+        await _context.SaveChangesAsync();
+    }
 }

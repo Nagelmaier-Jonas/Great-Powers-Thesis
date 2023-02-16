@@ -13,8 +13,10 @@
 @using BlazorPanzoom.Events
 @using BlazorPanzoom.Options
 @using BlazorPanzoom.Options.Enums
+@using EventHandling.EventHandler
 @inject ActiveRegion ActiveRegion
 @inject ViewRefreshService ViewRefreshService
+@inject StateHasChangedEventHandler StateHasChangedEventHandler
 @implements IDisposable
 
 <div class="panzoom-parent" style="height: 100vh; @Style">
@@ -117,6 +119,7 @@
     protected override Task OnInitializedAsync(){
         ActiveRegion.HandleRegionChange += HandleRegionChange;
         ViewRefreshService.HandleViewRefreshChange += HandleViewRefreshChange;
+        StateHasChangedEventHandler.HandleViewRefreshChange += HandleViewRefreshChange;
         _panzoomOptions = new PanzoomOptions(){
             Contain = Contain.Outside,
             Cursor = Cursor.Auto,
@@ -133,6 +136,7 @@
     public void Dispose(){
         ActiveRegion.HandleRegionChange -= HandleRegionChange;
         ViewRefreshService.HandleViewRefreshChange -= HandleViewRefreshChange;
+        StateHasChangedEventHandler.HandleViewRefreshChange -= HandleViewRefreshChange;
     }
 
 }

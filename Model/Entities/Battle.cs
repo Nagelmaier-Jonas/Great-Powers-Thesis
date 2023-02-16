@@ -9,8 +9,7 @@ namespace Model.Entities;
 [Table("BATTLES")]
 public class Battle{
     [Key]
-    [Column("BATTLE_ID")]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Column("BATTLE_ID")][DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id{ get; set; }
 
     [Column("CURRENT_NATION_ID")] public int CurrentNationId{ get; set; }
@@ -29,6 +28,8 @@ public class Battle{
 
     public List<AUnit> Attackers{ get; set; } = new List<AUnit>();
     public List<AUnit> Defenders{ get; set; } = new List<AUnit>();
+    
+    public List<AUnit> Casualties{ get; set; } = new List<AUnit>();
 
     public int NonAirHits{ get; set; }
     public int NonSubmarineHits{ get; set; }
@@ -99,7 +100,7 @@ public class Battle{
         return GetCurrentNationsEnemies().Any(u => !u.IsSubmarine()) && NonSubmarineHits > 0;
     }
 
-    public bool IsAttacker(Nation nation) => Attackers.Any(u => u.Nation == nation);
+    public bool IsAttacker(Nation nation) => Attackers.Any(u => u.Nation.Id == nation.Id);
 
     private void RollForHits(){
         bool attacker = IsAttacker(CurrentNation);
@@ -153,7 +154,10 @@ public class Battle{
         return true;
     }
 
-    private void ResolveCasualties(){
+    public void ResolveCasualties(){
+        Casualties.AddRange(Attackers.Where(u => u.HitPoints == 0));
+        Casualties.AddRange(Defenders.Where(u => u.HitPoints == 0));
+        
         Attackers.RemoveAll(u => u.HitPoints == 0);
         Defenders.RemoveAll(u => u.HitPoints == 0);
     }
@@ -204,10 +208,12 @@ public class Battle{
                     { 5, 0 },
                     { 6, 0 }
                 };
-                Nation next = GetNextNation();
-                CurrentNation = next;
-                CurrentNationId = next.Id;
-                Phase = next == GetAttacker() ? EBattlePhase.RESOLUTION : EBattlePhase.ATTACK;
+                NormalHits = 0;
+                NonAirHits = 0;
+                NonSubmarineHits = 0;
+                CurrentNation = GetNextNation();
+                CurrentNationId = CurrentNation.Id;
+                Phase = CurrentNation.Id == GetAttacker().Id ? EBattlePhase.RESOLUTION : EBattlePhase.ATTACK;
                 return true;
             case EBattlePhase.RESOLUTION:
                 ResolveCasualties();
@@ -215,17 +221,16 @@ public class Battle{
                     IsDecided = true;
                     return true;
                 }
-                if (!AttackerDecided) return false;
-                CurrentNation = GetNextNation();
-                Round += 1;
                 AttackingInfantryRolls = GetInfantryRolls(GetAttacker());
                 DefendingInfantryRolls = GetInfantryRolls(GetDefendingNations().FirstOrDefault());
-
+                if (!AttackerDecided) return false;
+                CurrentNation = GetNextNation();
+                CurrentNationId = CurrentNation.Id;
+                Round += 1;
                 Phase = IsAquaticBattle() ? EBattlePhase.SPECIAL_SUBMARINE : EBattlePhase.ATTACK;
                 AttackerDecided = false;
                 return true;
         }
-
         return true;
     }
 

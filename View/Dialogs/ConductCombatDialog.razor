@@ -4,6 +4,8 @@
 @using Vanara.Extensions
 @inject IJSRuntime JSRuntime
 @inject BattleRepository BattleRepository
+@inject NationRepository NationRepository
+@inject UnitRepository UnitRepository
 @inject GameEngine GameEngine
 
 @if (Battle is not null){
@@ -106,15 +108,15 @@
 
     protected override void OnInitialized(){
         if (Battle is null) return;
-        RegionType = Battle.Location.IsLandRegion() ? "battleground-drawer-land" : "battleground-drawer-water";
+        RegionType = !Battle.IsAquaticBattle() ? "battleground-drawer-land" : "battleground-drawer-water";
     }
 
     protected override void OnAfterRender(bool firstRender){
         if (IsRendered) return;
-        if (Battle.Location.IsWaterRegion()){
+        if (Battle.IsAquaticBattle()){
             JSRuntime.InvokeVoidAsync("makeRain");
         }
-        if (Battle.Location.IsLandRegion()){
+        if (!Battle.IsAquaticBattle()){
             JSRuntime.InvokeVoidAsync("MakeFire");
         }
         IsRendered = true;
@@ -125,6 +127,7 @@
         if (!Battle.AdvanceCombat()) return;
         if (Battle.IsDecided){
             await BattleRepository.DeleteAsync(Battle);
+            await UnitRepository.DeleteAsync(Battle.Casualties);
             Submit();
         }
         else{

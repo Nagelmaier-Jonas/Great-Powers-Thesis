@@ -89,6 +89,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             .WithMany(u => u.IncomingUnits).HasForeignKey(u => u.TargetId);
         builder.Entity<AUnit>().HasOne(u => u.Aggressor).WithMany(b => b.Attackers).HasForeignKey(u => u.AggressorId);
         builder.Entity<AUnit>().HasOne(u => u.Defender).WithMany(b => b.Defenders).HasForeignKey(u => u.DefenderId);
+        builder.Entity<AUnit>().HasOne(u => u.Casualty).WithMany(b => b.Casualties).HasForeignKey(u => u.CasualtyId);
 
         builder.Entity<ALandUnit>().HasOne(n => n.Transport)
             .WithMany(u => u.Units).HasForeignKey(l => l.TransportId);

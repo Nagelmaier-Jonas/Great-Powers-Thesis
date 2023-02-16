@@ -32,6 +32,10 @@ public abstract class AUnit{
     [Column("DEFENDER_ID")] public int? DefenderId{ get; set; }
 
     public Battle? Defender{ get; set; }
+    
+    [Column("CASUALTY_ID")] public int? CasualtyId{ get; set; }
+
+    public Battle? Casualty{ get; set; }
 
     [Column("HITPOINTS")] public virtual int HitPoints{ get; set; } = 1;
 
@@ -51,12 +55,12 @@ public abstract class AUnit{
         throw new NotImplementedException();
 
 
-    private bool CanTarget(EPhase phase, ARegion target){
+    protected bool CanTarget(EPhase phase, ARegion target){
         List<ARegion> path = GetPath(phase, target);
         return path.Last().Id == target.Id;
     }
 
-    public bool SetTarget(EPhase phase, ARegion target){
+    public virtual bool SetTarget(EPhase phase, ARegion target){
         if (!CanTarget(phase, target)) return false;
         Target = target;
         TargetId = target.Id;

@@ -65,7 +65,7 @@ public class GameEngine{
     public async Task MoveUnits(){
         Init(_ServiceScopeFactory.CreateScope());
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
-        List<AUnit> units = await _UnitRepository.ReadAsync(u => u.Target != null);
+        List<AUnit> units = (await _NationRepository.ReadAllGraphAsync()).SelectMany(n => n.Units.Where(u => u.Target != null)).ToList();
         var unitsToMove = units.Where(unit => unit.MoveToTarget(session.Phase)).ToList();
         foreach (var unit in unitsToMove){
             Init(_ServiceScopeFactory.CreateScope());
@@ -188,6 +188,7 @@ public class GameEngine{
         }
 
         Init(_ServiceScopeFactory.CreateScope());
+        
         foreach (var unit in units){
             Init(_ServiceScopeFactory.CreateScope());
             await _UnitRepository.UpdateAsync(unit);
@@ -213,7 +214,6 @@ public class GameEngine{
         SessionInfo? session = await _SessionInfoRepository.ReadAsync();
         if (session.Phase != EPhase.ConductCombat) return new List<ARegion>();
         Init(_ServiceScopeFactory.CreateScope());
-        //TODO: Change from Incoming Units to where theres Enemy Units present once Movement works
         return await _RegionRepository.ReadAsync(r => r.IncomingUnits.Count > 0);
     }
 
@@ -250,13 +250,15 @@ public class GameEngine{
                 break;
             case EPhase.CombatMove:
                 _Battlegrounds.Battleground = await GetBattleLocations();
-                await MoveUnits();
+                await _RegionRepository.ReadAllAsync();
                 session.Phase = EPhase.ConductCombat;
                 break;
             case EPhase.ConductCombat:
                 session.Phase = EPhase.NonCombatMove;
+                await MoveUnits();
                 break;
             case EPhase.NonCombatMove:
+                await _RegionRepository.ReadAllAsync();
                 await MoveUnits();
                 session.Phase = EPhase.MobilizeNewUnits;
                 break;

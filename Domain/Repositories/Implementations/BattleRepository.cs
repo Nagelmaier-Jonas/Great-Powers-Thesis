@@ -22,6 +22,7 @@ public class BattleRepository : ACreatableRepository<Battle>, IBattleRepository{
             .ThenInclude(n => n.Nation)
             .Include(l => l.Defenders)
             .ThenInclude(n => n.Nation)
+            .Include(n => n.CurrentNation)
             .AsSplitQuery()
             .FirstOrDefaultAsync(n => n.LocationId == region.Id);
     }
