@@ -55,7 +55,10 @@
         if (Port == null || IpAddress == null || RabbitPortS == null || RabbitPortW == null) return;
         if (DockerService.CheckConnection(IpAddress, Port)){
             await DockerService.ChangeDbContext(IpAddress, Port, RabbitPortS, RabbitPortW);
-            await UserRepository.UpdateAsync(CurrentUser);
+            var user = await UserRepository.ReadGraphAsync(CurrentUser!.Id);
+            if (user == null){
+                await UserRepository.CreateAsync(CurrentUser);
+            }
             NavigationManager.NavigateTo("/lobby");
         }
         else{

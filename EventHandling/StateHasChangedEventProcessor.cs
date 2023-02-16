@@ -8,5 +8,6 @@ public class StateHasChangedEventProcessor : AEventProcessor{
     
     public StateHasChangedEventProcessor(IServiceScopeFactory scopeFactory) : base(scopeFactory){
         this["STATE_HAS_CHANGED"] = new StateHasChangedEventHandler();
+        this["READY_EVENT"] = new ReadyEventHandler();
     }
 }

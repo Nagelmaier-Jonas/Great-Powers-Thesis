@@ -2,12 +2,18 @@
 @using Model.Configuration
 @using System.Net
 @using System.Net.Sockets
+@using System.Text.Json
+@using DataTransfer
 @using Domain.Repositories.Implementations
+@using EventBus.Clients
+@using EventHandling.EventHandler
 @using Model.Entities
 @inject NationRepository NationRepository
 @inject UserRepository UserRepository
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
+@inject ReadyEventHandler ReadyEventHandler
+@inject EventPublisher EventPublisher
 
 <style>
     body {
@@ -109,14 +115,19 @@
                 Snackbar.Add("Es sind noch nicht alle Nationen vergeben!", Severity.Error);
                 return;
             }
-            NavigationManager.NavigateTo("/game");
+            EventPublisher.Publish(JsonSerializer.Serialize(new ReadyEvent()));
         }
     }
 
     protected override async Task OnInitializedAsync(){
+        ReadyEventHandler.HandleReadyEvent += NavigateToGame;
         Nations = await NationRepository.ReadAllGraphAsync();
         CurrentUser!.Ready = false;
         await UserRepository.UpdateAsync(CurrentUser);
+    }
+
+    private void NavigateToGame(){
+        NavigationManager.NavigateTo("/game");
     }
 
     private async Task Assign(Nation nation){
