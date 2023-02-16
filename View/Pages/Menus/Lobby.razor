@@ -11,8 +11,6 @@
 @inject NationRepository NationRepository
 @inject UserRepository UserRepository
 @inject ISnackbar Snackbar
-@inject NavigationManager NavigationManager
-@inject ReadyEventHandler ReadyEventHandler
 @inject EventPublisher EventPublisher
 
 <style>
@@ -117,17 +115,13 @@
             }
             EventPublisher.Publish(JsonSerializer.Serialize(new ReadyEvent()));
         }
+        
     }
 
     protected override async Task OnInitializedAsync(){
-        ReadyEventHandler.HandleReadyEvent += NavigateToGame;
         Nations = await NationRepository.ReadAllGraphAsync();
         CurrentUser!.Ready = false;
         await UserRepository.UpdateAsync(CurrentUser);
-    }
-
-    private void NavigateToGame(){
-        NavigationManager.NavigateTo("/game");
     }
 
     private async Task Assign(Nation nation){
