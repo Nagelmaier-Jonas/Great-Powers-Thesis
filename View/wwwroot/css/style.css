@@ -442,7 +442,15 @@ span.logo {
     background-color: rgb(255 193 7 / 35%) !important;
     font-weight: bold !important;
 }
-
+.ready-btn {
+    position: fixed !important;
+    bottom: 5vh;
+    background: rgb(195 191 191);
+    padding: 10px !important;
+    right: 5vw;
+    border-radius: 10px;
+    color: white;
+}
 /* -- -------------------------------------------------- -- */
 /*                  Style: Rain Animation                   */
 /* -- -------------------------------------------------- -- */

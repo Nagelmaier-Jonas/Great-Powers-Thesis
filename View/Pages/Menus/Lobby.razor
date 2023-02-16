@@ -7,6 +7,7 @@
 @inject NationRepository NationRepository
 @inject UserRepository UserRepository
 @inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
 
 <style>
     body {
@@ -64,7 +65,7 @@
     </MudContainer>
 }
 
-<MudCheckBox T="bool" CheckedChanged="ChangeReadyStatus" Size="Size.Large" Color="Color.Secondary" Label="Bereit" LabelPosition="LabelPosition.Start"/>
+<MudCheckBox T="bool" CheckedChanged="ChangeReadyStatus" Size="Size.Large" Color="Color.Secondary" Label="Bereit" LabelPosition="LabelPosition.Start" Class="ready-btn"/>
 
 @code {
 
@@ -102,13 +103,27 @@
             CurrentUser!.Ready = false;
             await UserRepository.UpdateAsync(CurrentUser);
         }
+        var users = await UserRepository.ReadAllAsync();
+        if (users.All(u => u.Ready)){
+            if (Nations.Where(n => n.Id != 6).Any(n => n.UserId is null)){
+                Snackbar.Add("Es sind noch nicht alle Nationen vergeben!", Severity.Error);
+                return;
+            }
+            NavigationManager.NavigateTo("/game");
+        }
     }
 
     protected override async Task OnInitializedAsync(){
         Nations = await NationRepository.ReadAllGraphAsync();
+        CurrentUser!.Ready = false;
+        await UserRepository.UpdateAsync(CurrentUser);
     }
 
     private async Task Assign(Nation nation){
+        if (Ready){
+            Snackbar.Add("Du kannst keine Nation wählen, solange du bereit bist!", Severity.Error);
+            return;
+        }
         var userNations = Nations.Where(n => n.UserId == CurrentUser!.Id).ToList();
         if (userNations.Any(n => AlliesIds.Contains(n.Id) && AxisIds.Contains(nation.Id)) || userNations.Any(n => AxisIds.Contains(n.Id) && AlliesIds.Contains(nation.Id))){
             Snackbar.Add("Sie können nicht die Achsenmächte und die Allierten gleichzeitig simulieren", Severity.Error);
@@ -122,6 +137,10 @@
     }
 
     private async Task Release(Nation nation){
+        if (Ready){
+            Snackbar.Add("Du kannst keine Nation verlassen, solange du bereit bist!", Severity.Error);
+            return;
+        }
         if (nation.UserId is null){
             Snackbar.Add("Diese Nation ist bereits freigegeben", Severity.Error);
             return;
