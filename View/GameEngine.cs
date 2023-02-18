@@ -56,8 +56,7 @@ public class GameEngine{
 
     public async Task RemovePlannedMovement(AUnit unit){
         Init(_ServiceScopeFactory.CreateScope());
-        unit.RemoveTarget();
-        await _UnitRepository.UpdateAsync(unit);
+        await _UnitRepository.RemoveTargetAsync(unit.Id);
         _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
     
@@ -291,5 +290,27 @@ public class GameEngine{
         await _SessionInfoRepository.UpdateAsync(session);
         _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
         return true;
+    }
+    public async void FinishBattle(Battle battle){
+        foreach (var attacker in battle.Attackers){
+            Init(_ServiceScopeFactory.CreateScope());
+            await _UnitRepository.RemoveTargetAsync(attacker.Id);
+            Init(_ServiceScopeFactory.CreateScope());
+            await _UnitRepository.RemoveAggressorAsync(attacker.Id);
+        }
+        foreach (var defender in battle.Defenders){
+            Init(_ServiceScopeFactory.CreateScope());
+            await _UnitRepository.RemoveTargetAsync(defender.Id);
+            Init(_ServiceScopeFactory.CreateScope());
+            await _UnitRepository.RemoveDefenderAsync(defender.Id);
+        }
+        foreach (var unit in battle.Casualties){
+            Init(_ServiceScopeFactory.CreateScope());
+            await _UnitRepository.DeleteUnit(unit.Id);
+        }
+        //move units to new location
+        //set the owner of the region to the winner
+        Init(_ServiceScopeFactory.CreateScope());
+        await _BattleRepository.DeleteBattle(battle.Id);
     }
 }

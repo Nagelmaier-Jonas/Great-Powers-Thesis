@@ -19,6 +19,7 @@ public abstract class ACreatableRepository<TEntity> : ARepository<TEntity>,ICrea
 
     public async Task DeleteAsync(TEntity entity)
     {
+        _context.ChangeTracker.Clear();
         _set.Remove(entity);
         await _context.SaveChangesAsync();
     }

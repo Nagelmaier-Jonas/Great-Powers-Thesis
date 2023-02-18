@@ -28,7 +28,6 @@ public class Battle{
 
     public List<AUnit> Attackers{ get; set; } = new List<AUnit>();
     public List<AUnit> Defenders{ get; set; } = new List<AUnit>();
-    
     public List<AUnit> Casualties{ get; set; } = new List<AUnit>();
 
     public int NonAirHits{ get; set; }

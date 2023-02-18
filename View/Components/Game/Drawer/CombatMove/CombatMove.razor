@@ -31,6 +31,7 @@
         <HeaderContent>
             <MudTh></MudTh>
             <MudTh>Bewegen</MudTh>
+            <MudTh>Löschen</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="" Class="text-center border-none">
@@ -45,7 +46,15 @@
                 </svg>
             </MudTd>
             <MudTd DataLabel="Bewegen">
-                <MudIconButton Icon="@Icons.Material.Filled.Map" OnClick="() => SetPossibleTargets(context)"/>
+                @if (!context.HasTarget()){
+                    <MudIconButton Icon="@Icons.Material.Filled.Map" OnClick="() => SetPossibleTargets(context)"/>
+                }
+
+            </MudTd>
+            <MudTd DataLabel="Löschen">
+                @if (context.HasTarget()){
+                    <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="() => RemoveTarget(context)"/>
+                }
             </MudTd>
         </RowTemplate>
     </MudTable>
@@ -61,7 +70,7 @@ else{
 
     [Parameter]
     public SessionInfo? SessionInfo { get; set; }
-    
+
     [CascadingParameter]
     public User? CurrentUser { get; set; }
 
@@ -81,7 +90,8 @@ else{
                 unit
             });
         }
-        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
+        StateHasChanged();
     }
 
 
@@ -90,12 +100,14 @@ else{
             { "SessionInfo", SessionInfo },
             { "CurrentUser", CurrentUser }
         };
-        var options = new DialogOptions{ CloseOnEscapeKey = true , NoHeader = true, DisableBackdropClick = true};
+        var options = new DialogOptions{ CloseOnEscapeKey = true, NoHeader = true, DisableBackdropClick = true };
         var dialog = await DialogService.ShowAsync<CombatMoveSummaryDialog>("Zusammenfassung Bewegung", parameters, options);
     }
 
     private async Task RemoveTarget(AUnit unit){
         await GameEngine.RemovePlannedMovement(unit);
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
+        StateHasChanged();
     }
 
 }

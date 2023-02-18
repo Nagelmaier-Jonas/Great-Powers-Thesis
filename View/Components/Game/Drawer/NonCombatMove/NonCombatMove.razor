@@ -31,6 +31,7 @@
         <HeaderContent>
             <MudTh></MudTh>
             <MudTh>Bewegen</MudTh>
+            <MudTh>Löschen</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="" Class="text-center border-none">
@@ -45,7 +46,14 @@
                 </svg>
             </MudTd>
             <MudTd DataLabel="Bewegen">
-                <MudIconButton Icon="@Icons.Material.Filled.Map" OnClick="() => SetPossibleTargets(context)"/>
+                @if (!context.HasTarget()){
+                    <MudIconButton Icon="@Icons.Material.Filled.Map" OnClick="() => SetPossibleTargets(context)"/>
+                }
+            </MudTd>
+            <MudTd DataLabel="Löschen">
+                @if (context.HasTarget()){
+                    <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="() => RemoveTarget(context)"/>
+                }
             </MudTd>
         </RowTemplate>
     </MudTable>

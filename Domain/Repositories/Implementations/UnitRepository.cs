@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Domain.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Model.Configuration;
 using Model.Entities.Units;
 using Model.Entities.Units.Abstract;
@@ -107,11 +108,40 @@ public class UnitRepository : ACreatableRepository<AUnit>, IUnitRepository{
         return placeableUnits;
     }
 
-    public async Task RemoveTargetAsync(AUnit unit){
+    public async Task RemoveTargetAsync(int unitId){
         _context.ChangeTracker.Clear();
+        var unit = await ReadAsync(unitId);
         unit.TargetId = null;
         unit.Target = null;
-        _set.Update(unit);
+        _context.Entry(unit).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+    }
+    public async Task RemoveAggressorAsync(int unitId){
+        _context.ChangeTracker.Clear();
+        var unit = await ReadAsync(unitId);
+        unit.AggressorId = null;
+        unit.Aggressor = null;
+        _context.Entry(unit).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+    }
+    public async Task RemoveDefenderAsync(int unitId){
+        _context.ChangeTracker.Clear();
+        var unit = await ReadAsync(unitId);
+        unit.DefenderId = null;
+        unit.Defender = null;
+        _context.Entry(unit).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+    }
+    public async Task DeleteUnit(int id){
+        _context.ChangeTracker.Clear();
+        var units = await ReadAllAsync();
+        var unit = await ReadAsync(id);
+        if (units is null) return;
+        if (unit is null) return;
+        units.Remove(unit);
+        _context.Units.Remove(unit);
+        _set.Remove(unit);
+        _context.Entry(unit).State = EntityState.Deleted;
         await _context.SaveChangesAsync();
     }
 }

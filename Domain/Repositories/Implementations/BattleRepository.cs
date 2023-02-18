@@ -26,4 +26,23 @@ public class BattleRepository : ACreatableRepository<Battle>, IBattleRepository{
             .AsSplitQuery()
             .FirstOrDefaultAsync(n => n.LocationId == region.Id);
     }
+    
+    public async Task DeleteBattle(int id){
+        _context.ChangeTracker.Clear();
+        var battle = await ReadAsync(id);
+        if (battle is null) return;
+        _context.Battles.Remove(battle);
+        _set.Remove(battle);
+        _context.Entry(battle).State = EntityState.Deleted;
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task ChangeBattleNation(int battleId, int nationId){
+        _context.ChangeTracker.Clear();
+        var battle = await ReadAsync(battleId);
+        if (battle is null) return;
+        battle.CurrentNationId = nationId;
+        _context.Entry(battle).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+    }
 }
