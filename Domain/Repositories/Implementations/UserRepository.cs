@@ -9,13 +9,52 @@ public class UserRepository : ACreatableRepository<User>{
     }
     
     public async Task<User?> GetByUsername(string username){
-        return await _set.Where(u => u.UserName == username)
-            .FirstOrDefaultAsync();
+        return await _set
+            .Include(u => u.Nations)
+            .ThenInclude(n => n.Regions)
+            .ThenInclude(t => t.StationedUnits)
+            .Include(u => u.Nations)
+            .ThenInclude(n => n.Regions)
+            .ThenInclude(t => t.StationedPlanes)
+            .Include(u => u.Nations)
+            .ThenInclude(n => n.Regions)
+            .ThenInclude(t => t.Capital)
+            .Include(u => u.Nations)
+            .ThenInclude(n => n.Regions)
+            .ThenInclude(t => t.Factory)
+            .Include(u => u.Nations)
+            .ThenInclude(n => n.Regions)
+            .ThenInclude(u => u.Neighbours)
+            .Include(u => u.Nations)
+            .ThenInclude(u => u.Battles)
+            .Include(u => u.Nations)
+            .ThenInclude(n => n.Allies)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(u => u.UserName == username);
     }
 
     public async Task<User?> ReadGraphAsync(string Id){
         return await _set
             .Include(u => u.Nations)
-            .FirstOrDefaultAsync(u => u.Id == Id);
+            .ThenInclude(n => n.Regions)
+            .ThenInclude(t => t.StationedUnits)
+            .Include(u => u.Nations)
+            .ThenInclude(n => n.Regions)
+            .ThenInclude(t => t.StationedPlanes)
+            .Include(u => u.Nations)
+            .ThenInclude(n => n.Regions)
+            .ThenInclude(t => t.Capital)
+            .Include(u => u.Nations)
+            .ThenInclude(n => n.Regions)
+            .ThenInclude(t => t.Factory)
+            .Include(u => u.Nations)
+            .ThenInclude(n => n.Regions)
+            .ThenInclude(u => u.Neighbours)
+            .Include(u => u.Nations)
+            .ThenInclude(u => u.Battles)
+            .Include(u => u.Nations)
+            .ThenInclude(n => n.Allies)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(n => n.Id == Id);
     }
 }

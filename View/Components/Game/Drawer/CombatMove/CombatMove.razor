@@ -26,8 +26,8 @@
     }
 }
 <MudText Class="fw-bold text-center mb-3 mt-5 noselect" Color="Color.Secondary" Typo="Typo.h4">Kampfbewegung</MudText>
-@if (SessionInfo is not null && ActiveRegion.Region is not null && ActiveRegion.Region.GetStationedUnits().Count > 0){
-    <MudTable Items="@ActiveRegion.Region.GetStationedUnits()" Class="border-none purchase-table" Dense="true" FixedHeader="true" Height="60vh">
+@if (SessionInfo is not null && ActiveRegion.Region is not null && ActiveRegion.Region.GetStationedUnits().Any(unit => unit.NationId == SessionInfo.CurrentNationId)){
+    <MudTable Items="@ActiveRegion.Region.GetStationedUnits().Where(unit => unit.NationId == SessionInfo.CurrentNationId)" Class="border-none purchase-table" Dense="true" FixedHeader="true" Height="60vh">
         <HeaderContent>
             <MudTh></MudTh>
             <MudTh>Bewegen</MudTh>
@@ -61,6 +61,9 @@ else{
 
     [Parameter]
     public SessionInfo? SessionInfo { get; set; }
+    
+    [CascadingParameter]
+    public User? CurrentUser { get; set; }
 
     private Dictionary<AUnit, int> Checkout { get; set; } = new();
 
@@ -84,7 +87,8 @@ else{
 
     private async Task FinishPhase(){
         var parameters = new DialogParameters{
-            { "SessionInfo", SessionInfo }
+            { "SessionInfo", SessionInfo },
+            { "CurrentUser", CurrentUser }
         };
         var options = new DialogOptions{ CloseOnEscapeKey = true , NoHeader = true, DisableBackdropClick = true};
         var dialog = await DialogService.ShowAsync<CombatMoveSummaryDialog>("Zusammenfassung Bewegung", parameters, options);

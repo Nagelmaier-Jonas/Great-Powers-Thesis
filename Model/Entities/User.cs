@@ -6,7 +6,7 @@ namespace Model.Entities;
 
 [Table("USER")]
 public class User : IdentityUser{
-    public List<Nation> Nations{ get; set; }
+    public List<Nation> Nations{ get; set; } = new();
 
     [Column("READY", TypeName = "TINYINT(1)")]
     public bool Ready{ get; set; } = false;

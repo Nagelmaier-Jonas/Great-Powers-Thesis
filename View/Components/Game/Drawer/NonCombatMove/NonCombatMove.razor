@@ -61,6 +61,9 @@ else{
 
     [Parameter]
     public SessionInfo? SessionInfo { get; set; }
+    
+    [CascadingParameter]
+    public User? CurrentUser { get; set; }
 
     private Dictionary<AUnit, int> Checkout { get; set; } = new();
 
@@ -84,7 +87,8 @@ else{
 
     private async Task FinishPhase(){
         var parameters = new DialogParameters{
-            { "SessionInfo", SessionInfo }
+            { "SessionInfo", SessionInfo },
+            { "CurrentUser", CurrentUser }
         };
         var options = new DialogOptions{ CloseOnEscapeKey = true , NoHeader = true, DisableBackdropClick = true};
         var dialog = await DialogService.ShowAsync<CombatMoveSummaryDialog>("Zusammenfassung Bewegung", parameters, options);

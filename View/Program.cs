@@ -133,8 +133,8 @@ builder.Services.AddScoped<MobilizeUnit>();
 
 builder.Services.AddSingleton<GameEngine>();
 
-builder.Services.AddSingleton<StateHasChangedEventHandler>();
-builder.Services.AddSingleton<ReadyEventHandler>();
+builder.Services.AddTransient<StateHasChangedEventHandler>();
+builder.Services.AddTransient<ReadyEventHandler>();
 
 builder.Services.AddSingleton<EventPublisher>();
 builder.Services.AddSingleton<IEventProcessor, StateHasChangedEventProcessor>();
