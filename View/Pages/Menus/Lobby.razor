@@ -134,7 +134,8 @@
         NavigationManager.NavigateTo("/game");
     }
     
-    private void Rerender(){
+    private async void Rerender(){
+        Nations = await NationRepository.ReadAllGraphAsync();
         StateHasChanged();
     }
 
