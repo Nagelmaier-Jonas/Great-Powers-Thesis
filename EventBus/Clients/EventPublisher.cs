@@ -34,7 +34,6 @@ public class EventPublisher : IEventPublisher {
             Console.WriteLine(e);
             throw;
         }
-        
     }
     
     private void ShutDownMessageBroker(object? sender, ShutdownEventArgs e) => Console.WriteLine("Message broker connection shut down");

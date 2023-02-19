@@ -111,7 +111,7 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             .WithMany().HasForeignKey(s => s.PreviousLocationId);
 
         builder.Entity<Battle>().HasOne<ARegion>(b => b.Location).WithOne().HasForeignKey<Battle>(b => b.LocationId);
-        builder.Entity<Battle>().HasOne(b => b.CurrentNation).WithMany(n => n.Battles).HasForeignKey(b => b.CurrentNationId);
+        builder.Entity<Battle>().HasOne<Nation>(b => b.CurrentNation).WithMany(n => n.Battles).HasForeignKey(b => b.CurrentNationId);
 
         builder.Entity<SessionInfo>().HasOne<Nation>(s => s.Nation).WithOne()
             .HasForeignKey<SessionInfo>(s => s.CurrentNationId);

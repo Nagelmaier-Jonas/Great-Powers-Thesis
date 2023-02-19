@@ -230,7 +230,7 @@ public class GameEngine{
     public async Task AttackerContinues(Battle battle){
         battle.AttackerContinues();
         Init(_ServiceScopeFactory.CreateScope());
-        await _BattleRepository.UpdateAsync(battle);
+        //await _BattleRepository.UpdateAsync(battle);
         _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
 
@@ -239,10 +239,10 @@ public class GameEngine{
         Battle battle = (await _BattleRepository.ReadAsync(b => b.Location == unit.GetLocation())).FirstOrDefault();
         if (battle is null) return new List<ARegion>();
         if (!battle.Attackers.Contains(unit)) return new List<ARegion>();
-        List<ARegion> previosRegions = (from u in battle.Attackers
+        List<ARegion> previousRegions = (from u in battle.Attackers
             where u.GetPreviousLocation() is not null
             select u.GetPreviousLocation()).ToList();
-        return unit.GetPossibleRetreatTargets(previosRegions);
+        return unit.GetPossibleRetreatTargets(previousRegions);
     }*/
 
     public async Task<bool> EndPhase(User CurrentUser){
@@ -254,7 +254,6 @@ public class GameEngine{
                 break;
             case EPhase.CombatMove:
                 _Battlegrounds.Battleground = await GetBattleLocations();
-                await _RegionRepository.ReadAllAsync();
                 session.Phase = EPhase.ConductCombat;
                 break;
             case EPhase.ConductCombat:
@@ -262,7 +261,6 @@ public class GameEngine{
                 await MoveUnits();
                 break;
             case EPhase.NonCombatMove:
-                await _RegionRepository.ReadAllAsync();
                 await MoveUnits();
                 session.Phase = EPhase.MobilizeNewUnits;
                 break;
@@ -294,13 +292,9 @@ public class GameEngine{
     public async void FinishBattle(Battle battle){
         foreach (var attacker in battle.Attackers){
             Init(_ServiceScopeFactory.CreateScope());
-            await _UnitRepository.RemoveTargetAsync(attacker.Id);
-            Init(_ServiceScopeFactory.CreateScope());
             await _UnitRepository.RemoveAggressorAsync(attacker.Id);
         }
         foreach (var defender in battle.Defenders){
-            Init(_ServiceScopeFactory.CreateScope());
-            await _UnitRepository.RemoveTargetAsync(defender.Id);
             Init(_ServiceScopeFactory.CreateScope());
             await _UnitRepository.RemoveDefenderAsync(defender.Id);
         }
@@ -308,7 +302,6 @@ public class GameEngine{
             Init(_ServiceScopeFactory.CreateScope());
             await _UnitRepository.DeleteUnit(unit.Id);
         }
-        //move units to new location
         //set the owner of the region to the winner
         Init(_ServiceScopeFactory.CreateScope());
         await _BattleRepository.DeleteBattle(battle.Id);

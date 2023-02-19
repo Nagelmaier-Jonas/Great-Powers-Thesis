@@ -215,6 +215,7 @@ public class Battle{
                 Phase = CurrentNation.Id == GetAttacker().Id ? EBattlePhase.RESOLUTION : EBattlePhase.ATTACK;
                 return true;
             case EBattlePhase.RESOLUTION:
+                if (!AttackerDecided) return false;
                 ResolveCasualties();
                 if (CheckForWinner()){
                     IsDecided = true;
@@ -222,9 +223,6 @@ public class Battle{
                 }
                 AttackingInfantryRolls = GetInfantryRolls(GetAttacker());
                 DefendingInfantryRolls = GetInfantryRolls(GetDefendingNations().FirstOrDefault());
-                if (!AttackerDecided) return false;
-                CurrentNation = GetNextNation();
-                CurrentNationId = CurrentNation.Id;
                 Round += 1;
                 Phase = IsAquaticBattle() ? EBattlePhase.SPECIAL_SUBMARINE : EBattlePhase.ATTACK;
                 AttackerDecided = false;
@@ -252,7 +250,6 @@ public class Battle{
     public bool AttackerRetreats(){
         if (Phase != EBattlePhase.RESOLUTION) return false;
         AttackerDecided = true;
-        AdvanceCombat();
         //List<AUnit> retreatingUnits = Attackers.Where(unit => unit.GetPossibleRetreatTargets((from u in Attackers select u.GetPreviousLocation()).ToList()).Count > 0).ToList();
         return true;
     }
@@ -260,7 +257,6 @@ public class Battle{
     public bool AttackerContinues(){
         if (Phase != EBattlePhase.RESOLUTION) return false;
         AttackerDecided = true;
-        AdvanceCombat();
         return true;
     }
 
