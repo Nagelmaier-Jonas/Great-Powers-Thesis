@@ -20,11 +20,11 @@
                 <div id="particles-js"></div>
                 <MudPaper Height="85vh" Width="100vw" Class="d-flex bg-transparent shadow-none position-fixed bottom-0 p-0">
                     <MudContainer Class="d-flex flex-column p-0">
-                        <CombatCard Label="Nichtkombattanten" Attacker="false" Units="@(new List<AUnit>())" Battle="@Battle"/>
-                        <CombatCard Label="Flugabwehr & Bomber" Attacker="false" Units="@Battle.Attackers.Where(t => t.IsAntiAir() || t.IsBomber()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Infantrie & Artillerie" Attacker="false" Units="@Battle.Attackers.Where(t => t.IsInfantry() || t.IsArtillery()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Panzer" Attacker="false" Units="@Battle.Attackers.Where(t => t.IsTank()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Jäger" Attacker="false" Units="@Battle.Attackers.Where(t => t.IsFighter()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Nichtkombattanten" Attacker="true" Units="@(new List<AUnit>())" Battle="@Battle"/>
+                        <CombatCard Label="Flugabwehr & Bomber" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsAntiAir() || t.IsBomber()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Infantrie & Artillerie" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsInfantry() || t.IsArtillery()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Panzer" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsTank()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Jäger" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsFighter()).ToList()" Battle="@Battle"/>
                     </MudContainer>
                     <MudContainer Class="d-flex flex-column p-0 text-center">
                         <MudText Color="Color.Secondary">@Battle.CurrentNation.Name</MudText>
@@ -43,11 +43,11 @@
                         }
                     </MudContainer>
                     <MudContainer Class="d-flex flex-column p-0">
-                        <CombatCard Label="Nichtkombattanten" Attacker="true" Units="@(new List<AUnit>())" Battle="@Battle"/>
-                        <CombatCard Label="Infantrie " Attacker="true" Units="@Battle.Defenders.Where(t => t.IsInfantry()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Artillerie" Attacker="true" Units="@Battle.Defenders.Where(t => t.IsArtillery()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Panzer & Jäger" Attacker="true" Units="@Battle.Defenders.Where(t => t.IsTank() || t.IsFighter()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Bomber" Attacker="true" Units="@Battle.Defenders.Where(t => t.IsBomber()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Nichtkombattanten" Attacker="false" Units="@(new List<AUnit>())" Battle="@Battle"/>
+                        <CombatCard Label="Infantrie " Attacker="false" Units="@Battle.Defenders.Where(t => t.IsInfantry()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Artillerie" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsArtillery()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Panzer & Jäger" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsTank() || t.IsFighter()).ToList()" Battle="@Battle"/>
+                        <CombatCard Label="Bomber" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsBomber()).ToList()" Battle="@Battle"/>
                     </MudContainer>
                 </MudPaper>
             }
