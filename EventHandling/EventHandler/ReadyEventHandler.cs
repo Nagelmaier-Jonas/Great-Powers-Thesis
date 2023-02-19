@@ -1,10 +1,17 @@
-﻿using EventBus.Events;
+﻿using Domain.Services;
+using EventBus.Events;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EventHandling.EventHandler;
 
 public class ReadyEventHandler : IEventHandler{
-    public event Action? HandleReadyEvent;
+
+    private readonly ReadyService readyService;
+
+    public ReadyEventHandler(IServiceScopeFactory serviceScopeFactory){
+        readyService = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<ReadyService>();
+    }
     public void Execute(){
-        HandleReadyEvent?.Invoke();
+        readyService.Ready();
     }
 }

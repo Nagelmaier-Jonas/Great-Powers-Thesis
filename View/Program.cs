@@ -126,6 +126,7 @@ builder.Services.AddScoped<ChannelPaths>();
 
 builder.Services.AddScoped<ActiveRegion>();
 builder.Services.AddSingleton<ViewRefreshService>();
+builder.Services.AddSingleton<ReadyService>();
 builder.Services.AddScoped<CombatTargets>();
 builder.Services.AddScoped<Battlegrounds>();
 builder.Services.AddScoped<NonCombatTargets>();

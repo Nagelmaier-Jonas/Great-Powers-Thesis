@@ -5,15 +5,17 @@
 @using System.Text.Json
 @using DataTransfer
 @using Domain.Repositories.Implementations
+@using Domain.Services
 @using EventBus.Clients
-@using EventHandling.EventHandler
 @using Model.Entities
+@using Model.Factories
 @inject NationRepository NationRepository
 @inject UserRepository UserRepository
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
-@inject ReadyEventHandler ReadyEventHandler
+@inject ReadyService ReadyService
 @inject EventPublisher EventPublisher
+@implements IDisposable
 
 <style>
     body {
@@ -42,6 +44,8 @@
         </ItemContent>
     </MudTimelineItem>
 </MudTimeline>
+
+<MudButton OnClick="NavigateToGame">Navigate</MudButton>
 
 @if (Nations.Count > 0){
     <MudContainer Class="d-flex justify-content-around align-items-center mt-5">
@@ -121,10 +125,11 @@
     }
 
     protected override void OnInitialized(){
-        ReadyEventHandler.HandleReadyEvent += NavigateToGame;
+        
     }
 
     protected override async Task OnInitializedAsync(){
+        ReadyService.HandleReadyChange += NavigateToGame;
         Nations = await NationRepository.ReadAllGraphAsync();
         CurrentUser!.Ready = false;
         await UserRepository.UpdateAsync(CurrentUser);
@@ -168,6 +173,10 @@
         Nations = await NationRepository.ReadAllGraphAsync();
         Snackbar.Add("Nation freigegeben", Severity.Success);
         StateHasChanged();
+    }
+
+    public void Dispose(){
+        ReadyService.HandleReadyChange -= NavigateToGame;
     }
 
 }

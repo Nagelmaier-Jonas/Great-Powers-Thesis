@@ -2555,6 +2555,7 @@ public class Tests{
 
     [Test]
     public void Test2(){
-        List<int> list = new();
+        string asd = JsonSerializer.Serialize(new ReadyEvent());
+        Assert.AreEqual("a",asd);
     }
 }
