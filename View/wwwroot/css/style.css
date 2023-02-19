@@ -447,7 +447,7 @@ span.logo {
     bottom: 5vh;
     background: rgb(195 191 191);
     padding: 10px !important;
-    right: 5vw;
+    left: 50vw;
     border-radius: 10px;
     color: white;
 }
