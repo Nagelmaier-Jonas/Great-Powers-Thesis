@@ -1,10 +1,12 @@
-﻿namespace Model.Entities;
+﻿using System.ComponentModel;
+
+namespace Model.Entities;
 
 public enum ENation{
-    SovietUnion,
-    Germany,
-    UnitedKingdom,
-    Japan,
-    UnitedStates,
-    Neutral
+    [Description("Soviet Union")] SovietUnion,
+    [Description("Deutsches Reich")] Germany,
+    [Description("Vereinigtes Königreich")] UnitedKingdom,
+    [Description("Japan")] Japan,
+    [Description("Vereinigte Staaten")] UnitedStates,
+    [Description("Neutral")] Neutral
 }

@@ -8,6 +8,7 @@
 @using Domain.Services
 @using EventBus.Clients
 @using Model.Entities
+@using Vanara.Extensions
 @inject NationRepository NationRepository
 @inject UserRepository UserRepository
 @inject ISnackbar Snackbar
@@ -51,7 +52,7 @@
             <MudCard Style="width: 10vw;">
                 <MudCardHeader>
                     <CardHeaderContent>
-                        <MudText Typo="Typo.body1">@n.Name</MudText>
+                        <MudText Typo="Typo.body1">@n.Type.GetDescription()</MudText>
                     </CardHeaderContent>
                 </MudCardHeader>
                 <MudCardMedia Image=@($"img/flags/{n.Name}.svg") Height="100" Style="margin: 20px; background-size: contain;"/>
@@ -134,8 +135,9 @@
         NavigationManager.NavigateTo("/game");
     }
     
-    private void Rerender(){
-        StateHasChanged();
+    private async void Rerender(){
+        Nations = await NationRepository.ReadAllGraphAsync();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task Assign(Nation nation){

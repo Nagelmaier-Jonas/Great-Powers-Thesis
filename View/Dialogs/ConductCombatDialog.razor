@@ -34,11 +34,12 @@
                         @if (Battle.DiceRolls is not null){
                             <Dices Rolls="@Battle.DiceRolls"/>
                         }
-                        <MudContainer Class="d-flex mt-10 text-center">
+                        <MudContainer Class="d-flex mt-10 text-center justify-content-center">
                             <MudText Typo="Typo.h5" Color="@Color.Info">Treffer ausstehend: <br/><MudText Typo="Typo.h3" Color="@Color.Secondary" Class="text-center">@(Battle.NormalHits + Battle.NonAirHits + Battle.NonSubmarineHits)</MudText></MudText>
                         </MudContainer>
                         <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Color="Color.Error" Label="Fortsetzen" Class="align-self-center mb-3 mt-3 position-absolute bottom-0" OnClick="StartBattle"/>
                         @if (Battle.Phase == EBattlePhase.RESOLUTION && Battle.AttackerDecided == false){
+                            <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Color="Color.Error" Label="Fortsetzen" Class="align-self-center mb-3 mt-3 position-absolute bottom-10" OnClick="StartBattle"/>
                             <MudButton Color="Color.Error" OnClick="Continue">Weitermachen</MudButton>
                         }
                     </MudContainer>
