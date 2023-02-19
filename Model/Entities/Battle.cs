@@ -103,7 +103,8 @@ public class Battle{
 
     private void RollForHits(){
         bool attacker = IsAttacker(CurrentNation);
-        foreach (var unit in GetCurrentNationsUnits()){
+        List<AUnit> units = Phase == EBattlePhase.SPECIAL_SUBMARINE ? GetCurrentNationsUnits().Where(u => u.IsSubmarine()).ToList() : GetCurrentNationsEnemies();
+        foreach (var unit in units){
             int roll = Dice.Roll();
             DiceRolls[roll] += 1;
             if (unit.IsPlane()){
@@ -183,13 +184,9 @@ public class Battle{
                     Phase = EBattlePhase.ATTACK;
                     return true;
                 }
-
-                if (CheckForOpenHits()) return false;
-                RollForHits();
-                Phase = EBattlePhase.DEFENSE;
+                Phase = EBattlePhase.ATTACK;
                 return true;
             case EBattlePhase.ATTACK:
-                if (CheckForOpenHits()) return false;
                 if (CheckForDefenselessTransports()){
                     Phase = EBattlePhase.RESOLUTION;
                     return true;
