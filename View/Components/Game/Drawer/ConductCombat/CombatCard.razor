@@ -1,7 +1,11 @@
 ﻿@using Model.Entities.Units.Abstract
 @using Model.Entities
 @using Domain.Repositories.Implementations
+@using EventBus.Clients
+@using System.Text.Json
+@using DataTransfer
 @inject BattleRepository BattleRepository
+@inject EventPublisher EventPublisher
 
 <MudContainer Style="@(Attacker ? "border-radius: 0 10px 10px 0;" : "border-radius: 10px 0 0 10px;")" Class="bg-opacity-25 combat-card-container">
     <MudText Style="@(Attacker ? "text-align: start;" : "text-align: end;")" Color="Color.Info">@Label</MudText>
@@ -94,7 +98,7 @@
         if (Battle is null) return;
         if(!Battle.PlaceHit(unit)) return;
         await BattleRepository.UpdateAsync(Battle);
-        StateHasChanged();
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
 
 }

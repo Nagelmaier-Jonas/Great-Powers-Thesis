@@ -1,12 +1,14 @@
 ﻿@using Model.Entities
 @using Model.Entities.Units.Abstract
 @using Domain.Repositories.Implementations
+@using Domain.Services
 @using Vanara.Extensions
 @inject IJSRuntime JSRuntime
 @inject BattleRepository BattleRepository
 @inject NationRepository NationRepository
 @inject UnitRepository UnitRepository
 @inject GameEngine GameEngine
+@inject ViewRefreshService ViewRefreshService
 
 @if (Battle is not null){
     <MudDialog Class="@RegionType">
@@ -105,8 +107,13 @@
     public Battle? Battle { get; set; }
 
     protected override void OnInitialized(){
+        ViewRefreshService.HandleViewRefreshChange += HandleViewRefreshChange;
         if (Battle is null) return;
         RegionType = !Battle.IsAquaticBattle() ? "battleground-drawer-land" : "battleground-drawer-water";
+    }
+    
+    private void HandleViewRefreshChange(){
+        StateHasChanged();
     }
 
     protected override void OnAfterRender(bool firstRender){

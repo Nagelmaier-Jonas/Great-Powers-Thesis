@@ -8,12 +8,12 @@
 @using Domain.Services
 @using EventBus.Clients
 @using Model.Entities
-@using Model.Factories
 @inject NationRepository NationRepository
 @inject UserRepository UserRepository
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
 @inject ReadyService ReadyService
+@inject ViewRefreshService ViewRefreshService
 @inject EventPublisher EventPublisher
 @implements IDisposable
 
@@ -44,8 +44,6 @@
         </ItemContent>
     </MudTimelineItem>
 </MudTimeline>
-
-<MudButton OnClick="NavigateToGame">Navigate</MudButton>
 
 @if (Nations.Count > 0){
     <MudContainer Class="d-flex justify-content-around align-items-center mt-5">
@@ -124,12 +122,9 @@
         
     }
 
-    protected override void OnInitialized(){
-        
-    }
-
     protected override async Task OnInitializedAsync(){
         ReadyService.HandleReadyChange += NavigateToGame;
+        ViewRefreshService.HandleViewRefreshChange += Rerender;
         Nations = await NationRepository.ReadAllGraphAsync();
         CurrentUser!.Ready = false;
         await UserRepository.UpdateAsync(CurrentUser);
@@ -137,6 +132,10 @@
 
     private void NavigateToGame(){
         NavigationManager.NavigateTo("/game");
+    }
+    
+    private void Rerender(){
+        StateHasChanged();
     }
 
     private async Task Assign(Nation nation){
@@ -153,7 +152,7 @@
         await NationRepository.UpdateAsync(nation);
         Nations = await NationRepository.ReadAllGraphAsync();
         Snackbar.Add("Sie haben die Nation erfolgreich zugewiesen", Severity.Success);
-        StateHasChanged();
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
     }
 
     private async Task Release(Nation nation){
@@ -172,11 +171,12 @@
         await NationRepository.ResetPlayer(nation.Id);
         Nations = await NationRepository.ReadAllGraphAsync();
         Snackbar.Add("Nation freigegeben", Severity.Success);
-        StateHasChanged();
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
     }
 
     public void Dispose(){
         ReadyService.HandleReadyChange -= NavigateToGame;
+        ViewRefreshService.HandleViewRefreshChange -= Rerender;
     }
 
 }

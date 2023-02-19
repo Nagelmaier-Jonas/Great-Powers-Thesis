@@ -1,7 +1,9 @@
-﻿using EventBus.Events;
+﻿using System.Text;
+using EventBus.Events;
 using Microsoft.Extensions.Configuration;
 using Model.Configuration;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
 namespace EventBus.Clients;
 
@@ -46,5 +48,16 @@ public class EventSubscriberHelper{
         _channel.QueueDeclare(_queueName,true,false,false);
         _channel.ExchangeDeclare(exchange: _exchangeName, type: ExchangeType.Fanout);
         _channel.QueueBind(_queueName,_exchangeName,"");
+
+        var consumer = new EventingBasicConsumer(_channel);
+        
+        consumer.Received += (moduleHandle, message) => {
+            var body = message.Body;
+            var eventMessage = Encoding.UTF8.GetString(body.ToArray());
+            
+            _eventProcessor.ProcessEvent(eventMessage);
+        };
+
+        _channel.BasicConsume(_queueName, true, consumer);
     }
 }
