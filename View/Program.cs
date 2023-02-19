@@ -132,7 +132,7 @@ builder.Services.AddScoped<Battlegrounds>();
 builder.Services.AddScoped<NonCombatTargets>();
 builder.Services.AddScoped<MobilizeUnit>();
 
-builder.Services.AddSingleton<GameEngine>();
+builder.Services.AddScoped<GameEngine>();
 
 builder.Services.AddTransient<StateHasChangedEventHandler>();
 builder.Services.AddTransient<ReadyEventHandler>();

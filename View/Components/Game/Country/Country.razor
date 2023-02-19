@@ -74,11 +74,8 @@
     [Parameter]
     public SessionInfo? SessionInfo { get; set; }
 
-    private List<ARegion>? Battlegrounds { get; set; }
-
-    protected override async Task OnInitializedAsync(){
-        Battlegrounds = await GameEngine.GetBattleLocations();
-    }
+    [Parameter]
+    public List<ARegion>? Battlegrounds { get; set; }
 
     private async Task UpdateRegion(MouseEventArgs args){
         if (args.ShiftKey){

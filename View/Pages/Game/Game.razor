@@ -12,6 +12,7 @@
 @inject CombatTargets CombatTargets
 @inject NonCombatTargets NonCombatTargets
 @inject ActiveRegion ActiveRegion
+@inject GameEngine GameEngine
 @implements IDisposable
 
 <style>
@@ -35,7 +36,7 @@
             <CollectIncome SessionInfo="Info" CurrentNation="CurrentNation"/>
         </MudDrawer>
     }
-    <GameMap Nations="@Nations" SeeZones="@SeeZones" SessionInfo="@Info" Style="@Style" ChildStyle="@ChildStyle"/>
+    <GameMap Nations="@Nations" SeeZones="@SeeZones" SessionInfo="@Info" Style="@Style" ChildStyle="@ChildStyle" Battlegrounds="Battlegrounds"/>
 </MudLayout>
 
 @code {
@@ -47,6 +48,7 @@
     private List<Nation> Nations { get; set; } = new();
     private List<WaterRegion> SeeZones { get; set; } = new();
     private Nation CurrentNation { get; set; } = new();
+    private List<ARegion>? Battlegrounds { get; set; }
     private int MaxTroops { get; set; }
 
     bool _open = false;
@@ -69,6 +71,7 @@
         CurrentNation = await scope.ServiceProvider.GetRequiredService<NationRepository>().ReadGraphAsync(Info.CurrentNationId);
         MaxTroops = await scope.ServiceProvider.GetRequiredService<NationRepository>().GetFactoryPower(CurrentNation);
         CurrentUser = await scope.ServiceProvider.GetRequiredService<UserRepository>().ReadGraphAsync(CurrentUser!.Id);
+        Battlegrounds = await scope.ServiceProvider.GetRequiredService<GameEngine>().GetBattleLocations();
         if (!(CurrentUser is not null && CurrentUser.Nations.Any(n => n.Id == CurrentNation.Id))){
             CloseDrawer();
         }

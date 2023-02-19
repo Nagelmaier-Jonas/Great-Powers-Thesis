@@ -305,5 +305,6 @@ public class GameEngine{
         //set the owner of the region to the winner
         Init(_ServiceScopeFactory.CreateScope());
         await _BattleRepository.DeleteBattle(battle.Id);
+        _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
 }
