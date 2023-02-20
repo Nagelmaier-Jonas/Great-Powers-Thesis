@@ -20,41 +20,57 @@
                 @if (unit.HitPoints <= 0){
                     defeat = "troop_damaged";
                 }
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@unit.Nation.Name ml-2 mr-2" width="50" height="50">
-                    <g>
-                        <circle class="@defeat" cx="47.5" cy="47.5" r="47.25"/>
-                        <path class="@defeat"
-                              d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
-                    </g>
-                    <path class="troopbadge-symbol"
-                          d="@unit.GetStringFromDictionary(UnitPaths.Paths)"/>
-                </svg>
-                    @if (/*CurrentUser.Nations.Contains(Battle.CurrentNation) && */Battle.Phase != EBattlePhase.RESOLUTION){
-                        @if (Battle.IsAttacker(Battle.CurrentNation)){
-                            @if (Battle.Phase == EBattlePhase.SPECIAL_SUBMARINE){
-                                @if (Battle.Attackers.Any(x => x.Id == unit.Id && unit.IsSubmarine() && unit.HitPoints > 0 && !Battle.CheckForDestroyers(unit))){
-                                    <MudChip Style="color: white;" OnClick="@(() => Submerge(unit))">Submerge</MudChip>
-                                }
-                            }
-                            else{
-                                @if (Battle.Defenders.Any(x => x.Id == unit.Id) && unit.HitPoints > 0){
-                                    <MudChip Style="color: white;" OnClick="@(() => PlaceHit(unit))">Hit</MudChip>
-                                }
+                @if (unit.IsBattleship() && unit.HitPoints == 1){
+                    <MudBadge Dot="true" Color="Color.Info" Class="mx-6 my-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@unit.Nation.Name ml-2 mr-2" width="50" height="50">
+                            <g>
+                                <circle class="@defeat" cx="47.5" cy="47.5" r="47.25"/>
+                                <path class="@defeat"
+                                      d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
+                            </g>
+                            <path class="troopbadge-symbol"
+                                  d="@unit.GetStringFromDictionary(UnitPaths.Paths)"/>
+                        </svg>
+                    </MudBadge>
+                }
+                else{
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@unit.Nation.Name ml-2 mr-2" width="50" height="50">
+                        <g>
+                            <circle class="@defeat" cx="47.5" cy="47.5" r="47.25"/>
+                            <path class="@defeat"
+                                  d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
+                        </g>
+                        <path class="troopbadge-symbol"
+                              d="@unit.GetStringFromDictionary(UnitPaths.Paths)"/>
+                    </svg>
+                }
+
+                @if (CurrentUser.Nations.Any(i => i.Id == Battle.CurrentNation.Id) && Battle.Phase != EBattlePhase.RESOLUTION){
+                    @if (Battle.IsAttacker(Battle.CurrentNation)){
+                        @if (Battle.Phase == EBattlePhase.SPECIAL_SUBMARINE){
+                            @if (Battle.Attackers.Any(x => x.Id == unit.Id && unit.IsSubmarine() && unit.HitPoints > 0 && !Battle.CheckForDestroyers(unit))){
+                                <MudChip Style="color: white;" OnClick="@(() => Submerge(unit))">Submerge</MudChip>
                             }
                         }
                         else{
-                            @if (Battle.Phase == EBattlePhase.SPECIAL_SUBMARINE){
-                                @if (Battle.Defenders.Any(x => x.Id == unit.Id && unit.IsSubmarine() && unit.HitPoints > 0 && !Battle.CheckForDestroyers(unit))){
-                                    <MudChip Style="color: white;" OnClick="@(() => Submerge(unit))">Submerge</MudChip>
-                                }
-                            }
-                            else{
-                                @if (Battle.Attackers.Any(x => x.Id == unit.Id) && unit.HitPoints > 0){
-                                    <MudChip Style="color: white;" OnClick="@(() => PlaceHit(unit))">Hit</MudChip>
-                                }
+                            @if (Battle.Defenders.Any(x => x.Id == unit.Id) && unit.HitPoints > 0){
+                                <MudChip Style="color: white;" OnClick="@(() => PlaceHit(unit))">Hit</MudChip>
                             }
                         }
                     }
+                    else{
+                        @if (Battle.Phase == EBattlePhase.SPECIAL_SUBMARINE){
+                            @if (Battle.Defenders.Any(x => x.Id == unit.Id && unit.IsSubmarine() && unit.HitPoints > 0 && !Battle.CheckForDestroyers(unit))){
+                                <MudChip Style="color: white;" OnClick="@(() => Submerge(unit))">Submerge</MudChip>
+                            }
+                        }
+                        else{
+                            @if (Battle.Attackers.Any(x => x.Id == unit.Id) && unit.HitPoints > 0){
+                                <MudChip Style="color: white;" OnClick="@(() => PlaceHit(unit))">Hit</MudChip>
+                            }
+                        }
+                    }
+                }
             }
         </MudContainer>
         <MudContainer Class="p-0 text-center" Style="@(Attacker ? "border-left: 1px solid grey; width:5vw; padding-left: 10px !important;" : "border-right: 1px solid grey; width:5vw; padding-right: 10px !important;")">
@@ -119,13 +135,13 @@
         await UnitRepository.UpdateAsync(unit);
         EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
     }
-    
+
     private async Task Submerge(AUnit unit){
         if (Battle is null) return;
-        if(!Battle.Submerge(unit)) return;
+        if (!Battle.Submerge(unit)) return;
         await BattleRepository.UpdateAsync(Battle);
         await UnitRepository.UpdateAsync(unit);
-        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
     }
 
 }

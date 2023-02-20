@@ -9,6 +9,7 @@
 @inject UnitRepository UnitRepository
 @inject GameEngine GameEngine
 @inject ViewRefreshService ViewRefreshService
+@implements IDisposable
 
 @if (Battle is not null){
     <MudDialog Class="@RegionType">
@@ -37,11 +38,11 @@
                         <MudContainer Class="d-flex mt-10 text-center justify-content-center">
                             <MudText Typo="Typo.h5" Color="@Color.Info">Treffer ausstehend: <br/><MudText Typo="Typo.h3" Color="@Color.Secondary" Class="text-center">@(Battle.NormalHits + Battle.NonAirHits + Battle.NonSubmarineHits)</MudText></MudText>
                         </MudContainer>
-                        @if (/*CurrentUser.Nations.Contains(Battle.CurrentNation)*/true){
+                        @if (CurrentUser.Nations.Contains(Battle.CurrentNation)){
                             @if (!Battle.IsDecided){
                                 <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Color="Color.Error" Label="Fortsetzen" Class="align-self-center mb-3 mt-3 position-absolute bottom-0" OnClick="StartBattle"/>
                                 @if (Battle.Phase == EBattlePhase.RESOLUTION && Battle.AttackerDecided == false){
-                                    <MudFab StartIcon="@Icons.Material.Filled.Autorenew" Color="Color.Info" Label="Weitermachen" Class="align-self-center mb-3 mt-3 position-absolute bottom-5" OnClick="Continue"/>
+                                    <MudFab StartIcon="@Icons.Material.Filled.Autorenew" Color="Color.Info" Label="Weitermachen" Class="align-self-center mb-3 mt-3 position-absolute bottom-17" OnClick="Continue"/>
                                     <MudFab StartIcon="@Icons.Material.Filled.ArrowBack" Color="Color.Info" Label="Zurückziehen" Class="align-self-center mb-3 mt-3 position-absolute bottom-10" OnClick="Retreat"/>
                                 }
                             }
@@ -83,11 +84,11 @@
                             <MudText Typo="Typo.h5" Color="@Color.Info">U-Boot Treffer ausstehend: <br/><MudText Typo="Typo.h3" Color="@Color.Secondary" Class="text-center">@Battle.NonAirHits</MudText></MudText>
                             <MudText Typo="Typo.h5" Color="@Color.Info">Luft Treffer ausstehend: <br/><MudText Typo="Typo.h3" Color="@Color.Secondary" Class="text-center">@Battle.NonSubmarineHits</MudText></MudText>
                         </MudContainer>
-                        @if (/*CurrentUser.Nations.Contains(Battle.CurrentNation)*/true){
+                        @if (CurrentUser.Nations.Contains(Battle.CurrentNation)){
                             @if (!Battle.IsDecided){
                                 <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Color="Color.Error" Label="Fortsetzen" Class="align-self-center mb-3 mt-3 position-absolute bottom-0" OnClick="StartBattle"/>
                                 @if (Battle.Phase == EBattlePhase.RESOLUTION && Battle.AttackerDecided == false){
-                                    <MudFab StartIcon="@Icons.Material.Filled.Autorenew" Color="Color.Info" Label="Weitermachen" Class="align-self-center mb-3 mt-3 position-absolute bottom-5" OnClick="Continue"/>
+                                    <MudFab StartIcon="@Icons.Material.Filled.Autorenew" Color="Color.Info" Label="Weitermachen" Class="align-self-center mb-3 mt-3 position-absolute bottom-17" OnClick="Continue"/>
                                     <MudFab StartIcon="@Icons.Material.Filled.ArrowBack" Color="Color.Info" Label="Zurückziehen" Class="align-self-center mb-3 mt-3 position-absolute bottom-10" OnClick="Retreat"/>
                                 }
                             }
@@ -175,4 +176,9 @@
     }
 
     void Cancel() => MudDialog.Cancel();
+
+    public void Dispose(){
+        ViewRefreshService.HandleViewRefreshChange -= HandleViewRefreshChange;
+    }
+
 }

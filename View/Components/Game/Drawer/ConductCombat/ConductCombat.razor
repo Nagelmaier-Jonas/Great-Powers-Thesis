@@ -24,11 +24,8 @@ else{
     [Parameter]
     public SessionInfo? SessionInfo { get; set; }
 
-    private List<ARegion> Battlegrounds { get; set; } = new();
-
-    protected override async Task OnInitializedAsync(){
-        Battlegrounds = await GameEngine.GetBattleLocations();
-    }
+    [Parameter]
+    public List<ARegion> Battlegrounds { get; set; } = new();
 
     private async Task FinishPhase(){
         if (Battlegrounds.Count > 0){

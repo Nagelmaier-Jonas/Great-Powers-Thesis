@@ -124,6 +124,9 @@
     }
 
     protected override async Task OnInitializedAsync(){
+        if (CurrentUser == null){
+            NavigationManager.NavigateTo("/Identity/Account/Login");
+        }
         ReadyService.HandleReadyChange += NavigateToGame;
         ViewRefreshService.HandleViewRefreshChange += Load;
         Load();

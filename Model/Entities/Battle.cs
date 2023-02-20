@@ -112,7 +112,6 @@ public class Battle{
                     if (roll <= unit.Attack) NonSubmarineHits += 1;
                     continue;
                 }
-
                 if (roll <= unit.Defense) NonSubmarineHits += 1;
                 continue;
             }
@@ -217,8 +216,8 @@ public class Battle{
                 if(IsDecided) return false;
                 if (!AttackerDecided) return false;
                 ResolveCasualties();
-                AttackingInfantryRolls = GetInfantryRolls(GetAttacker());
-                DefendingInfantryRolls = GetInfantryRolls(GetDefendingNations().FirstOrDefault());
+                if(Attackers.Count != 0) AttackingInfantryRolls = GetInfantryRolls(GetAttacker());
+                if(Defenders.Count != 0) DefendingInfantryRolls = GetInfantryRolls(GetDefendingNations().FirstOrDefault());
                 Round += 1;
                 Phase = IsAquaticBattle() ? EBattlePhase.SPECIAL_SUBMARINE : EBattlePhase.ATTACK;
                 AttackerDecided = false;

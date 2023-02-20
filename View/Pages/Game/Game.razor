@@ -27,7 +27,7 @@
             <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" Class="position-absolute top-0 end-0 mt-3" OnClick="CloseDrawer"/>
             <Purchase SessionInfo="Info" CurrentNation="CurrentNation" MaxTroops="MaxTroops"/>
             <CombatMove SessionInfo="Info"/>
-            <ConductCombat SessionInfo="Info"/>
+            <ConductCombat SessionInfo="Info" Battlegrounds="Battlegrounds"/>
             <NonCombatMove SessionInfo="Info"/>
             <MobilizeNewUnits SessionInfo="Info" CurrentNation="CurrentNation" PlaceableFactories="PlaceableFactories" PlaceableUnits="PlaceableUnits"/>
             <CollectIncome SessionInfo="Info" CurrentNation="CurrentNation"/>
@@ -45,7 +45,7 @@
     private List<Nation> Nations { get; set; } = new();
     private List<WaterRegion> SeeZones { get; set; } = new();
     private Nation CurrentNation { get; set; } = new();
-    private List<ARegion>? Battlegrounds { get; set; }
+    private List<ARegion>? Battlegrounds { get; set; } = new();
     private List<AUnit> PlaceableUnits { get; set; } = new();
     private List<AUnit> PlaceableFactories { get; set; } = new();
     private int MaxTroops { get; set; }

@@ -103,6 +103,8 @@ else{
 
     private async Task RemoveTarget(AUnit unit){
         await GameEngine.RemovePlannedMovement(unit);
+        CombatTargets.ClearRegions();
+        CombatTargets.ClearUnits();
         EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
     }
 

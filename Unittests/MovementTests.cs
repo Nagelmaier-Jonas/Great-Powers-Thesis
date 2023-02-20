@@ -2551,11 +2551,13 @@ public class Tests{
     public void Test1(){
         string asd = JsonSerializer.Serialize(new StateHasChangedEvent());
         Assert.AreEqual("a",asd);
+        // {"Type":"STATE_HAS_CHANGED"}
     }
 
     [Test]
     public void Test2(){
         string asd = JsonSerializer.Serialize(new ReadyEvent());
         Assert.AreEqual("a",asd);
+        // {"Type":"READY_EVENT"}
     }
 }

@@ -25,7 +25,7 @@
         return;
     }
 }
-<MudText Class="fw-bold text-center mb-3 mt-5 noselect" Color="Color.Secondary" Typo="Typo.h4">Kampfbewegung</MudText>
+<MudText Class="fw-bold text-center mb-3 mt-5 noselect" Color="Color.Secondary" Typo="Typo.h4">Bewegung</MudText>
 @if (SessionInfo is not null && ActiveRegion.Region is not null && ActiveRegion.Region.GetStationedUnits().Where(u => u.CanMove).ToList().Count > 0){
     <MudTable Items="@ActiveRegion.Region.GetStationedUnits().Where(u => u.CanMove).ToList()" Class="border-none purchase-table" Dense="true" FixedHeader="true" Height="60vh">
         <HeaderContent>
@@ -102,6 +102,8 @@ else{
 
     private async Task RemoveTarget(AUnit unit){
         await GameEngine.RemovePlannedMovement(unit);
+        NonCombatTargets.ClearRegions();
+        NonCombatTargets.ClearUnits();
         EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
     }
 
