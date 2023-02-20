@@ -15,7 +15,7 @@
                 <MudText Class="fw-bold text-center mb-3 mt-5" Color="Color.Default" Typo="Typo.body1">Ausgegebene IPP <MudText Color="Color.Error">@(StartingAmount - CurrentNation.Treasury)</MudText></MudText>
                 <MudText Class="fw-bold text-center mb-3 mt-5" Color="Color.Default" Typo="Typo.body1">Verbleibende IPP <MudText Color="Color.Success">@CurrentNation.Treasury</MudText></MudText>
             </MudContainer>
-            <MudContainer>
+            <MudContainer Class="scroll-dialog">
                 @foreach (var unit in Checkout.Where(unit => unit.Value is not 0)){
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@CurrentNation.Name ml-3 mb-3" width="50" height="50">
                         <g>

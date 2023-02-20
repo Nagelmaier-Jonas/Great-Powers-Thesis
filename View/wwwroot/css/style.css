@@ -372,6 +372,11 @@ span.logo {
     scrollbar-width: none; /* Firefox */
 }
 
+.scroll-dialog {
+    max-height: 50vh !important;
+    overflow: auto !important;
+}
+
 .bottom-10 {
     bottom: 10% !important;
 }
