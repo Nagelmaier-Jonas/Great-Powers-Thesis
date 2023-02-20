@@ -43,16 +43,10 @@ public abstract class AUnit{
     [NotMapped] public virtual int Cost{ get; protected set; }
     [NotMapped] public virtual int Attack{ get; protected set; }
     [NotMapped] public virtual int Defense{ get; protected set; }
-
-    public int GetCost() => Cost;
-
+    
     public abstract ARegion? GetLocation();
-    public abstract ARegion? GetPreviousLocation();
     public abstract bool SetLocation(ARegion region);
     public virtual List<AUnit> GetSubUnits() => null;
-
-    public List<ARegion> GetPossibleRetreatTargetsList(List<ARegion> previousRegions) =>
-        throw new NotImplementedException();
 
 
     protected bool CanTarget(EPhase phase, ARegion target){

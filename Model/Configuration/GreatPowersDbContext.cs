@@ -95,20 +95,14 @@ public sealed class GreatPowersDbContext : IdentityDbContext<User>{
             .WithMany(u => u.Units).HasForeignKey(l => l.TransportId);
         builder.Entity<ALandUnit>().HasOne(n => n.Region)
             .WithMany(u => u.StationedUnits).HasForeignKey(l => l.RegionId);
-        builder.Entity<ALandUnit>().HasOne(n => n.PreviousLocation)
-            .WithMany().HasForeignKey(l => l.PreviousLocationId);
 
         builder.Entity<APlane>().HasOne(n => n.AircraftCarrier)
             .WithMany(u => u.Planes).HasForeignKey(p => p.AircraftCarrierId);
         builder.Entity<APlane>().HasOne(n => n.Region)
             .WithMany(u => u.StationedPlanes).HasForeignKey(p => p.RegionId);
-        builder.Entity<APlane>().HasOne(n => n.PreviousLocation)
-            .WithMany().HasForeignKey(p => p.PreviousLocationId);
 
         builder.Entity<AShip>().HasOne(s => s.Region)
             .WithMany(w => w.StationedShips).HasForeignKey(s => s.RegionId);
-        builder.Entity<AShip>().HasOne(s => s.PreviousLocation)
-            .WithMany().HasForeignKey(s => s.PreviousLocationId);
 
         builder.Entity<Battle>().HasOne<ARegion>(b => b.Location).WithOne().HasForeignKey<Battle>(b => b.LocationId);
         builder.Entity<Battle>().HasOne<Nation>(b => b.CurrentNation).WithMany(n => n.Battles).HasForeignKey(b => b.CurrentNationId);
