@@ -20,22 +20,29 @@ public abstract class ALandUnit : AUnit{
     public Transport? GetTransporter() => Transport;
 
     public override bool MoveToTarget(EPhase phase){
-        List<ARegion> path = GetPathToTarget(phase);
+        if (!CanMove) return false;
+        
+        List<ARegion> path = GetPath(phase);
         if (path.Count == 0) return false;
+
+        if (phase == EPhase.CombatMove) CanMove = false;
+        
+        PreviousLocation = Region;
+        PreviousLocationId = RegionId;
+        
         if (Target.IsWaterRegion()){
             Transport transport = Target.GetOpenTransports(Nation, phase).FirstOrDefault();
             if (transport is null) return false;
             Transport = transport;
+            TransportId = transport.Id;
+        }
+        else{
+            SetLocation(Target);
         }
 
         CurrentMovement -= path.Count;
-        PreviousLocation = Region;
-        SetLocation(Target);
         RemoveTarget();
-        if (phase == EPhase.CombatMove){
-            CanMove = false;
-        }
-
+        
         return true;
     }
 

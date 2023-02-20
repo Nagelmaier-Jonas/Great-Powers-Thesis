@@ -107,6 +107,12 @@ public class UnitRepository : ACreatableRepository<AUnit>, IUnitRepository{
 
         return placeableUnits;
     }
+    
+    public async Task MoveUpdateAsync(AUnit unit){
+        _context.ChangeTracker.Clear();
+        _context.Entry(unit).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+    }
 
     public async Task RemoveTargetAsync(int unitId){
         _context.ChangeTracker.Clear();

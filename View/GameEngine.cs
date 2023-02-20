@@ -7,6 +7,7 @@ using EventBus.Clients;
 using Model.Entities;
 using Model.Entities.Regions;
 using Model.Entities.Units.Abstract;
+using MudBlazor;
 using View.Components.Game.Drawer.ConductCombat;
 using View.Services;
 
@@ -21,6 +22,7 @@ public class GameEngine{
     public IServiceScopeFactory _ServiceScopeFactory{ get; set; }
     public ViewRefreshService _ViewRefreshService{ get; set; }
     public RegionRepository _RegionRepository{ get; set; }
+    public WaterRegionRepository _WaterRegionRepository{ get; set; }
     public Battlegrounds _Battlegrounds{ get; set; }
     public FileService FileService{ get; set; }
     public EventPublisher _EventPublisher{ get; set; }
@@ -42,6 +44,7 @@ public class GameEngine{
         _Battlegrounds = scope.ServiceProvider.GetRequiredService<Battlegrounds>();
         _FactoryRepository = scope.ServiceProvider.GetRequiredService<FactoryRepository>();
         _EventPublisher = scope.ServiceProvider.GetRequiredService<EventPublisher>();
+        _WaterRegionRepository = scope.ServiceProvider.GetRequiredService<WaterRegionRepository>();
     }
 
     public async Task PlanMovement(AUnit unit, ARegion target){
@@ -69,11 +72,13 @@ public class GameEngine{
     public async Task MoveUnits(){
         Init(_ServiceScopeFactory.CreateScope());
         SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
-        List<AUnit> units = (await _NationRepository.ReadAllGraphAsync()).SelectMany(n => n.Units.Where(u => u.Target != null)).ToList();
-        var unitsToMove = units.Where(unit => unit.MoveToTarget(session.Phase)).ToList();
-        foreach (var unit in unitsToMove){
+        List<Nation> nations = await _NationRepository.ReadAllGraphAsync();
+        await _WaterRegionRepository.ReadAllGraphAsync();
+        List<AUnit> units = nations.SelectMany(n => n.Units.Where(u => u.TargetId != null)).ToList();
+        foreach (var unit in units){
+            if(!unit.MoveToTarget(session.Phase)) return;
             Init(_ServiceScopeFactory.CreateScope());
-            await _UnitRepository.UpdateAsync(unit);
+            await _UnitRepository.MoveUpdateAsync(unit);
         }
     }
 
@@ -144,6 +149,13 @@ public class GameEngine{
         }
         await _RegionRepository.UpdateAsync(region);
     }
+    
+    public async Task ResetMovement(){
+        Init(_ServiceScopeFactory.CreateScope());
+        List<AUnit> units = await _UnitRepository.ReadAsync(u => !u.CanMove);
+        units.ForEach(u => u.CanMove = true);
+        await _UnitRepository.UpdateAsync(units);
+    } 
     public async Task<bool> CanPlaceShip(ARegion region){
         Init(_ServiceScopeFactory.CreateScope());
         var sessionInfo = await _SessionInfoRepository.ReadAsync();
@@ -257,8 +269,8 @@ public class GameEngine{
                 session.Phase = EPhase.ConductCombat;
                 break;
             case EPhase.ConductCombat:
-                session.Phase = EPhase.NonCombatMove;
                 await MoveUnits();
+                session.Phase = EPhase.NonCombatMove;
                 break;
             case EPhase.NonCombatMove:
                 await MoveUnits();
@@ -278,6 +290,7 @@ public class GameEngine{
                     session.Round++;
                 }
                 else session.CurrentNationId++;
+                await ResetMovement();
                 break;
         }
 
@@ -302,7 +315,17 @@ public class GameEngine{
             Init(_ServiceScopeFactory.CreateScope());
             await _UnitRepository.DeleteUnit(unit.Id);
         }
-        //set the owner of the region to the winner
+        
+        if(battle.Attackers.Count > 0){
+            Init(_ServiceScopeFactory.CreateScope());
+            Nation winner = await _NationRepository.ReadAsync(battle.GetAttacker().Id);
+            if (battle.Location.IsLandRegion()){
+                LandRegion region = (LandRegion) await _RegionRepository.ReadAsync(battle.LocationId);
+                region.Nation = winner;
+                await _NationRepository.UpdateAsync(winner);
+            }
+        }
+
         Init(_ServiceScopeFactory.CreateScope());
         await _BattleRepository.DeleteBattle(battle.Id);
         _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
