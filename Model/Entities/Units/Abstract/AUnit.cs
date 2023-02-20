@@ -141,8 +141,8 @@ public abstract class AUnit{
             List<List<Node>> temp = new List<List<Node>>();
 
             foreach (var n in travelled.Where(n => permutations.All(p => !p.Last().Equals(n)))){
-                temp = permutations.Where(p =>
-                    p.Last().Region.Neighbours.Any(neigh => neigh.Neighbour == n.Region) &&
+                temp = permutations.Where(p => GetAllegibleNeighbours(p.Last(),phase)
+                    .Any(neigh => neigh == n.Region) &&
                     n.Distance > p.Last().Distance).ToList();
                 foreach (var copy in temp.Select(t => new List<Node>(t))){
                     copy.Add(n);

@@ -198,17 +198,13 @@ public class GameEngine{
         List<AUnit> units = region.GetStationedUnits();
         units.AddRange(region.IncomingUnits);
 
-        foreach (var t in units){
-            if (t.Target is null) t.DefenderId = battle.Id;
-            else t.AggressorId = battle.Id;
-        }
-
-        Init(_ServiceScopeFactory.CreateScope());
-        
         foreach (var unit in units){
+            if (unit.Target is null) unit.DefenderId = battle.Id;
+            else unit.AggressorId = battle.Id;
             Init(_ServiceScopeFactory.CreateScope());
             await _UnitRepository.UpdateAsync(unit);
         }
+        
         Init(_ServiceScopeFactory.CreateScope());
         var result = await _BattleRepository.GetBattleFromLocation(region);
         result.AttackingInfantryRolls = result.GetInfantryRolls(result.GetAttacker());
@@ -234,19 +230,19 @@ public class GameEngine{
     }
 
     public async Task AttackerRetreats(Battle battle){
-        foreach (var unit in battle.Attackers){
-            await _UnitRepository.RemoveTargetAsync(unit.Id);
-            await _UnitRepository.RemoveAggressorAsync(unit.Id);
+        foreach (var unit in battle.Attackers.Where(u => u.HitPoints > 0)){
+            unit.RemoveTarget();
+            await _UnitRepository.UpdateAsync(unit);
         }
         battle.AttackerRetreats();
         Init(_ServiceScopeFactory.CreateScope());
-        await _BattleRepository.UpdateBattleAsync(battle);
+        await _BattleRepository.UpdateAsync(battle);
         _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
     public async Task AttackerContinues(Battle battle){
         battle.AttackerContinues();
         Init(_ServiceScopeFactory.CreateScope());
-        await _BattleRepository.UpdateBattleAsync(battle);
+        await _BattleRepository.UpdateAsync(battle);
         _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
 

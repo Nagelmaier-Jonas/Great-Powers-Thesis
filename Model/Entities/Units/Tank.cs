@@ -29,7 +29,6 @@ public class Tank : ALandUnit{
                 if (!target.Region.IsHostile(Nation) && !previous.Region.IsHostile(Nation) && previous.Distance != 0) break;
                 return true;
         }
-
         return false;
     }
 
