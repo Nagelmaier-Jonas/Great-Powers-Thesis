@@ -234,15 +234,19 @@ public class GameEngine{
     }
 
     public async Task AttackerRetreats(Battle battle){
+        foreach (var unit in battle.Attackers){
+            await _UnitRepository.RemoveTargetAsync(unit.Id);
+            await _UnitRepository.RemoveAggressorAsync(unit.Id);
+        }
         battle.AttackerRetreats();
         Init(_ServiceScopeFactory.CreateScope());
-        await _BattleRepository.UpdateAsync(battle);
+        await _BattleRepository.UpdateBattleAsync(battle);
         _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
     public async Task AttackerContinues(Battle battle){
         battle.AttackerContinues();
         Init(_ServiceScopeFactory.CreateScope());
-        //await _BattleRepository.UpdateAsync(battle);
+        await _BattleRepository.UpdateBattleAsync(battle);
         _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
 

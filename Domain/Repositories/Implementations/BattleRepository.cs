@@ -54,12 +54,8 @@ public class BattleRepository : ACreatableRepository<Battle>, IBattleRepository{
         await _context.SaveChangesAsync();
     }
 
-    public async Task ChangeBattleNation(int battleId, int nationId){
+    public async Task UpdateBattleAsync(Battle battle){
         _context.ChangeTracker.Clear();
-        var battle = await ReadAsync(battleId);
-        if (battle is null) return;
-        battle.CurrentNationId = nationId;
-        battle.CurrentNation = await _context.Nations.FindAsync(nationId);
         _context.Entry(battle).State = EntityState.Modified;
         await _context.SaveChangesAsync();
     }

@@ -29,7 +29,7 @@ public abstract class ARepository<TEntity> : IRepository<TEntity> where TEntity 
 
     public async Task UpdateAsync(TEntity entity){
         _context.ChangeTracker.Clear();
-        _set.Update(entity);
+        _context.Entry(entity).State = EntityState.Modified;
         await _context.SaveChangesAsync();
     }
     public async Task UpdateAsync(List<TEntity> entities){

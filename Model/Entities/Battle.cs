@@ -33,7 +33,6 @@ public class Battle{
     public int NonAirHits{ get; set; }
     public int NonSubmarineHits{ get; set; }
     public int NormalHits{ get; set; }
-
     public int AttackingInfantryRolls{ get; set; }
 
     public int DefendingInfantryRolls{ get; set; }
@@ -57,7 +56,7 @@ public class Battle{
         return 1;
     }
 
-    private bool CheckForDestroyers(AUnit submarine){
+    public bool CheckForDestroyers(AUnit submarine){
         if (!submarine.IsSubmarine()) return true;
         if (Attackers.Contains(submarine)) return Defenders.Any(u => u.IsDestroyer());
         return Defenders.Contains(submarine) && Attackers.Any(u => u.IsDestroyer());
@@ -67,8 +66,8 @@ public class Battle{
 
     private List<AUnit> GetCurrentNationsEnemies() => IsAttacker(CurrentNation) ? Defenders : Attackers;
 
-    private void HitUnit(AUnit unit){
-        if (!CheckForOpenHits()) return;
+    private bool HitUnit(AUnit unit){
+        if (!CheckForOpenHits()) return false;
 
         bool hit = false;
         if (!unit.IsPlane() && NonAirHits > 0){
@@ -76,18 +75,19 @@ public class Battle{
             NonAirHits -= 1;
         }
 
-        if (!unit.IsSubmarine() && NonSubmarineHits > 0){
+        if (!unit.IsSubmarine() && NonSubmarineHits > 0 && !hit){
             hit = true;
             NonSubmarineHits -= 1;
         }
 
-        if (!hit) NormalHits -= 1;
+        if (!hit && NormalHits > 0){
+            hit = true;
+            NormalHits -= 1;
+        }
 
+        if (!hit) return false;
         unit.HitPoints -= 1;
-        if (Phase != EBattlePhase.SPECIAL_SUBMARINE) return;
-        if (unit.HitPoints != 0) return;
-        Attackers.Remove(unit);
-        Defenders.Remove(unit);
+        return true;
     }
 
     private List<AUnit> GetTargetsForHits() => GetCurrentNationsEnemies().Where(u => u.HitPoints > 0).ToList();
@@ -103,7 +103,7 @@ public class Battle{
 
     private void RollForHits(){
         bool attacker = IsAttacker(CurrentNation);
-        List<AUnit> units = Phase == EBattlePhase.SPECIAL_SUBMARINE ? GetCurrentNationsUnits().Where(u => u.IsSubmarine()).ToList() : GetCurrentNationsEnemies();
+        List<AUnit> units = Phase == EBattlePhase.SPECIAL_SUBMARINE ? GetCurrentNationsUnits().Where(u => u.IsSubmarine()).ToList() : GetCurrentNationsUnits();
         foreach (var unit in units){
             int roll = Dice.Roll();
             DiceRolls[roll] += 1;
@@ -171,7 +171,6 @@ public class Battle{
 
     private Nation GetNextNation(){
         List<Nation> defenders = GetDefendingNations();
-        defenders.Sort();
         if (IsAttacker(CurrentNation)) return defenders.FirstOrDefault();
         int index = defenders.IndexOf(CurrentNation);
         return index == defenders.Count - 1 ? GetAttacker() : defenders.ElementAt(index + 1);
@@ -210,14 +209,14 @@ public class Battle{
                 CurrentNation = GetNextNation();
                 CurrentNationId = CurrentNation.Id;
                 Phase = CurrentNation.Id == GetAttacker().Id ? EBattlePhase.RESOLUTION : EBattlePhase.ATTACK;
+                if (!CheckForWinner()) return true;
+                IsDecided = true;
+                ResolveCasualties();
                 return true;
             case EBattlePhase.RESOLUTION:
+                if(IsDecided) return false;
                 if (!AttackerDecided) return false;
                 ResolveCasualties();
-                if (CheckForWinner()){
-                    IsDecided = true;
-                    return true;
-                }
                 AttackingInfantryRolls = GetInfantryRolls(GetAttacker());
                 DefendingInfantryRolls = GetInfantryRolls(GetDefendingNations().FirstOrDefault());
                 Round += 1;
@@ -234,20 +233,24 @@ public class Battle{
         if (Phase != EBattlePhase.SPECIAL_SUBMARINE) return false;
         Attackers.Remove(submarine);
         Defenders.Remove(submarine);
+        submarine.AggressorId = null;
+        submarine.Aggressor = null;
+        submarine.DefenderId = null;
+        submarine.Defender = null;
         return true;
     }
 
     public bool PlaceHit(AUnit unit){
         if (!CheckForOpenHits()) return false;
         if (GetCurrentNationsEnemies().All(u => u.Id != unit.Id)) return false;
-        HitUnit(unit);
-        return true;
+        return HitUnit(unit);
     }
 
     public bool AttackerRetreats(){
         if (Phase != EBattlePhase.RESOLUTION) return false;
         AttackerDecided = true;
-        //List<AUnit> retreatingUnits = Attackers.Where(unit => unit.GetPossibleRetreatTargets((from u in Attackers select u.GetPreviousLocation()).ToList()).Count > 0).ToList();
+        Attackers.Clear();
+        IsDecided = true;
         return true;
     }
 
