@@ -57,6 +57,7 @@ public abstract class AUnit{
 
     protected bool CanTarget(EPhase phase, ARegion target){
         List<ARegion> path = GetPath(phase, target);
+        if(path.Count == 0) return false;
         return path.Last().Id == target.Id;
     }
 
@@ -67,7 +68,10 @@ public abstract class AUnit{
         return true;
     }
 
-    public void RemoveTarget() => Target = null;
+    public void RemoveTarget(){
+        TargetId = null;
+        Target = null;
+    }
 
     public bool HasTarget() => Target is not null;
 
@@ -88,6 +92,7 @@ public abstract class AUnit{
     protected abstract bool CheckForMovementRestrictions(Node target, Node previous, EPhase phase);
 
     public List<ARegion> GetAllegibleNeighbours(Node region, EPhase phase) => region.Region.Neighbours
+        .Where(n => n.Neighbour is not null && n.Region is not null)
         .Select(n => n.Neighbour)
         .Where(r => CheckForMovementRestrictions(new Node(r, region.Distance + 1), region, phase))
         .ToList();
@@ -96,6 +101,8 @@ public abstract class AUnit{
         if (GetLocation() is null && start is null) return new List<ARegion>();
 
         ARegion source = start ?? GetLocation();
+        
+        if(target is not null && source.Id == target.Id || CurrentMovement == 0) return new List<ARegion>();
 
         List<Node> travelled = new List<Node>();
         travelled.Add(new Node(source, 0));

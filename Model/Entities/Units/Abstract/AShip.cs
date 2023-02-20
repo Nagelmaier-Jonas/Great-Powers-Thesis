@@ -27,23 +27,27 @@ public abstract class AShip : AUnit{
     }
 
     public override bool MoveToTarget(EPhase phase){
+        if (!CanMove) return false;
+        
         List<ARegion> path = GetPath(phase);
         if (path.Count == 0) return false;
+
+        if (phase == EPhase.CombatMove) CanMove = false;
+        
+        PreviousLocation = Region;
+        PreviousLocationId = RegionId;
         
         if (Target.IsLandRegion()){
             CurrentMovement -= path.Count - 1;
-            PreviousLocation = Region;
             Region = (WaterRegion)path[^2];
+            RegionId = Region.Id;
             RemoveTarget();
             return true;
         }
         
         CurrentMovement -= path.Count;
-        PreviousLocation = Region;
-        Region = (WaterRegion)Target;
+        SetLocation(Target);
         RemoveTarget();
-        CanMove = !CanMove;
-        if (phase == EPhase.CombatMove) CanMove = false;
         return true;
     }
 

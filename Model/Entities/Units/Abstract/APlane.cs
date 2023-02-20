@@ -34,19 +34,26 @@ public abstract class APlane : AUnit{
     }
 
     public override bool MoveToTarget(EPhase phase){
+        if (!CanMove) return false;
+        
         List<ARegion> path = GetPath(phase);
         if (path.Count == 0) return false;
+
         if (phase == EPhase.CombatMove) CanMove = false;
+        
+        PreviousLocation = Region;
+        PreviousLocationId = RegionId;
+        
         if (Target.IsWaterRegion()){
             AircraftCarrier carrier = Target.GetOpenAircraftCarriers(Nation).FirstOrDefault();
             if (carrier is null) return false;
             AircraftCarrier = carrier;
+            AircraftCarrierId = carrier.Id;
         }
 
-        PreviousLocation = Region;
+        CurrentMovement -= path.Count;
         SetLocation(Target);
         RemoveTarget();
-        CurrentMovement -= path.Count;
         return true;
     }
 
