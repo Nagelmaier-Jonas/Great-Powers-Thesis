@@ -32,9 +32,4 @@ public abstract class ARepository<TEntity> : IRepository<TEntity> where TEntity 
         _context.Entry(entity).State = EntityState.Modified;
         await _context.SaveChangesAsync();
     }
-    public async Task UpdateAsync(List<TEntity> entities){
-        _context.Entry(entities).State = EntityState.Modified;
-        _set.UpdateRange(entities);
-        await _context.SaveChangesAsync();
-    }
 }

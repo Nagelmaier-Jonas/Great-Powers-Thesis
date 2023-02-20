@@ -154,7 +154,10 @@ public class GameEngine{
         Init(_ServiceScopeFactory.CreateScope());
         List<AUnit> units = await _UnitRepository.ReadAsync(u => !u.CanMove);
         units.ForEach(u => u.CanMove = true);
-        await _UnitRepository.UpdateAsync(units);
+        foreach (var unit in units){
+            Init(_ServiceScopeFactory.CreateScope());
+            await _UnitRepository.UpdateAsync(unit);
+        }
     } 
     public async Task<bool> CanPlaceShip(ARegion region){
         Init(_ServiceScopeFactory.CreateScope());
