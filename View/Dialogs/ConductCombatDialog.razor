@@ -22,11 +22,11 @@
                 <div id="particles-js"></div>
                 <MudPaper Height="85vh" Width="100vw" Class="d-flex bg-transparent shadow-none position-fixed bottom-0 p-0">
                     <MudContainer Class="d-flex flex-column p-0">
-                        <CombatCard Label="Infantrie" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsInfantry()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Artillerie" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsArtillery()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Panzer" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsTank()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Jäger" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsFighter()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Bomber" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsBomber()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Infantrie" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsInfantry()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Artillerie" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsArtillery()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Panzer" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsTank()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Jäger" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsFighter()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Bomber" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsBomber()).ToList()" Battle="@Battle"/>
                     </MudContainer>
                     <MudContainer Class="d-flex flex-column p-0 text-center">
                         <MudText Color="Color.Secondary">@Battle.CurrentNation.Name</MudText>
@@ -37,17 +37,19 @@
                         <MudContainer Class="d-flex mt-10 text-center justify-content-center">
                             <MudText Typo="Typo.h5" Color="@Color.Info">Treffer ausstehend: <br/><MudText Typo="Typo.h3" Color="@Color.Secondary" Class="text-center">@(Battle.NormalHits + Battle.NonAirHits + Battle.NonSubmarineHits)</MudText></MudText>
                         </MudContainer>
-                        <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Color="Color.Error" Label="Fortsetzen" Class="align-self-center mb-3 mt-3 position-absolute bottom-0" OnClick="StartBattle"/>
-                        @if (Battle.Phase == EBattlePhase.RESOLUTION && Battle.AttackerDecided == false){
-                            <MudFab StartIcon="@Icons.Material.Filled.Autorenew" Color="Color.Info" Label="Weitermachen" Class="align-self-center mb-3 mt-3 position-absolute bottom-10" OnClick="Continue"/>
+                        @if (CurrentUser.Nations.Contains(Battle.CurrentNation)){
+                            <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Color="Color.Error" Label="Fortsetzen" Class="align-self-center mb-3 mt-3 position-absolute bottom-0" OnClick="StartBattle"/>
+                            @if (Battle.Phase == EBattlePhase.RESOLUTION && Battle.AttackerDecided == false){
+                                <MudFab StartIcon="@Icons.Material.Filled.Autorenew" Color="Color.Info" Label="Weitermachen" Class="align-self-center mb-3 mt-3 position-absolute bottom-10" OnClick="Continue"/>
+                            }
                         }
                     </MudContainer>
                     <MudContainer Class="d-flex flex-column p-0">
-                        <CombatCard Label="Infantrie " Attacker="false" Units="@Battle.Defenders.Where(t => t.IsInfantry()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Artillerie" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsArtillery()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Panzer" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsTank()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Jäger" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsFighter()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Bomber" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsBomber()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Infantrie " Attacker="false" Units="@Battle.Defenders.Where(t => t.IsInfantry()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Artillerie" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsArtillery()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Panzer" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsTank()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Jäger" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsFighter()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Bomber" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsBomber()).ToList()" Battle="@Battle"/>
                     </MudContainer>
                 </MudPaper>
             }
@@ -58,11 +60,11 @@
                 </div>
                 <MudPaper Height="90vh" Width="100vw" Class="d-flex bg-transparent shadow-none position-fixed bottom-0 p-0">
                     <MudContainer Class="d-flex flex-column p-0">
-                        <CombatCard Label="Nichtkombattanten" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsTransport()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Flugzeugträger" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsAircraftCarrier()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="U-Boot & Zerstörer" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsSubmarine() || t.IsDestroyer()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Jäger & Kreuzer" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsFighter() || t.IsCruiser()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Bomber & Schlachtschiff" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsBomber() || t.IsBattleship()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Nichtkombattanten" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsTransport()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Flugzeugträger" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsAircraftCarrier()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="U-Boot & Zerstörer" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsSubmarine() || t.IsDestroyer()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Jäger & Kreuzer" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsFighter() || t.IsCruiser()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Bomber & Schlachtschiff" Attacker="true" Units="@Battle.Attackers.Where(t => t.IsBomber() || t.IsBattleship()).ToList()" Battle="@Battle"/>
                     </MudContainer>
                     <MudContainer Class="d-flex flex-column p-0 text-center">
                         <MudText Color="Color.Secondary">@Battle.CurrentNation.Name</MudText>
@@ -75,17 +77,19 @@
                             <MudText Typo="Typo.h5" Color="@Color.Info">Luft Treffer ausstehend: <br/><MudText Typo="Typo.h3" Color="@Color.Secondary" Class="text-center">@Battle.NonAirHits</MudText></MudText>
                             <MudText Typo="Typo.h5" Color="@Color.Info">U-Boot Treffer ausstehend: <br/><MudText Typo="Typo.h3" Color="@Color.Secondary" Class="text-center">@Battle.NonSubmarineHits</MudText></MudText>
                         </MudContainer>
-                        <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Color="Color.Error" Label="Fortsetzen" Class="align-self-center mb-3 mt-3 position-absolute bottom-0" OnClick="StartBattle"/>
-                        @if (Battle.Phase == EBattlePhase.RESOLUTION && Battle.AttackerDecided == false){
-                            <MudFab StartIcon="@Icons.Material.Filled.Autorenew" Color="Color.Info" Label="Weitermachen" Class="align-self-center mb-3 mt-3 position-absolute bottom-10" OnClick="Continue"/>
+                        @if (CurrentUser.Nations.Contains(Battle.CurrentNation)){
+                            <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Color="Color.Error" Label="Fortsetzen" Class="align-self-center mb-3 mt-3 position-absolute bottom-0" OnClick="StartBattle"/>
+                            @if (Battle.Phase == EBattlePhase.RESOLUTION && Battle.AttackerDecided == false){
+                                <MudFab StartIcon="@Icons.Material.Filled.Autorenew" Color="Color.Info" Label="Weitermachen" Class="align-self-center mb-3 mt-3 position-absolute bottom-10" OnClick="Continue"/>
+                            }
                         }
                     </MudContainer>
                     <MudContainer Class="d-flex flex-column p-0">
-                        <CombatCard Label="Nichtkombattanten" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsTransport()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="U-Boot & Bomber" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsSubmarine() || t.IsBomber()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Zerstörer & Flugzeugträger" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsDestroyer() || t.IsAircraftCarrier()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Kreuzer" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsCruiser()).ToList()" Battle="@Battle"/>
-                        <CombatCard Label="Jäger & Schlachtschiff" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsBattleship() || t.IsFighter()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Nichtkombattanten" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsTransport()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="U-Boot & Bomber" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsSubmarine() || t.IsBomber()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Zerstörer & Flugzeugträger" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsDestroyer() || t.IsAircraftCarrier()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Kreuzer" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsCruiser()).ToList()" Battle="@Battle"/>
+                        <CombatCard CurrentUser="CurrentUser" Label="Jäger & Schlachtschiff" Attacker="false" Units="@Battle.Defenders.Where(t => t.IsBattleship() || t.IsFighter()).ToList()" Battle="@Battle"/>
                     </MudContainer>
                 </MudPaper>
             }
@@ -105,6 +109,9 @@
 
     [Parameter]
     public Battle? Battle { get; set; }
+    
+    [Parameter]
+    public User? CurrentUser { get; set; }
 
     protected override void OnInitialized(){
         ViewRefreshService.HandleViewRefreshChange += HandleViewRefreshChange;
@@ -112,8 +119,9 @@
         RegionType = !Battle.IsAquaticBattle() ? "battleground-drawer-land" : "battleground-drawer-water";
     }
     
-    private void HandleViewRefreshChange(){
-        StateHasChanged();
+    private async void HandleViewRefreshChange(){
+        Battle = await BattleRepository.ReadBattleGraphAsync(Battle.Id);
+        await InvokeAsync(StateHasChanged);
     }
 
     protected override void OnAfterRender(bool firstRender){

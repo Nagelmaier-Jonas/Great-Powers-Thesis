@@ -6,12 +6,14 @@
 @using Model.Entities
 @using Domain.Repositories
 @using Domain.Repositories.Implementations
+@using EventBus.Clients
 @inject NavigationManager NavigationManager
 @inject DockerService DockerService
 @inject FileService FileService
 @inject SessionInfoRepository SessionInfoRepository
 @inject NationRepository NationRepository
 @inject UserRepository UserRepository
+@inject EventSubscriberHelper EventSubscriberHelper
 
 <style>
     body {
@@ -50,6 +52,7 @@
 
     private async Task CreateNewGame(string SessionName){
         _processing = true;
+        StateHasChanged();
         SessionName = SessionName.Replace(" ", "");
         var portmySql = DockerService.GetPortMySql().ToString();
         var portRabbitMqS = DockerService.GetPortRabbitMqS().ToString();
@@ -59,6 +62,7 @@
         while (!DockerService.CheckConnection("localhost", portmySql)){
         }
         await Task.Run(() => DockerService.ChangeDbContext("localhost", portmySql, portRabbitMqS, portRabbitMqW));
+        EventSubscriberHelper.Init();
         var sessionInfo = new SessionInfo(){
             Id = 1,
             CurrentNationId = 1,
@@ -79,8 +83,7 @@
         else{
             NavigationManager.NavigateTo("/lobby");
         }
-        CurrentUser.IsOwner = true;
-        await UserRepository.UpdateAsync(CurrentUser);
+        await UserRepository.InitUser(CurrentUser);
         StateHasChanged();
     }
 

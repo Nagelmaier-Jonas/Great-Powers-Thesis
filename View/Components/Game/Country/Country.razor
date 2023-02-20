@@ -76,18 +76,21 @@
 
     [Parameter]
     public List<ARegion>? Battlegrounds { get; set; }
+    
+    [CascadingParameter]
+    public User? CurrentUser { get; set; }
 
     private async Task UpdateRegion(MouseEventArgs args){
         if (args.ShiftKey){
             return;
         }
         if (Region is null) return;
-        await PlanCombatMovements();
+        if(await PlanCombatMovements()) return;
         if (await StartBattle(Region)){
             EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
             return;
         }
-        await PlanNonCombatMovements();
+        if(await PlanNonCombatMovements()) return;
         if (await MobilizeNewUnits()){
             EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
             return;
@@ -101,32 +104,34 @@
         EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
 
-    private async Task PlanCombatMovements(){
-        if (SessionInfo?.Phase != EPhase.CombatMove) return;
-        if (CombatTargets.Regions is null) return;
-        if (CombatTargets.Units is null) return;
-        if (Region is null) return;
-        if (CombatTargets.Regions.All(r => r.Id != Region.Id)) return;
+    private async Task<bool> PlanCombatMovements(){
+        if (SessionInfo?.Phase != EPhase.CombatMove) return false;
+        if (CombatTargets.Regions is null) return false;
+        if (CombatTargets.Units is null) return false;
+        if (Region is null) return false;
+        if (CombatTargets.Regions.All(r => r.Id != Region.Id)) return false;
         foreach (var u in CombatTargets.Units){
             await GameEngine.PlanMovement(u, Region);
         }
         CombatTargets.ClearRegions();
         CombatTargets.ClearUnits();
-        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
+        return true;
     }
 
-    private async Task PlanNonCombatMovements(){
-        if (SessionInfo?.Phase != EPhase.NonCombatMove) return;
-        if (NonCombatTargets.Regions is null) return;
-        if (NonCombatTargets.Units is null) return;
-        if (Region is null) return;
-        if (NonCombatTargets.Regions.All(r => r.Id == Region.Id)) return;
+    private async Task<bool> PlanNonCombatMovements(){
+        if (SessionInfo?.Phase != EPhase.NonCombatMove) return false;
+        if (NonCombatTargets.Regions is null) return false;
+        if (NonCombatTargets.Units is null) return false;
+        if (Region is null) return false;
+        if (NonCombatTargets.Regions.All(r => r.Id == Region.Id)) return false;
         foreach (var u in NonCombatTargets.Units){
             await GameEngine.PlanMovement(u, Region);
         }
         NonCombatTargets.ClearRegions();
         NonCombatTargets.ClearUnits();
-        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
+        return true;
     }
 
     private async Task<bool> MobilizeNewUnits(){
@@ -187,7 +192,8 @@
         if (battle is null) return false;
         ActiveRegion.ClearRegion();
         var parameters = new DialogParameters{
-            { "Battle", battle }
+            { "Battle", battle },
+            { "CurrentUser", CurrentUser}
         };
         var options = new DialogOptions{ FullScreen = true, CloseButton = true };
         DialogService.Show<ConductCombatDialog>("", parameters, options);

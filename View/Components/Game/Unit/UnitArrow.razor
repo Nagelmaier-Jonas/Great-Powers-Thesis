@@ -22,21 +22,6 @@
     public AUnit? Unit { get; set; }
 
     private List<Point> Path { get; set; } = new();
-    
-    /*private Dictionary<AUnit, Point> TroopPositioning { get; set; } = new(){
-        { UnitPaths.Units[0], new Point(0, -25) },
-        { UnitPaths.Units[1], new Point(0, 25) },
-        { UnitPaths.Units[2], new Point(-15, -15) },
-        { UnitPaths.Units[3], new Point(-15, 15) },
-        { UnitPaths.Units[4], new Point(15, -15) },
-        { UnitPaths.Units[5], new Point(15, 15) },
-        { UnitPaths.Units[6], new Point(0, -25) },
-        { UnitPaths.Units[7], new Point(0, 25) },
-        { UnitPaths.Units[8], new Point(-15, -15) },
-        { UnitPaths.Units[9], new Point(-15, 15) },
-        { UnitPaths.Units[10], new Point(15, -15) },
-        { UnitPaths.Units[11], new Point(15, 15) }
-    };*/
 
     protected override async Task OnInitializedAsync(){
         if (Unit is null) return;

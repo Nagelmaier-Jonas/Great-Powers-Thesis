@@ -115,7 +115,7 @@
         var users = await UserRepository.ReadAllAsync();
         if (users.All(u => u.Ready)){
             if (Nations.Where(n => n.Id != 6).Any(n => n.UserId is null)){
-                Snackbar.Add("Es sind noch nicht alle Nationen vergeben!", Severity.Error);
+                Snackbar.Add("Warten bis alle Nationen vergeben sind!", Severity.Info);
                 return;
             }
             EventPublisher.Publish(JsonSerializer.Serialize(new ReadyEvent()));
@@ -125,17 +125,15 @@
 
     protected override async Task OnInitializedAsync(){
         ReadyService.HandleReadyChange += NavigateToGame;
-        ViewRefreshService.HandleViewRefreshChange += Rerender;
-        Nations = await NationRepository.ReadAllGraphAsync();
-        CurrentUser!.Ready = false;
-        await UserRepository.UpdateAsync(CurrentUser);
+        ViewRefreshService.HandleViewRefreshChange += Load;
+        Load();
     }
 
     private void NavigateToGame(){
         NavigationManager.NavigateTo("/game");
     }
     
-    private async void Rerender(){
+    private async void Load(){
         Nations = await NationRepository.ReadAllGraphAsync();
         await InvokeAsync(StateHasChanged);
     }
@@ -178,7 +176,7 @@
 
     public void Dispose(){
         ReadyService.HandleReadyChange -= NavigateToGame;
-        ViewRefreshService.HandleViewRefreshChange -= Rerender;
+        ViewRefreshService.HandleViewRefreshChange -= Load;
     }
 
 }

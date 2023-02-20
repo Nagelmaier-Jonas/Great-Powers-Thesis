@@ -28,15 +28,17 @@
                     <path class="troopbadge-symbol"
                           d="@unit.GetStringFromDictionary(UnitPaths.Paths)"/>
                 </svg>
-                @if (Battle.Phase != EBattlePhase.RESOLUTION){
-                    @if (Battle.IsAttacker(Battle.CurrentNation)){
-                        @if(Battle.Defenders.Any(x => x.Id == unit.Id)){
-                            <MudChip Style="color: white;" OnClick="@(() => PlaceHit(unit))">Hit</MudChip>
+                @if (CurrentUser.Nations.Contains(Battle.CurrentNation)){
+                    @if (Battle.Phase != EBattlePhase.RESOLUTION){
+                        @if (Battle.IsAttacker(Battle.CurrentNation)){
+                            @if (Battle.Defenders.Any(x => x.Id == unit.Id)){
+                                <MudChip Style="color: white;" OnClick="@(() => PlaceHit(unit))">Hit</MudChip>
+                            }
                         }
-                    }
-                    else{
-                        @if(Battle.Attackers.Any(x => x.Id == unit.Id)){
-                            <MudChip Style="color: white;" OnClick="@(() => PlaceHit(unit))">Hit</MudChip>
+                        else{
+                            @if (Battle.Attackers.Any(x => x.Id == unit.Id)){
+                                <MudChip Style="color: white;" OnClick="@(() => PlaceHit(unit))">Hit</MudChip>
+                            }
                         }
                     }
                 }
@@ -74,6 +76,9 @@
 @code {
 
     [Parameter]
+    public User? CurrentUser { get; set; }
+
+    [Parameter]
     public string Label { get; set; } = "";
 
     [Parameter]
@@ -96,9 +101,9 @@
 
     private async Task PlaceHit(AUnit unit){
         if (Battle is null) return;
-        if(!Battle.PlaceHit(unit)) return;
+        if (!Battle.PlaceHit(unit)) return;
         await BattleRepository.UpdateAsync(Battle);
-        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
     }
 
 }

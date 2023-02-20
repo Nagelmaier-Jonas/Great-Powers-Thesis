@@ -27,6 +27,23 @@ public class BattleRepository : ACreatableRepository<Battle>, IBattleRepository{
             .FirstOrDefaultAsync(n => n.LocationId == region.Id);
     }
     
+    public async Task<Battle?> ReadBattleGraphAsync(int id){
+        return await _set
+            .Include(l => l.Location)
+            .ThenInclude(t => t.StationedPlanes)
+            .Include(l => l.Location)
+            .ThenInclude(t => t.Neighbours)
+            .Include(l => l.Location)
+            .ThenInclude(t => t.IncomingUnits)
+            .Include(l => l.Attackers)
+            .ThenInclude(n => n.Nation)
+            .Include(l => l.Defenders)
+            .ThenInclude(n => n.Nation)
+            .Include(n => n.CurrentNation)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(n => n.Id == id);
+    }
+    
     public async Task DeleteBattle(int id){
         _context.ChangeTracker.Clear();
         var battle = await ReadAsync(id);

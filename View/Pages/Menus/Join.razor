@@ -60,6 +60,7 @@
             EventSubscriberHelper.Init();
             var user = await UserRepository.ReadGraphAsync(CurrentUser!.Id);
             if (user == null){
+                CurrentUser.Nations = new ();
                 await UserRepository.CreateAsync(CurrentUser);
             }
             NavigationManager.NavigateTo("/lobby");

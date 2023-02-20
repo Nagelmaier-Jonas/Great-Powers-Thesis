@@ -57,4 +57,22 @@ public class UserRepository : ACreatableRepository<User>{
             .AsSplitQuery()
             .FirstOrDefaultAsync(n => n.Id == Id);
     }
+    
+    public async Task InitUser(User entity)
+    {
+        _context.ChangeTracker.Clear();
+        entity.IsOwner = true;
+        _set.Add(entity);
+        _context.Entry(entity).State = EntityState.Added;
+        await _context.SaveChangesAsync();;
+    }
+
+    public async Task SetOwner(string userId){
+        _context.ChangeTracker.Clear();
+        var user = await ReadGraphAsync(userId);
+        if (user is null) return;
+        user.IsOwner = true;
+        _context.Entry(user).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+    }
 }

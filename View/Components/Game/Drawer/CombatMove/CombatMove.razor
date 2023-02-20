@@ -74,8 +74,6 @@ else{
     [CascadingParameter]
     public User? CurrentUser { get; set; }
 
-    private Dictionary<AUnit, int> Checkout { get; set; } = new();
-
     private async Task SetPossibleTargets(AUnit unit){
         var targets = await GameEngine.GetPossibleTarget(unit);
 
@@ -91,7 +89,6 @@ else{
             });
         }
         EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
-        StateHasChanged();
     }
 
 
@@ -107,7 +104,6 @@ else{
     private async Task RemoveTarget(AUnit unit){
         await GameEngine.RemovePlannedMovement(unit);
         EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
-        StateHasChanged();
     }
 
 }

@@ -62,16 +62,14 @@ public abstract class AUnit{
 
     public virtual bool SetTarget(EPhase phase, ARegion target){
         if (!CanTarget(phase, target)) return false;
+        if (GetLocation()?.Id == target.Id) return false;
         Target = target;
         TargetId = target.Id;
         return true;
     }
 
     public void RemoveTarget() => Target = null;
-
     public bool HasTarget() => Target is not null;
-
-
     public virtual bool MoveToTarget(EPhase phase) => false;
 
     public List<ARegion> GetPossibleTargets(EPhase phase){

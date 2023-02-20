@@ -3,16 +3,13 @@
 @using Domain.Repositories
 @using Domain.Repositories.Implementations
 @using Domain.Services
-@using EventHandling.EventHandler
 @using Model.Entities.Regions
-@using View.Services
+@using Model.Entities.Units.Abstract
 @inject ViewRefreshService ViewRefreshService
-@inject StateHasChangedEventHandler StateHasChangedEventHandler
 @inject IServiceScopeFactory ServiceScopeFactory
 @inject CombatTargets CombatTargets
 @inject NonCombatTargets NonCombatTargets
-@inject ActiveRegion ActiveRegion
-@inject GameEngine GameEngine
+@inject NavigationManager NavigationManager
 @implements IDisposable
 
 <style>
@@ -32,7 +29,7 @@
             <CombatMove SessionInfo="Info"/>
             <ConductCombat SessionInfo="Info"/>
             <NonCombatMove SessionInfo="Info"/>
-            <MobilizeNewUnits SessionInfo="Info" CurrentNation="CurrentNation"/>
+            <MobilizeNewUnits SessionInfo="Info" CurrentNation="CurrentNation" PlaceableFactories="PlaceableFactories" PlaceableUnits="PlaceableUnits"/>
             <CollectIncome SessionInfo="Info" CurrentNation="CurrentNation"/>
         </MudDrawer>
     }
@@ -49,6 +46,8 @@
     private List<WaterRegion> SeeZones { get; set; } = new();
     private Nation CurrentNation { get; set; } = new();
     private List<ARegion>? Battlegrounds { get; set; }
+    private List<AUnit> PlaceableUnits { get; set; } = new();
+    private List<AUnit> PlaceableFactories { get; set; } = new();
     private int MaxTroops { get; set; }
 
     bool _open = false;
@@ -56,6 +55,9 @@
     private string ChildStyle { get; set; } = "";
 
     protected override void OnInitialized(){
+        if (CurrentUser == null){
+            NavigationManager.NavigateTo("/Identity/Account/Login");
+        }
         ViewRefreshService.HandleViewRefreshChange += HandleViewRefreshChange;
     }
 
@@ -72,6 +74,8 @@
         MaxTroops = await scope.ServiceProvider.GetRequiredService<NationRepository>().GetFactoryPower(CurrentNation);
         CurrentUser = await scope.ServiceProvider.GetRequiredService<UserRepository>().ReadGraphAsync(CurrentUser!.Id);
         Battlegrounds = await scope.ServiceProvider.GetRequiredService<GameEngine>().GetBattleLocations();
+        PlaceableUnits = await scope.ServiceProvider.GetRequiredService<GameEngine>().GetPlaceableUnits();
+        PlaceableFactories = await scope.ServiceProvider.GetRequiredService<GameEngine>().GetPlaceableFactories();
         if (!(CurrentUser is not null && CurrentUser.Nations.Any(n => n.Id == CurrentNation.Id))){
             CloseDrawer();
         }

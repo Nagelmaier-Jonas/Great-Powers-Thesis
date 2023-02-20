@@ -37,5 +37,7 @@ public class Nation{
 
     public void CollectIncome() => Treasury += Regions.Sum(r => r.Income);
     public int GetIncomeValue() => Regions.Sum(r => r.Income);
-    public int GetBalance() => Treasury + Regions.Sum(r => r.Income);
+    public int GetBalance(){
+        return Treasury + Regions.DistinctBy(r => r.Id).Sum(r => r.Income);
+    }
 }
