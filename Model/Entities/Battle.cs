@@ -213,7 +213,10 @@ public class Battle{
                 ResolveCasualties();
                 return true;
             case EBattlePhase.RESOLUTION:
-                if(IsDecided) return false;
+                if (IsDecided){
+                    ResolveCasualties();
+                    return true;
+                }
                 if (!AttackerDecided) return false;
                 ResolveCasualties();
                 if(Attackers.Count != 0) AttackingInfantryRolls = GetInfantryRolls(GetAttacker());
@@ -248,7 +251,6 @@ public class Battle{
     public bool AttackerRetreats(){
         if (Phase != EBattlePhase.RESOLUTION) return false;
         AttackerDecided = true;
-        Attackers.Clear();
         IsDecided = true;
         return true;
     }

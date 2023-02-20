@@ -83,6 +83,7 @@ public class UnitRepository : ACreatableRepository<AUnit>, IUnitRepository{
         List<AUnit> placeableUnits = new List<AUnit>();
 
         foreach (var u in units){
+            if(u is null) continue;
             if (u.IsPlane()){
                 var p = u as APlane;
                 if (p.GetLocation() is null && p.GetAircraftCarrier() is null){
