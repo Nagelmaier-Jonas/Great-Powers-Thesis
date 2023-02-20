@@ -43,12 +43,7 @@
             }
             <Channel/>
             @*Render Unit Paths*@
-            @foreach (var unit in Nations.SelectMany(nation => nation.Regions.SelectMany(land => land.GetStationedUnits()))){
-                <UnitArrow Unit="@unit"/>
-            }
-            @foreach (var unit in SeeZones.SelectMany(sea => sea.GetStationedUnits())){
-                <UnitArrow Unit="@unit"/>
-            }
+            <UnitArrow UnitPaths="UnitPaths"/>
             @*Render Income*@
             @foreach (var land in Nations.SelectMany(nation => nation.Regions)){
                 <CountryIncome Region="@land"/>
@@ -103,6 +98,9 @@
     
     [Parameter]
     public List<ARegion>? Battlegrounds { get; set; }
+    
+    [Parameter]
+    public List<string> UnitPaths { get; set; }
 
     private Panzoom _panzoom = new();
 

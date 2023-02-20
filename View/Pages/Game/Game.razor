@@ -5,6 +5,8 @@
 @using Domain.Services
 @using Model.Entities.Regions
 @using Model.Entities.Units.Abstract
+@using System.Drawing
+@using Size = MudBlazor.Size
 @inject ViewRefreshService ViewRefreshService
 @inject IServiceScopeFactory ServiceScopeFactory
 @inject CombatTargets CombatTargets
@@ -33,7 +35,7 @@
             <CollectIncome SessionInfo="Info" CurrentNation="CurrentNation"/>
         </MudDrawer>
     }
-    <GameMap Nations="@Nations" SeeZones="@SeeZones" SessionInfo="@Info" Style="@Style" ChildStyle="@ChildStyle" Battlegrounds="Battlegrounds"/>
+    <GameMap Nations="@Nations" SeeZones="@SeeZones" SessionInfo="@Info" Style="@Style" ChildStyle="@ChildStyle" Battlegrounds="Battlegrounds" UnitPaths="UnitPaths"/>
 </MudLayout>
 
 @code {
@@ -48,6 +50,7 @@
     private List<ARegion>? Battlegrounds { get; set; } = new();
     private List<AUnit> PlaceableUnits { get; set; } = new();
     private List<AUnit> PlaceableFactories { get; set; } = new();
+    public List<string> UnitPaths { get; set; } = new();
     private int MaxTroops { get; set; }
 
     bool _open = false;
@@ -76,10 +79,33 @@
         Battlegrounds = await scope.ServiceProvider.GetRequiredService<GameEngine>().GetBattleLocations();
         PlaceableUnits = await scope.ServiceProvider.GetRequiredService<GameEngine>().GetPlaceableUnits();
         PlaceableFactories = await scope.ServiceProvider.GetRequiredService<GameEngine>().GetPlaceableFactories();
+        UnitPaths = await GetUnitPaths(scope);
         if (!(CurrentUser is not null && CurrentUser.Nations.Any(n => n.Id == CurrentNation.Id))){
             CloseDrawer();
         }
         await InvokeAsync(StateHasChanged);
+    }
+    
+    private async Task<List<string>> GetUnitPaths(IServiceScope scope){
+        var paths = new List<string>();
+        foreach (var unit in Nations.SelectMany(nation => nation.Regions.SelectMany(land => land.GetStationedUnits()))){
+            paths.Add(await GetPath(unit, scope));
+        }
+        foreach (var unit in SeeZones.SelectMany(sea => sea.GetStationedUnits())){
+            paths.Add(await GetPath(unit, scope));
+        }
+        return paths;
+    }
+    
+    private async Task<string> GetPath(AUnit unit, IServiceScope scope){
+        var Path = new List<Point>();
+        if (unit is null) return String.Empty;
+        var countries = await scope.ServiceProvider.GetRequiredService<GameEngine>().GetPathForUnit(unit);
+        if (countries.Count is 0) return String.Empty;
+        foreach (var c in countries){
+            Path.Add(new Point((int)c.PositionX, (int)c.PositionY));
+        }
+        return Path.Count is 0 ? String.Empty : Path.Aggregate($"M", (current, p) => current + $" {p.X} {p.Y}");
     }
 
     void OpenDrawer(){

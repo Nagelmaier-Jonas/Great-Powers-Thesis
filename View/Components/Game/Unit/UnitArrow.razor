@@ -3,8 +3,7 @@
 @using System.Text
 @inject GameEngine GameEngine
 
-@if (Unit is not null){
-    @if(GetPath() == string.Empty) return;
+@foreach(var path in UnitPaths){
     <svg xmlns="http://www.w3.org/2000/svg" class="path-arrow">
         <defs>
             <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5"
@@ -12,28 +11,13 @@
                 <path d="M 0 0 L 10 5 L 0 10 z"/>
             </marker>
         </defs>
-        <path d="@GetPath()" stroke="darkcyan" fill="none" marker-end="url(#arrow)" stroke-width="4"/>
+        <path d="@path" stroke="darkcyan" fill="none" marker-end="url(#arrow)" stroke-width="4"/>
     </svg>
 }
 
 @code {
 
     [Parameter]
-    public AUnit? Unit { get; set; }
-
-    private List<Point> Path { get; set; } = new();
-
-    protected override async Task OnInitializedAsync(){
-        if (Unit is null) return;
-        var countries = await GameEngine.GetPathForUnit(Unit);
-        if (countries.Count is 0) return;
-        foreach (var c in countries){
-            Path.Add(new Point((int)c.PositionX, (int)c.PositionY));
-        }
-    }
-    
-    private string GetPath(){
-        return Path.Count is 0 ? String.Empty : Path.Aggregate($"M", (current, p) => current + $" {p.X} {p.Y}");
-    }
+    public List<string>? UnitPaths { get; set; } = new ();
 
 }
