@@ -133,7 +133,7 @@
     }
     
     private async void HandleViewRefreshChange(){
-        //if(Battle is not null) Battle = await BattleRepository.ReadBattleGraphAsync(Battle.Id);
+        if(Battle is not null) Battle = await BattleRepository.ReadBattleGraphAsync(Battle.Id);
         await InvokeAsync(StateHasChanged);
     }
 
