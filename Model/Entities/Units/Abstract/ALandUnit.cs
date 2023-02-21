@@ -10,10 +10,6 @@ public abstract class ALandUnit : AUnit{
 
     public LandRegion? Region{ get; set; }
 
-    [Column("PREVIOS_LOCATION_ID")] public int? PreviousLocationId{ get; set; }
-
-    public LandRegion? PreviousLocation{ get; set; }
-
     [Column("TRANSPORT_ID")] public int? TransportId{ get; set; }
 
     public Transport? Transport{ get; set; }
@@ -26,9 +22,6 @@ public abstract class ALandUnit : AUnit{
         if (path.Count == 0) return false;
 
         if (phase == EPhase.CombatMove) CanMove = false;
-        
-        PreviousLocation = Region;
-        PreviousLocationId = RegionId;
         
         if (Target.IsWaterRegion()){
             Transport transport = Target.GetOpenTransports(Nation, phase).FirstOrDefault();
@@ -47,8 +40,6 @@ public abstract class ALandUnit : AUnit{
     }
 
     public override ARegion? GetLocation() => Region;
-
-    public override ARegion? GetPreviousLocation() => PreviousLocation;
 
     public override bool SetLocation(ARegion region){
         if (region.IsLandRegion()){

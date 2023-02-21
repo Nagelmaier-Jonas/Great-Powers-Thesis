@@ -7,9 +7,7 @@ using EventBus.Clients;
 using Model.Entities;
 using Model.Entities.Regions;
 using Model.Entities.Units.Abstract;
-using MudBlazor;
 using View.Components.Game.Drawer.ConductCombat;
-using View.Services;
 
 namespace View;
 
@@ -248,17 +246,6 @@ public class GameEngine{
         await _BattleRepository.UpdateAsync(battle);
         _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
-
-    /*public async Task<List<ARegion>> GetPossibleRetreatTargets(AUnit unit){
-        Init(_ServiceScopeFactory.CreateScope());
-        Battle battle = (await _BattleRepository.ReadAsync(b => b.Location == unit.GetLocation())).FirstOrDefault();
-        if (battle is null) return new List<ARegion>();
-        if (!battle.Attackers.Contains(unit)) return new List<ARegion>();
-        List<ARegion> previousRegions = (from u in battle.Attackers
-            where u.GetPreviousLocation() is not null
-            select u.GetPreviousLocation()).ToList();
-        return unit.GetPossibleRetreatTargets(previousRegions);
-    }*/
 
     public async Task<bool> EndPhase(User CurrentUser){
         Init(_ServiceScopeFactory.CreateScope());

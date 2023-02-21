@@ -141,11 +141,11 @@ public class UnitRepository : ACreatableRepository<AUnit>, IUnitRepository{
     }
     public async Task DeleteUnit(int id){
         _context.ChangeTracker.Clear();
-        var units = await ReadAllAsync();
+        //var units = await ReadAllAsync();
         var unit = await ReadAsync(id);
-        if (units is null) return;
+        //if (units is null) return;
         if (unit is null) return;
-        units.Remove(unit);
+        //units.Remove(unit);
         _context.Units.Remove(unit);
         _set.Remove(unit);
         _context.Entry(unit).State = EntityState.Deleted;

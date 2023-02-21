@@ -8,13 +8,8 @@ public abstract class AShip : AUnit{
     [Column("LOCATION_ID")] public int? RegionId{ get; set; }
 
     public WaterRegion? Region{ get; set; }
-    
-    [Column("PREVIOS_LOCATION_ID")] public int? PreviousLocationId{ get; set; }
-
-    public WaterRegion? PreviousLocation{ get; set; }
 
     public override ARegion? GetLocation() => Region;
-    public override ARegion? GetPreviousLocation() => PreviousLocation;
  
     public override bool SetLocation(ARegion region){
         if (region.IsWaterRegion()){
@@ -33,9 +28,6 @@ public abstract class AShip : AUnit{
         if (path.Count == 0) return false;
 
         if (phase == EPhase.CombatMove) CanMove = false;
-        
-        PreviousLocation = Region;
-        PreviousLocationId = RegionId;
         
         if (Target.IsLandRegion()){
             CurrentMovement -= path.Count - 1;
