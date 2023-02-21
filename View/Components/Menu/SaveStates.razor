@@ -1,19 +1,33 @@
 ﻿@using Domain.Services
 @using Model.Entities
 @using Domain.Repositories
+@using EventBus.Clients
 @inject DockerService DockerService
 @inject NavigationManager NavigationManager
 @inject FileService FileService
+@inject EventSubscriberHelper EventSubscriberHelper
 
+<style>
+        body {
+            background-image: url('img/menu/paper-bg.jpg')
+        }
+    </style>
 @foreach (var container in DockerContainers){
-    <MudCard Outlined="true">
-        <MudCardContent>
-            <MudText>@container</MudText>
-            <MudText>@Infos[container].Round</MudText>
-            <MudText>@Infos[container].Phase.ToString()</MudText>
+    <MudCard Style="width: 20vw; margin-top: 10vh !important;" Class="m-auto">
+        <MudCardMedia Image="img/menu/create.png" Height="200"/>
+        <MudCardContent Class="text-center">
+           <MudText Typo="Typo.h4" Color="Color.Secondary">@container</MudText>
         </MudCardContent>
         <MudCardActions>
-            <MudButton OnClick="@(() => LoadSession(container, "127.0.0.1", DockerService.GetPortMySql().ToString(), DockerService.GetPortRabbitMqS().ToString(), DockerService.GetPortRabbitMqW().ToString()))">Load</MudButton>
+            <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => LoadSession(container, "127.0.0.1", DockerService.GetPortMySql().ToString(), DockerService.GetPortRabbitMqS().ToString(), DockerService.GetPortRabbitMqW().ToString()))">
+                @if (_processing){
+                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                    <MudText Class="ms-2">Loading ...</MudText>
+                }
+                else{
+                    <MudText>Load</MudText>
+                }
+            </MudButton>
         </MudCardActions>
     </MudCard>
 }
@@ -23,19 +37,23 @@
     [Parameter]
     public List<string> DockerContainers { get; set; }
 
-    private Dictionary<string,SessionInfo> Infos { get; set; } = new();
-    
+    private Dictionary<string, SessionInfo> Infos { get; set; } = new();
+
+    private bool _processing { get; set; } = false;
+
     protected override void OnInitialized(){
         foreach (var container in DockerContainers){
-            Infos.Add(container,FileService.ReadSessionInfoFromFile(container));
+            Infos.Add(container, FileService.ReadSessionInfoFromFile(container));
         }
     }
 
-    private async Task LoadSession(string name, string ipAddress, string portmySql,string portRabbitMqS,string portRabbitMqW){
+    private async Task LoadSession(string name, string ipAddress, string portmySql, string portRabbitMqS, string portRabbitMqW){
+        _processing = true;
         await DockerService.StartDockerContainer(name, portmySql, portRabbitMqS, portRabbitMqW);
         while (!DockerService.CheckConnection($"{ipAddress}", portmySql)){
         }
         await DockerService.ChangeDbContext($"{ipAddress}", portmySql, portRabbitMqS, portRabbitMqW);
+        EventSubscriberHelper.Init();
         NavigationManager.NavigateTo("/game");
     }
 
