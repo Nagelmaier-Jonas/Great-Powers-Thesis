@@ -53,10 +53,4 @@ public class BattleRepository : ACreatableRepository<Battle>, IBattleRepository{
         _context.Entry(battle).State = EntityState.Deleted;
         await _context.SaveChangesAsync();
     }
-
-    public async Task UpdateBattleAsync(Battle battle){
-        _context.ChangeTracker.Clear();
-        _context.Entry(battle).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-    }
 }

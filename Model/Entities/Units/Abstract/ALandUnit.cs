@@ -18,7 +18,7 @@ public abstract class ALandUnit : AUnit{
     public override bool MoveToTarget(EPhase phase){
         if (!CanMove) return false;
         
-        List<ARegion> path = GetPath(phase);
+        List<ARegion> path = GetPath(phase, Target);
         if (path.Count == 0) return false;
 
         if (phase == EPhase.CombatMove) CanMove = false;

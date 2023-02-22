@@ -206,10 +206,15 @@ public class Battle{
                 NonSubmarineHits = 0;
                 CurrentNation = GetNextNation();
                 CurrentNationId = CurrentNation.Id;
-                Phase = CurrentNation.Id == GetAttacker().Id ? EBattlePhase.RESOLUTION : EBattlePhase.ATTACK;
-                if (!CheckForWinner()) return true;
-                IsDecided = true;
-                ResolveCasualties();
+                if (CurrentNation.Id == GetAttacker().Id){
+                    Phase = EBattlePhase.RESOLUTION;
+                    ResolveCasualties();
+                    if (!CheckForWinner()) return true;
+                    IsDecided = true;
+                }
+                else{
+                    Phase = EBattlePhase.ATTACK;
+                }
                 return true;
             case EBattlePhase.RESOLUTION:
                 if (IsDecided){
@@ -229,9 +234,9 @@ public class Battle{
     }
 
     public bool Submerge(AUnit submarine){
+        if (Phase != EBattlePhase.SPECIAL_SUBMARINE) return false;
         if (CheckForDestroyers(submarine)) return false;
         if (!GetCurrentNationsUnits().Contains(submarine)) return false;
-        if (Phase != EBattlePhase.SPECIAL_SUBMARINE) return false;
         Attackers.Remove(submarine);
         Defenders.Remove(submarine);
         submarine.AggressorId = null;
@@ -257,6 +262,7 @@ public class Battle{
     public bool AttackerContinues(){
         if (Phase != EBattlePhase.RESOLUTION) return false;
         AttackerDecided = true;
+        if (CheckForWinner()) IsDecided = true;
         return true;
     }
 

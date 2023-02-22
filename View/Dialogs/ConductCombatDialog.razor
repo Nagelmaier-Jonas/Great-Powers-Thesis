@@ -1,14 +1,16 @@
 ﻿@using Model.Entities
-@using Model.Entities.Units.Abstract
 @using Domain.Repositories.Implementations
 @using Domain.Services
+@using EventBus.Clients
 @using Vanara.Extensions
+@using System.Text.Json
+@using DataTransfer
 @inject IJSRuntime JSRuntime
 @inject BattleRepository BattleRepository
-@inject NationRepository NationRepository
 @inject UnitRepository UnitRepository
 @inject GameEngine GameEngine
 @inject ViewRefreshService ViewRefreshService
+@inject EventPublisher EventPublisher
 @implements IDisposable
 
 @if (Battle is not null){
@@ -47,7 +49,7 @@
                                 }
                             }
                             else{
-                                <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Color="Color.Error" Label="Beenden" Class="align-self-center mb-3 mt-3 position-absolute bottom-0" OnClick="StartBattle"/>
+                                <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Color="Color.Error" Label="Beenden" Class="align-self-center mb-3 mt-3 position-absolute bottom-0" OnClick="EndBattle"/>
                             }
                         }
                     </MudContainer>
@@ -93,7 +95,7 @@
                                 }
                             }
                             else{
-                                <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Color="Color.Error" Label="Beenden" Class="align-self-center mb-3 mt-3 position-absolute bottom-0" OnClick="StartBattle"/>
+                                <MudFab StartIcon="@Icons.Material.Filled.NextPlan" Color="Color.Error" Label="Beenden" Class="align-self-center mb-3 mt-3 position-absolute bottom-0" OnClick="EndBattle"/>
                             }
                         }
                     </MudContainer>
@@ -134,7 +136,6 @@
     }
     
     private async void HandleViewRefreshChange(){
-        if(Battle is not null) Battle = await BattleRepository.ReadBattleGraphAsync(Battle.Id);
         await InvokeAsync(StateHasChanged);
     }
 
@@ -152,14 +153,25 @@
     private async Task StartBattle(){
         if (Battle is null) return;
         if (!Battle.AdvanceCombat()) return;
+        foreach (var att in Battle.Attackers){
+            await UnitRepository.UpdateAsync(att);
+        }
+        foreach (var def in Battle.Defenders){
+            await UnitRepository.UpdateAsync(def);
+        }
+        foreach (var cas in Battle.Casualties){
+            await UnitRepository.UpdateAsync(cas);
+        }
+        await BattleRepository.UpdateAsync(Battle);
+        StateHasChanged();
+    }
+
+    private async Task EndBattle(){
         if (Battle.IsDecided){
             GameEngine.FinishBattle(Battle);
             Submit();
         }
-        else{
-            await BattleRepository.UpdateAsync(Battle);
-        }
-        StateHasChanged();
+        EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
     }
 
     private async Task Retreat(){

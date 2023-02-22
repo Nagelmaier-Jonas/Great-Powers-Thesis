@@ -235,13 +235,13 @@ public class GameEngine{
             unit.RemoveTarget();
             await _UnitRepository.UpdateAsync(unit);
         }
-        battle.AttackerRetreats();
+        if(!battle.AttackerRetreats()) return;
         Init(_ServiceScopeFactory.CreateScope());
         await _BattleRepository.UpdateAsync(battle);
         _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
     }
     public async Task AttackerContinues(Battle battle){
-        battle.AttackerContinues();
+        if(!battle.AttackerContinues()) return;
         Init(_ServiceScopeFactory.CreateScope());
         await _BattleRepository.UpdateAsync(battle);
         _EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));  
@@ -259,7 +259,6 @@ public class GameEngine{
                 session.Phase = EPhase.ConductCombat;
                 break;
             case EPhase.ConductCombat:
-                await MoveUnits();
                 session.Phase = EPhase.NonCombatMove;
                 break;
             case EPhase.NonCombatMove:
@@ -293,6 +292,25 @@ public class GameEngine{
         return true;
     }
     public async void FinishBattle(Battle battle){
+        if(battle.Attackers.Count > 0){
+            if (battle.Location.IsLandRegion()){
+                Init(_ServiceScopeFactory.CreateScope());
+                Nation winner = await _NationRepository.ReadGraphAsync(battle.GetAttacker().Id);
+                LandRegion region = (LandRegion) await _RegionRepository.ReadAsync(battle.LocationId);
+                region.Nation = winner;
+                await _RegionRepository.UpdateAsync(region);
+            }
+            Init(_ServiceScopeFactory.CreateScope());
+            SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
+            List<Nation> nations = await _NationRepository.ReadAllGraphAsync();
+            await _WaterRegionRepository.ReadAllGraphAsync();
+            List<AUnit> units = nations.SelectMany(n => n.Units.Where(u => u.TargetId != null)).ToList();
+            foreach (var unit in units.Where(unit => battle.Attackers.Any(a => a.Id == unit.Id)).Where(unit => unit.MoveToTarget(session.Phase))){
+                Init(_ServiceScopeFactory.CreateScope());
+                await _UnitRepository.UpdateAsync(unit);
+            }
+        }
+        
         foreach (var attacker in battle.Attackers){
             Init(_ServiceScopeFactory.CreateScope());
             await _UnitRepository.RemoveAggressorAsync(attacker.Id);
@@ -304,16 +322,6 @@ public class GameEngine{
         foreach (var unit in battle.Casualties){
             Init(_ServiceScopeFactory.CreateScope());
             await _UnitRepository.DeleteUnit(unit.Id);
-        }
-        
-        if(battle.Attackers.Count > 0){
-            Init(_ServiceScopeFactory.CreateScope());
-            Nation winner = await _NationRepository.ReadAsync(battle.GetAttacker().Id);
-            if (battle.Location.IsLandRegion()){
-                LandRegion region = (LandRegion) await _RegionRepository.ReadAsync(battle.LocationId);
-                region.Nation = winner;
-                await _NationRepository.UpdateAsync(winner);
-            }
         }
 
         Init(_ServiceScopeFactory.CreateScope());
