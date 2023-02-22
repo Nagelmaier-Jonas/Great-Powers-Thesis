@@ -129,6 +129,7 @@
     protected override void OnInitialized(){
         ViewRefreshService.HandleViewRefreshChange += HandleViewRefreshChange;
         if (Battle is null) return;
+        HandleViewRefreshChange();
         RegionType = !Battle.IsAquaticBattle() ? "battleground-drawer-land" : "battleground-drawer-water";
     }
     
