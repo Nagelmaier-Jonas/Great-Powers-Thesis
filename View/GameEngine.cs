@@ -300,6 +300,7 @@ public class GameEngine{
                 region.NationId = winner.Id;
                 await _RegionRepository.UpdateAsync(region);
             }
+            
             Init(_ServiceScopeFactory.CreateScope());
             SessionInfo session = (await _SessionInfoRepository.ReadAsync())!;
             List<Nation> nations = await _NationRepository.ReadAllGraphAsync();
