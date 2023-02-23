@@ -147,7 +147,7 @@ public class DockerService{
     }
 
     public bool CheckConnection(string ipAddress, string port){
-        Thread.Sleep(1000);
+        Thread.Sleep(5000);
         try{
             var connection =
                 new MySqlConnection(
@@ -158,7 +158,7 @@ public class DockerService{
             return true;
         }
         catch (Exception){
-            Logger.Log(LogLevel.Warning, "Connection is not valid");
+            Logger.Log(LogLevel.Warning, "Try to connect");
             return false;
         }
     }

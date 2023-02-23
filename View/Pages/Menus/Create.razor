@@ -48,10 +48,11 @@
 
     private static readonly Random Random = new();
     private string SessionName { get; set; } = "NewSimulation";
-    bool _processing = false;
+    private bool _processing = false;
 
     private async Task CreateNewGame(string SessionName){
-        _processing = true;
+        var currentUser = CurrentUser;
+        await Task.Run(() => _processing = true);
         StateHasChanged();
         SessionName = SessionName.Replace(" ", "");
         var portmySql = DockerService.GetPortMySql().ToString();
@@ -77,22 +78,26 @@
         FileService.WriteSessionInfoToFile(Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, $"Databases\\{SessionName}\\"), sessionInfo);
         await SessionInfoRepository.UpdateAsync(sessionInfo);
         if (Local){
-            SetPlayers();
+            var user = await UserRepository.ReadGraphAsync(currentUser!.Id);
+            if (user == null){
+                currentUser.Nations = new ();
+                await UserRepository.CreateAsync(currentUser);
+                CurrentUser = currentUser;
+            }
+            await SetPlayers(CurrentUser);
             NavigationManager.NavigateTo("/game");
         }
         else{
             NavigationManager.NavigateTo("/lobby");
+            await UserRepository.InitUser(CurrentUser);
         }
-        await UserRepository.InitUser(CurrentUser);
         StateHasChanged();
     }
 
-    private async void SetPlayers(){
-        if (CurrentUser is null) return;
-        await UserRepository.CreateAsync(CurrentUser);
+    private async Task SetPlayers(User user){
         var nations = await NationRepository.ReadAllGraphAsync();
         foreach (var nation in nations){
-            nation.UserId = CurrentUser!.Id;
+            nation.UserId = user!.Id;
             await NationRepository.UpdateAsync(nation);
         }
     }
