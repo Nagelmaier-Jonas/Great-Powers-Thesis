@@ -36,11 +36,11 @@
             @*Render Countries*@
             @foreach (var nation in Nations){
                 foreach (var land in nation.Regions){
-                    <Country Region="@land" Owner="@nation" SessionInfo="@SessionInfo" Battlegrounds="Battlegrounds"/>
+                    <Country Region="@land" Owner="@nation" SessionInfo="@SessionInfo" Battlegrounds="Battlegrounds" CurrentUser="CurrentUser"/>
                 }
             }
             @foreach (var sea in SeeZones){
-                <Country Region="@sea" SessionInfo="@SessionInfo" Battlegrounds="Battlegrounds"/>
+                <Country Region="@sea" SessionInfo="@SessionInfo" Battlegrounds="Battlegrounds" CurrentUser="CurrentUser"/>
             }
             <Channel/>
             @*Render Unit Paths*@
@@ -90,6 +90,9 @@
     
     [Parameter]
     public List<ARegion> Factories { get; set; } = new();
+    
+    [Parameter]
+    public User? CurrentUser { get; set; }
 
     private Panzoom _panzoom = new();
 

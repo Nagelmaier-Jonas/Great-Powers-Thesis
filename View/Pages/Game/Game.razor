@@ -35,7 +35,7 @@
             <CollectIncome SessionInfo="Info" CurrentNation="CurrentNation"/>
         </MudDrawer>
     }
-    <GameMap Nations="@Nations" SeeZones="@SeeZones" SessionInfo="@Info" Style="@Style" ChildStyle="@ChildStyle" Battlegrounds="Battlegrounds" UnitPaths="UnitPaths" Units="Units" IncomeData="IncomeData" Factories="Factories"/>
+    <GameMap Nations="@Nations" SeeZones="@SeeZones" SessionInfo="@Info" Style="@Style" ChildStyle="@ChildStyle" Battlegrounds="Battlegrounds" UnitPaths="UnitPaths" Units="Units" IncomeData="IncomeData" Factories="Factories" CurrentUser="CurrentUser"/>
 </MudLayout>
 
 @code {
@@ -73,6 +73,7 @@
 
     private async Task Load(){
         var scope = ServiceScopeFactory.CreateScope();
+        CurrentUser = await scope.ServiceProvider.GetRequiredService<UserRepository>().ReadGraphAsync(CurrentUser!.Id);
         Info = await scope.ServiceProvider.GetRequiredService<SessionInfoRepository>().ReadAsync();
         Nations = await scope.ServiceProvider.GetRequiredService<NationRepository>().ReadAllGraphAsync();
         SeeZones = await scope.ServiceProvider.GetRequiredService<WaterRegionRepository>().ReadAllGraphAsync();
