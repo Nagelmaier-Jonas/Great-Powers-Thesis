@@ -12,7 +12,6 @@ public class NationRepository : ARepository<Nation>, INationRepository{
     }
     
     public async Task<Nation?> ReadGraphAsync(int Id){
-        _context.ChangeTracker.Clear();
         return await _set
             .Include(n => n.Regions)
             .ThenInclude(t => t.StationedUnits)
