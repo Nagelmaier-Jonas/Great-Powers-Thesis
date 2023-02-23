@@ -28,6 +28,8 @@ public class Destroyer : AShip{
                 //A Ship cant move through enemy Fields to attack, unless its a Submarine
                 if (target.Region.IsHostile(Nation) && previous.Region.IsHostile(Nation)) break;
                 return true;
+            case EPhase.ConductCombat:
+                return true;
         }
 
         return false;

@@ -36,6 +36,8 @@ public class Submarine : AShip{
                         u.IsDestroyer())) break;
 
                 return true;
+            case EPhase.ConductCombat:
+                return true;
         }
 
         return false;

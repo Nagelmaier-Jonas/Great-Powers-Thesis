@@ -1,8 +1,12 @@
 ﻿@using Model.Entities.Units.Abstract
 @using System.Drawing
 @using System.Text
+@using Model.Entities
 @inject GameEngine GameEngine
 
+@if (SessionInfo.Phase == EPhase.ConductCombat){
+    return;
+}
 @foreach(var path in UnitPaths){
     <svg xmlns="http://www.w3.org/2000/svg" class="path-arrow">
         <defs>
@@ -20,4 +24,6 @@
     [Parameter]
     public List<string>? UnitPaths { get; set; } = new ();
 
+    [Parameter]
+    public SessionInfo? SessionInfo { get; set; }
 }

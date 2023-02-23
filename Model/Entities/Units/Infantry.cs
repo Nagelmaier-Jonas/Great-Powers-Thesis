@@ -26,6 +26,8 @@ public class Infantry : ALandUnit{
                 //Units other than Tanks must end their attack on an enemy Field
                 if (!target.Region.IsHostile(Nation)) break;
                 return true;
+            case EPhase.ConductCombat:
+                return true;
         }
         return false;
     }

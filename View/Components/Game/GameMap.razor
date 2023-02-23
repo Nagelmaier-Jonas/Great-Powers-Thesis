@@ -43,7 +43,7 @@
             }
             <Channel/>
             @*Render Unit Paths*@
-            <UnitArrow UnitPaths="UnitPaths"/>
+            <UnitArrow UnitPaths="UnitPaths" SessionInfo="SessionInfo"/>
             @*Render Income*@
             @foreach (var land in Nations.SelectMany(nation => nation.Regions)){
                 <CountryIncome Region="@land"/>

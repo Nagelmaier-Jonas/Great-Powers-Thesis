@@ -32,6 +32,8 @@ public class Artillery : ALandUnit{
                 if(Target is not null && target.Region != Target && neigh.IsHostile(Nation)) break;
                 
                 return true;
+            case EPhase.ConductCombat:
+                return true;
         }
         return false;
     }

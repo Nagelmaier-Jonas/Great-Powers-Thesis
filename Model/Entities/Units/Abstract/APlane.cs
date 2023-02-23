@@ -74,6 +74,8 @@ public abstract class APlane : AUnit{
                 if (target.Distance == 4 && !target.Region.ContainsAnyEnemies(Nation)) break;
 
                 return true;
+            case EPhase.ConductCombat:
+                return true;
         }
         return false;
     }

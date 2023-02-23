@@ -28,6 +28,8 @@ public class Tank : ALandUnit{
                 if (target.Region.ContainsEnemies(Nation) && previous.Region.ContainsEnemies(Nation)) break;
                 if (!target.Region.IsHostile(Nation) && !previous.Region.IsHostile(Nation) && previous.Distance != 0) break;
                 return true;
+            case EPhase.ConductCombat:
+                return true;
         }
         return false;
     }

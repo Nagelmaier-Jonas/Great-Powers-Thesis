@@ -48,6 +48,8 @@ public class Transport : AShip{
                 if (target.Region.ContainsAnyEnemies(Nation) && target.Region.IsWaterRegion()) break;
 
                 return true;
+            case EPhase.ConductCombat:
+                return true;
         }
 
         return false;

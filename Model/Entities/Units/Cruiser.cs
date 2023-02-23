@@ -35,6 +35,8 @@ public class Cruiser : AShip{
                 if (target.Region.IsHostile(Nation) && previous.Region.IsHostile(Nation)) break;
             
                 return true;
+            case EPhase.ConductCombat:
+                return true;
         }
 
         return false;

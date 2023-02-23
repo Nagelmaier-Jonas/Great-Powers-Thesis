@@ -225,7 +225,7 @@ public class GameEngine{
     public async Task<List<ARegion>> GetBattleLocations(){
         Init(_ServiceScopeFactory.CreateScope());
         SessionInfo? session = await _SessionInfoRepository.ReadAsync();
-        if (session.Phase != EPhase.ConductCombat) return new List<ARegion>();
+        if (session.Phase != EPhase.ConductCombat && session.Phase != EPhase.CombatMove) return new List<ARegion>();
         Init(_ServiceScopeFactory.CreateScope());
         return await _RegionRepository.ReadAsync(r => r.IncomingUnits.Count > 0);
     }
@@ -255,7 +255,6 @@ public class GameEngine{
                 session.Phase = EPhase.CombatMove;
                 break;
             case EPhase.CombatMove:
-                _Battlegrounds.Battleground = await GetBattleLocations();
                 session.Phase = EPhase.ConductCombat;
                 break;
             case EPhase.ConductCombat:
@@ -298,6 +297,7 @@ public class GameEngine{
                 Nation winner = await _NationRepository.ReadGraphAsync(battle.GetAttacker().Id);
                 LandRegion region = (LandRegion) await _RegionRepository.ReadAsync(battle.LocationId);
                 region.Nation = winner;
+                region.NationId = winner.Id;
                 await _RegionRepository.UpdateAsync(region);
             }
             Init(_ServiceScopeFactory.CreateScope());
