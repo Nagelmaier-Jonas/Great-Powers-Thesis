@@ -12,6 +12,7 @@ public class NationRepository : ARepository<Nation>, INationRepository{
     }
     
     public async Task<Nation?> ReadGraphAsync(int Id){
+        _context.ChangeTracker.Clear();
         return await _set
             .Include(n => n.Regions)
             .ThenInclude(t => t.StationedUnits)
@@ -43,6 +44,27 @@ public class NationRepository : ARepository<Nation>, INationRepository{
             .ThenInclude(u => u.Neighbours)
             .Include(u => u.Battles)
             .Include(n => n.Allies)
+            .Include(u => u.User)
+            .AsSplitQuery()
+            .ToListAsync();
+    }
+    
+    public async Task<List<Nation>> ReadAllCleanGraphAsync(){
+        _context.ChangeTracker.Clear();
+        return await _set
+            .Include(n => n.Regions)
+            .ThenInclude(t => t.StationedUnits)
+            .Include(n => n.Regions)
+            .ThenInclude(t => t.StationedPlanes)
+            .Include(n => n.Regions)
+            .ThenInclude(t => t.Capital)
+            .Include(n => n.Regions)
+            .ThenInclude(t => t.Factory)
+            .Include(n => n.Regions)
+            .ThenInclude(u => u.Neighbours)
+            .Include(u => u.Battles)
+            .Include(n => n.Allies)
+            .Include(u => u.User)
             .AsSplitQuery()
             .ToListAsync();
     }

@@ -137,8 +137,7 @@
     }
     
     private async void Load(){
-        Nations = await NationRepository.ReadAllGraphAsync();
-        CurrentUser = await UserRepository.ReadGraphAsync(CurrentUser!.Id);
+        Nations = await NationRepository.ReadAllCleanGraphAsync();
         await InvokeAsync(StateHasChanged);
     }
 
@@ -154,7 +153,6 @@
         }
         nation.UserId = CurrentUser!.Id;
         await NationRepository.UpdateAsync(nation);
-        Nations = await NationRepository.ReadAllGraphAsync();
         Snackbar.Add("Sie haben die Nation erfolgreich zugewiesen", Severity.Success);
         EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
     }
@@ -173,7 +171,6 @@
             return;
         }
         await NationRepository.ResetPlayer(nation.Id);
-        Nations = await NationRepository.ReadAllGraphAsync();
         Snackbar.Add("Nation freigegeben", Severity.Success);
         EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
     }
