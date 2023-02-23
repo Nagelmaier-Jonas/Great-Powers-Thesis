@@ -16,6 +16,7 @@
 @inject ViewRefreshService ViewRefreshService
 @inject GameEngine GameEngine
 @inject EventPublisher EventPublisher
+@implements IDisposable
 
 @if (SessionInfo.Phase is not EPhase.PurchaseUnits){
     return;
@@ -90,8 +91,19 @@
     private Dictionary<AUnit, int> Checkout { get; set; } = new();
 
     protected override void OnInitialized(){
+        ViewRefreshService.HandleViewRefreshChange += HandleViewRefreshChange;
         if (CurrentNation is null) return;
         InitData();
+    }
+    
+    private void HandleViewRefreshChange(){
+        if (CurrentNation is null) return;
+        InitData();
+        StateHasChanged();
+    }
+    
+    public void Dispose(){
+        ViewRefreshService.HandleViewRefreshChange -= HandleViewRefreshChange;
     }
 
     protected override void OnParametersSet(){
