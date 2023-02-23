@@ -147,7 +147,7 @@ public class DockerService{
     }
 
     public bool CheckConnection(string ipAddress, string port){
-        Thread.Sleep(5000);
+        Thread.Sleep(10000);
         try{
             var connection =
                 new MySqlConnection(

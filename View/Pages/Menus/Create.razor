@@ -82,7 +82,6 @@
             if (user == null){
                 currentUser.Nations = new ();
                 await UserRepository.CreateAsync(currentUser);
-                CurrentUser = currentUser;
             }
             await SetPlayers(CurrentUser);
             NavigationManager.NavigateTo("/game");
@@ -91,6 +90,7 @@
             NavigationManager.NavigateTo("/lobby");
             await UserRepository.InitUser(CurrentUser);
         }
+        CurrentUser = await UserRepository.ReadGraphAsync(currentUser.Id);
         StateHasChanged();
     }
 

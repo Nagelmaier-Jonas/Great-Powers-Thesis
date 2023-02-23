@@ -9,60 +9,56 @@
 @inject AircraftCarrierRepository AircraftCarrierRepository
 @inject TransportRepository TransportRepository
 @inject ActiveRegion ActiveRegion
-@inject ViewRefreshService ViewRefreshService
-@implements IDisposable
 
-@if (Troop is not null && Region is not null){
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@Troop.Nation.Name @Class" width="20" height="20" x="@(Region.PositionX + GetPosition(Troop).X)" y="@(Region.PositionY + GetPosition(Troop).Y)" @onclick="args => UpdateRegion(args)">
-        <g>
-            <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
-            <path class="troopbadge-medal"
-                  d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
-        </g>
-        <path class="troopbadge-symbol"
-              d="@Troop.GetStringFromDictionary(UnitPaths.Paths)"/>
-        @if (Troop.IsBattleship() || Troop.IsCruiser() || Troop.IsDestroyer() || Troop.IsSubmarine() || Troop.IsAircraftCarrier() || Troop.IsTransport()){
-            <text>
-                <text style="font-size: 19px; font-weight: bold; fill: white;" transform="translate(39.87 31.56)">
-                    <tspan x="0" y="0">@Troop.ToString()[0]</tspan>
-                </text></text>
-            @if (RenderSubTroops){
-                <SubUnit Troops="@Troop.GetSubUnits()"/>
-            }
-        }
-        @if (Amount is not 0){
-            <circle fill="#ffc107" cx="78.26" cy="78.01" r="16.74"/>
-            @if (Amount > 9){
+@foreach(var troop in Units){
+    @if (troop.Key is not null && troop.Key.GetLocation() is not null){
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@troop.Key.Nation.Name @Class" width="20" height="20" x="@(troop.Key.GetLocation().PositionX + GetPosition(troop.Key).X)" y="@(troop.Key.GetLocation().PositionY + GetPosition(troop.Key).Y)" @onclick="args => UpdateRegion(args, troop.Key)">
+            <g>
+                <circle class="troopbadge-medal" cx="47.5" cy="47.5" r="47.25"/>
+                <path class="troopbadge-medal"
+                      d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
+            </g>
+            <path class="troopbadge-symbol"
+                  d="@troop.Key.GetStringFromDictionary(UnitPaths.Paths)"/>
+            @if (troop.Key.IsBattleship() || troop.Key.IsCruiser() || troop.Key.IsDestroyer() || troop.Key.IsSubmarine() || troop.Key.IsAircraftCarrier() || troop.Key.IsTransport()){
                 <text>
-                    <text style="font-size: 19px; font-weight: bold; fill: black;" transform="translate(67.49 83.91)">
-                        <tspan x="0" y="0">@Amount</tspan>
+                    <text style="font-size: 19px; font-weight: bold; fill: white;" transform="translate(39.87 31.56)">
+                        <tspan x="0" y="0">@troop.Key.ToString()[0]</tspan>
                     </text></text>
+                @if (RenderSubTroops){
+                    <SubUnit Troops="@troop.Key.GetSubUnits()"/>
+                }
             }
-            else{
-                <text>
-                    <text style="font-size: 19px; font-weight: bold; fill: black;" transform="translate(71.49 83.91)">
-                        <tspan x="0" y="0">@Amount</tspan>
-                    </text></text>
+            @if (troop.Value is not 0){
+                <circle fill="#ffc107" cx="78.26" cy="78.01" r="16.74"/>
+                @if (troop.Value > 9){
+                    <text>
+                        <text style="font-size: 19px; font-weight: bold; fill: black;" transform="translate(67.49 83.91)">
+                            <tspan x="0" y="0">@troop.Value</tspan>
+                        </text></text>
+                }
+                else{
+                    <text>
+                        <text style="font-size: 19px; font-weight: bold; fill: black;" transform="translate(71.49 83.91)">
+                            <tspan x="0" y="0">@troop.Value</tspan>
+                        </text></text>
+                }
             }
-        }
-    </svg>
+        </svg>
+    }
 }
+
 
 @code {
 
     [Parameter]
-    public AUnit? Troop { get; set; }
-
-    [Parameter]
-    public int? Amount { get; set; } = 0;
+    public Dictionary<AUnit,int> Units { get; set; } = new();
 
     [Parameter]
     public string? Class { get; set; }
 
     [Parameter]
     public bool RenderSubTroops { get; set; }
-
-    private ARegion? Region { get; set; }
 
     private Dictionary<AUnit, Point> TroopPositioning { get; set; } = new(){
         { UnitPaths.Units[0], new Point(-10, -30) },
@@ -81,27 +77,18 @@
     };
 
     private Point GetPosition(AUnit troop){
-        if (Region is null || Troop is null) return new Point();
+        var Region = troop.GetLocation();
+        if (troop.GetLocation() is null || troop is null) return new Point();
         if (Region.IsLandRegion()) return troop.GetPointFromDictionary(TroopPositioning).Value;
-        if (Region.IsWaterRegion() && Troop.IsFighter() is false && Troop.IsBomber() is false) return troop.GetPointFromDictionary(TroopPositioning).Value;
+        if (Region.IsWaterRegion() && troop.IsFighter() is false && troop.IsBomber() is false) return troop.GetPointFromDictionary(TroopPositioning).Value;
         return new Point(){
             X = troop.GetPointFromDictionary(TroopPositioning).Value.X + 22,
             Y = troop.GetPointFromDictionary(TroopPositioning).Value.Y
         };
     }
 
-    protected override void OnInitialized(){
-        ViewRefreshService.HandleViewRefreshChange += Load;
-        Load();
-    }
-
-    private void Load(){
-        if (Troop is null) return;
-        Region = Troop.GetLocation();
-        StateHasChanged();
-    }
-
-    private void UpdateRegion(MouseEventArgs args){
+    private void UpdateRegion(MouseEventArgs args, AUnit unit){
+        var Region = unit.GetLocation();
         if (args.ShiftKey){
             return;
         }
@@ -112,10 +99,6 @@
         else{
             ActiveRegion.RefreshRegion(Region);
         }
-    }
-
-    public void Dispose(){
-        ViewRefreshService.HandleViewRefreshChange -= Load;
     }
 
 }
