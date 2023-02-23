@@ -10,6 +10,7 @@
 @inject TransportRepository TransportRepository
 @inject ActiveRegion ActiveRegion
 @inject ViewRefreshService ViewRefreshService
+@implements IDisposable
 
 @if (Troop is not null && Region is not null){
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" class="@Troop.Nation.Name @Class" width="20" height="20" x="@(Region.PositionX + GetPosition(Troop).X)" y="@(Region.PositionY + GetPosition(Troop).Y)" @onclick="args => UpdateRegion(args)">
@@ -111,6 +112,10 @@
         else{
             ActiveRegion.RefreshRegion(Region);
         }
+    }
+
+    public void Dispose(){
+        ViewRefreshService.HandleViewRefreshChange -= Load;
     }
 
 }
