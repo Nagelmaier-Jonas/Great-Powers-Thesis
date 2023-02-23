@@ -3,38 +3,35 @@
 @using View.Services
 @inject ActiveRegion ActiveRegion
 
-@if (Region is not null && Factory is not null){
-    <svg id="Ebene_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" width="20" height="20" x="@(Region.PositionX - 10)" y="@(Region.PositionY - 55)" @onclick="args => UpdateRegion(args)">
-        <defs>
-            <style>
-                .cls-1 {
-                fill: #828282;
-                }
-                .cls-2 {
-                fill: #C8C8C8;
-                }
-            </style>
-        </defs>
-        <g>
-            <circle class="cls-1" cx="47.5" cy="47.5" r="47.25"/>
-            <path class="cls-1" d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
-        </g>
-        <path class="cls-2" d="M19.8,71.1h55.4V29.5h-5.5v-5.5h-8.3v5.5v13.9L47.5,29.5v13.9L33.6,29.5v13.9L19.8,29.5V71.1"/>
-    </svg>
+@foreach (var Region in Factories){
+    @if (Region is not null && Region.GetFactory() is not null){
+        <svg id="Ebene_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 95" width="20" height="20" x="@(Region.PositionX - 10)" y="@(Region.PositionY - 55)" @onclick="args => UpdateRegion(args, Region)">
+            <defs>
+                <style>
+                    .cls-1 {
+                    fill: #828282;
+                    }
+                    .cls-2 {
+                    fill: #C8C8C8;
+                    }
+                </style>
+            </defs>
+            <g>
+                <circle class="cls-1" cx="47.5" cy="47.5" r="47.25"/>
+                <path class="cls-1" d="M47.5,.5c25.92,0,47,21.08,47,47s-21.08,47-47,47S.5,73.42,.5,47.5,21.58,.5,47.5,.5m0-.5C21.27,0,0,21.27,0,47.5s21.27,47.5,47.5,47.5,47.5-21.27,47.5-47.5S73.73,0,47.5,0h0Z"/>
+            </g>
+            <path class="cls-2" d="M19.8,71.1h55.4V29.5h-5.5v-5.5h-8.3v5.5v13.9L47.5,29.5v13.9L33.6,29.5v13.9L19.8,29.5V71.1"/>
+        </svg>
+    }
 }
+
 
 @code {
 
     [Parameter]
-    public ARegion? Region { get; set; }
-
-    private Factory? Factory { get; set; }
-
-    protected override void OnInitialized(){
-        Factory = Region?.GetFactory();
-    }
+    public List<ARegion> Factories { get; set; } = new();
     
-    private void UpdateRegion(MouseEventArgs args){
+    private void UpdateRegion(MouseEventArgs args, ARegion Region){
         if (args.ShiftKey){
             return;
         }

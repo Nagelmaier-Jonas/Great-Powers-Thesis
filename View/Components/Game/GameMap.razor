@@ -48,12 +48,7 @@
             @*Render Income*@
             <CountryIncome IncomeData="IncomeData"/>
             @*Render Factories*@
-            @foreach (var land in Nations.SelectMany(nation => nation.Regions)){
-                <CountryFactory Region="@land"/>
-            }
-            @foreach (var sea in SeeZones){
-                <CountryFactory Region="@sea"/>
-            }
+            <CountryFactory Factories="Factories"/>
             @*Render Troops*@
             <Unit Units="Units"/>
         </svg>
@@ -92,6 +87,9 @@
     
     [Parameter]
     public List<ARegion> IncomeData { get; set; } = new();
+    
+    [Parameter]
+    public List<ARegion> Factories { get; set; } = new();
 
     private Panzoom _panzoom = new();
 

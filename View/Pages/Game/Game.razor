@@ -35,7 +35,7 @@
             <CollectIncome SessionInfo="Info" CurrentNation="CurrentNation"/>
         </MudDrawer>
     }
-    <GameMap Nations="@Nations" SeeZones="@SeeZones" SessionInfo="@Info" Style="@Style" ChildStyle="@ChildStyle" Battlegrounds="Battlegrounds" UnitPaths="UnitPaths" Units="Units" IncomeData="IncomeData"/>
+    <GameMap Nations="@Nations" SeeZones="@SeeZones" SessionInfo="@Info" Style="@Style" ChildStyle="@ChildStyle" Battlegrounds="Battlegrounds" UnitPaths="UnitPaths" Units="Units" IncomeData="IncomeData" Factories="Factories"/>
 </MudLayout>
 
 @code {
@@ -53,6 +53,7 @@
     private List<string> UnitPaths { get; set; } = new();
     private Dictionary<AUnit,int> Units { get; set; } = new();
     private List<ARegion> IncomeData { get; set; } = new();
+    private List<ARegion> Factories { get; set; } = new();
     private int MaxTroops { get; set; }
 
     bool _open = false;
@@ -84,6 +85,7 @@
         UnitPaths = await GetUnitPaths(scope);
         Units = await GetUnits();
         IncomeData = await GetIncomeData();
+        Factories = await GetFactories();
         if (!(CurrentUser is not null && CurrentUser.Nations.Any(n => n.Id == CurrentNation.Id))){
             CloseDrawer();
         }
@@ -138,7 +140,18 @@
             incomeData.Add(sea);
         }
         return incomeData;
-    } 
+    }
+    
+    private async Task<List<ARegion>> GetFactories(){
+        var factories = new List<ARegion>();
+        foreach (var land in Nations.SelectMany(nation => nation.Regions)){
+            factories.Add(land);
+        }
+        foreach (var sea in SeeZones){
+            factories.Add(sea);
+        }
+        return factories;
+    }
 
     void OpenDrawer(){
         _open = true;
