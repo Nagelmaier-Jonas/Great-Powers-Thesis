@@ -64,7 +64,7 @@
         }
         await Task.Run(() => DockerService.ChangeDbContext("localhost", portmySql, portRabbitMqS, portRabbitMqW));
         EventSubscriberHelper.Init();
-        var databasePath = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, "Databases");
+        var databasePath = Directory.GetParent(Environment.CurrentDirectory.Split("Great-Powers-Thesis")[0]) + "\\Great-Powers-Thesis\\Databases";
         var sessionInfo = new SessionInfo(){
             Id = 1,
             CurrentNationId = 1,

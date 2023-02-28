@@ -76,7 +76,7 @@ public class DockerService{
     }
 
     public Task WriteDockerFile(string name, string portmySql, string portRabbitMqS, string portRabbitMqW){
-        var databasePath = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, "Databases");
+        var databasePath = Directory.GetParent(Environment.CurrentDirectory.Split("Great-Powers-Thesis")[0]) + "\\Great-Powers-Thesis\\Databases";
         var schema = File.ReadAllText($"{databasePath}\\schema.sql");
         schema = schema.Replace("\\Databases\\default\\", $"\\Databases\\{name}\\");
         var dockerComposeFile = File.ReadAllText($"{databasePath}\\docker-compose.yml");
@@ -96,7 +96,7 @@ public class DockerService{
     }
 
     public Task StartDockerContainer(string name, string portmySql, string portRabbitMqS, string portRabbitMqW){
-        var databasePath = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, "Databases");
+        var databasePath = Directory.GetParent(Environment.CurrentDirectory.Split("Great-Powers-Thesis")[0]) + "\\Great-Powers-Thesis\\Databases";
         var dockerComposeFile = File.ReadAllText($"{databasePath}\\docker-compose.yml");
         dockerComposeFile = dockerComposeFile.Replace("26280", portmySql);
         dockerComposeFile = dockerComposeFile.Replace("26281", portmySql);
@@ -172,7 +172,7 @@ public class DockerService{
             FileName = "cmd.exe"
         };
         process.StartInfo = startInfo;
-        var databasePath = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, "Databases");
+        var databasePath = Directory.GetParent(Environment.CurrentDirectory.Split("Great-Powers-Thesis")[0]) + "\\Great-Powers-Thesis\\Databases";
         process.StartInfo.Arguments = $"/c cd {databasePath} && docker-compose down";
         process.Start();
         process.WaitForExit();

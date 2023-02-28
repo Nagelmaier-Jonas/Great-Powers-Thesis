@@ -36,7 +36,7 @@ t.Stop();
 
 
 //start docker container
-var databasePath = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, "Databases");
+var databasePath = Directory.GetParent(Environment.CurrentDirectory.Split("Great-Powers-Thesis")[0]) + "\\Great-Powers-Thesis\\Databases";
 var process = new Process();
 var startInfo = new ProcessStartInfo{
     WindowStyle = ProcessWindowStyle.Hidden,
