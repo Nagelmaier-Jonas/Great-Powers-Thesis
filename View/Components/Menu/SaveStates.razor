@@ -41,12 +41,6 @@
 
     private bool _processing { get; set; } = false;
 
-    protected override void OnInitialized(){
-        foreach (var container in DockerContainers){
-            Infos.Add(container, FileService.ReadSessionInfoFromFile(container));
-        }
-    }
-
     private async Task LoadSession(string name, string ipAddress, string portmySql, string portRabbitMqS, string portRabbitMqW){
         await Task.Run(() => _processing = true);
         StateHasChanged();

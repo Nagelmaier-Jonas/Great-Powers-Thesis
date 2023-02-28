@@ -76,9 +76,10 @@ public class DockerService{
     }
 
     public Task WriteDockerFile(string name, string portmySql, string portRabbitMqS, string portRabbitMqW){
-        var schema = File.ReadAllText("..\\Databases\\schema.sql");
+        var databasePath = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, "Databases");
+        var schema = File.ReadAllText($"{databasePath}\\schema.sql");
         schema = schema.Replace("\\Databases\\default\\", $"\\Databases\\{name}\\");
-        var dockerComposeFile = File.ReadAllText("..\\Databases\\docker-compose.yml");
+        var dockerComposeFile = File.ReadAllText($"{databasePath}\\docker-compose.yml");
         dockerComposeFile = dockerComposeFile.Replace("./default:/var/lib/mysql", $"./{name}:/var/lib/mysql");
         dockerComposeFile = dockerComposeFile.Replace("26280", portmySql);
         dockerComposeFile = dockerComposeFile.Replace("5672:", portRabbitMqS + ":");
@@ -88,14 +89,15 @@ public class DockerService{
         dockerComposeFile =
             dockerComposeFile.Replace("./default/rabbitmq:/var/lib/rabbitmq", $"./rabbitmq:/var/lib/rabbitmq");
         dockerComposeFile = dockerComposeFile.Replace("./default/mysql:/var/lib/mysql", $"./mysql:/var/lib/mysql");
-        Directory.CreateDirectory($"..\\Databases\\{name}");
-        File.WriteAllText($"..\\Databases\\{name}\\schema.sql", schema);
-        File.WriteAllText($"..\\Databases\\{name}\\docker-compose.yml", dockerComposeFile);
+        Directory.CreateDirectory($"{databasePath}\\{name}");
+        File.WriteAllText($"{databasePath}\\{name}\\schema.sql", schema);
+        File.WriteAllText($"{databasePath}\\{name}\\docker-compose.yml", dockerComposeFile);
         return Task.CompletedTask;
     }
 
     public Task StartDockerContainer(string name, string portmySql, string portRabbitMqS, string portRabbitMqW){
-        var dockerComposeFile = File.ReadAllText("..\\Databases\\docker-compose.yml");
+        var databasePath = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, "Databases");
+        var dockerComposeFile = File.ReadAllText($"{databasePath}\\docker-compose.yml");
         dockerComposeFile = dockerComposeFile.Replace("26280", portmySql);
         dockerComposeFile = dockerComposeFile.Replace("26281", portmySql);
         dockerComposeFile = dockerComposeFile.Replace("26282", portmySql);
@@ -117,7 +119,7 @@ public class DockerService{
             FileName = "cmd.exe"
         };
         process.StartInfo = startInfo;
-        process.StartInfo.Arguments = $"/c cd ..\\Databases\\{name} && docker-compose up -d --build";
+        process.StartInfo.Arguments = $"/c cd {databasePath}\\{name} && docker-compose up -d --build";
         process.Start();
         process.WaitForExit();
         return Task.CompletedTask;
@@ -170,7 +172,8 @@ public class DockerService{
             FileName = "cmd.exe"
         };
         process.StartInfo = startInfo;
-        process.StartInfo.Arguments = "/c cd ..\\Databases && docker-compose down";
+        var databasePath = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, "Databases");
+        process.StartInfo.Arguments = $"/c cd {databasePath} && docker-compose down";
         process.Start();
         process.WaitForExit();
     }

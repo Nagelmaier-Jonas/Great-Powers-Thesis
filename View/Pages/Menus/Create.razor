@@ -64,6 +64,7 @@
         }
         await Task.Run(() => DockerService.ChangeDbContext("localhost", portmySql, portRabbitMqS, portRabbitMqW));
         EventSubscriberHelper.Init();
+        var databasePath = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, "Databases");
         var sessionInfo = new SessionInfo(){
             Id = 1,
             CurrentNationId = 1,
@@ -73,9 +74,8 @@
             Round = 1,
             AxisCapitals = 6,
             AlliesCapitals = 6,
-            Path = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, $"Databases\\{SessionName}\\")
+            Path = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, $"{databasePath}\\{SessionName}\\")
         };
-        FileService.WriteSessionInfoToFile(Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, $"Databases\\{SessionName}\\"), sessionInfo);
         await SessionInfoRepository.UpdateAsync(sessionInfo);
         if (Local){
             var user = await UserRepository.ReadGraphAsync(currentUser!.Id);
