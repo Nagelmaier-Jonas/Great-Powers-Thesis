@@ -24,7 +24,6 @@ public class GameEngine{
     public IRegionRepository _RegionRepository{ get; set; }
     public IWaterRegionRepository _WaterRegionRepository{ get; set; }
     public ILandRegionRepository _LandRegionRepository{ get; set; }
-    public Battlegrounds _Battlegrounds{ get; set; }
     public FileService FileService{ get; set; }
     public IEventPublisher _EventPublisher{ get; set; }
 
@@ -42,7 +41,6 @@ public class GameEngine{
         _ViewRefreshService = scope.ServiceProvider.GetRequiredService<ViewRefreshService>();
         FileService = scope.ServiceProvider.GetRequiredService<FileService>();
         _RegionRepository = scope.ServiceProvider.GetRequiredService<IRegionRepository>();
-        _Battlegrounds = scope.ServiceProvider.GetRequiredService<Battlegrounds>();
         _FactoryRepository = scope.ServiceProvider.GetRequiredService<IFactoryRepository>();
         _EventPublisher = scope.ServiceProvider.GetRequiredService<IEventPublisher>();
         _WaterRegionRepository = scope.ServiceProvider.GetRequiredService<IWaterRegionRepository>();
