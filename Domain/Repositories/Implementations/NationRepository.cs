@@ -11,7 +11,7 @@ public class NationRepository : ARepository<Nation>, INationRepository{
     public NationRepository(GreatPowersDbContext context) : base(context){
     }
     
-    public async Task<Nation?> ReadGraphAsync(int Id){
+    public async Task<Nation?> ReadGraphAsync(int Id){ 
         return await _set
             .Include(n => n.Regions)
             .ThenInclude(t => t.StationedUnits)

@@ -2,7 +2,6 @@
 @inherits SidebarComponent
 @using Microsoft.AspNetCore.Components
 @using Domain.Services
-@using Model.Configuration
 @using Model.Entities
 @using Domain.Repositories
 @using Domain.Repositories.Implementations
@@ -49,10 +48,11 @@
 
     private static readonly Random Random = new();
     private string SessionName { get; set; } = "NewSimulation";
-    bool _processing = false;
+    private bool _processing = false;
 
     private async Task CreateNewGame(string SessionName){
-        _processing = true;
+        var currentUser = CurrentUser;
+        await Task.Run(() => _processing = true);
         StateHasChanged();
         SessionName = SessionName.Replace(" ", "");
         var portmySql = DockerService.GetPortMySql().ToString();
@@ -64,6 +64,7 @@
         }
         await Task.Run(() => DockerService.ChangeDbContext("localhost", portmySql, portRabbitMqS, portRabbitMqW));
         EventSubscriberHelper.Init();
+        var databasePath = Directory.GetParent(Environment.CurrentDirectory.Split("Great-Powers-Thesis")[0]) + "\\Great-Powers-Thesis\\Databases";
         var sessionInfo = new SessionInfo(){
             Id = 1,
             CurrentNationId = 1,
@@ -73,30 +74,30 @@
             Round = 1,
             AxisCapitals = 6,
             AlliesCapitals = 6,
-            Path = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, $"Databases\\{SessionName}\\")
+            Path = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, $"{databasePath}\\{SessionName}\\")
         };
-        FileService.WriteSessionInfoToFile(Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, $"Databases\\{SessionName}\\"), sessionInfo);
         await SessionInfoRepository.UpdateAsync(sessionInfo);
         if (Local){
-            SetPlayers();
+            var user = await UserRepository.ReadGraphAsync(currentUser!.Id);
+            if (user == null){
+                currentUser.Nations = new ();
+                await UserRepository.CreateAsync(currentUser);
+            }
+            await SetPlayers(CurrentUser);
             NavigationManager.NavigateTo("/game");
         }
         else{
             NavigationManager.NavigateTo("/lobby");
+            await UserRepository.InitUser(CurrentUser);
         }
-        
-    
-        CurrentUser.IsOwner = true;
-        await UserRepository.UpdateAsync(CurrentUser);
+        CurrentUser = await UserRepository.ReadGraphAsync(currentUser.Id);
         StateHasChanged();
     }
 
-    private async void SetPlayers(){
-        if (CurrentUser is null) return;
-        await UserRepository.CreateAsync(CurrentUser);
+    private async Task SetPlayers(User user){
         var nations = await NationRepository.ReadAllGraphAsync();
         foreach (var nation in nations){
-            nation.UserId = CurrentUser!.Id;
+            nation.UserId = user!.Id;
             await NationRepository.UpdateAsync(nation);
         }
     }

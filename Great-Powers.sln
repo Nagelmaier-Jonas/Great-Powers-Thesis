@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{69E5DFA9-1EEA-4F19-8060-1AB751E0A1B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unittests", "Unittests\Unittests.csproj", "{53D4DBA8-1457-40F2-9ED6-CFA7896DEB6A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorPanzoom", "BlazorPanzoom\BlazorPanzoom.csproj", "{33109D07-34E6-48E8-A8ED-C4BFFEFBF070}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus", "EventBus\EventBus.csproj", "{073654D5-9C94-4AD9-B5AE-44EE849B671F}"
@@ -38,8 +36,6 @@ Global
 		{33109D07-34E6-48E8-A8ED-C4BFFEFBF070}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33109D07-34E6-48E8-A8ED-C4BFFEFBF070}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33109D07-34E6-48E8-A8ED-C4BFFEFBF070}.Release|Any CPU.Build.0 = Release|Any CPU
-		{53D4DBA8-1457-40F2-9ED6-CFA7896DEB6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{53D4DBA8-1457-40F2-9ED6-CFA7896DEB6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{073654D5-9C94-4AD9-B5AE-44EE849B671F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{073654D5-9C94-4AD9-B5AE-44EE849B671F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{073654D5-9C94-4AD9-B5AE-44EE849B671F}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -341,6 +341,7 @@ public class GameEngine{
                 break;
             case EPhase.ConductCombat:
                 session.Phase = EPhase.NonCombatMove;
+                await UpdateCapitals(session);
                 break;
             case EPhase.NonCombatMove:
                 await MoveUnits();
@@ -377,6 +378,12 @@ public class GameEngine{
         return true;
     }
 
+    private async Task UpdateCapitals(SessionInfo sessionInfo){
+        Init(_ServiceScopeFactory.CreateScope());
+        var nations = await _NationRepository.ReadAllGraphAsync();
+        sessionInfo.AxisCapitals = nations.Where(n => n.Id is 2 or 4).SelectMany(i => i.Regions.Where(r => r.GetCapital() is not null).ToList()).Count();
+        sessionInfo.AlliesCapitals = nations.Where(n => n.Id is 1 or 3 or 5).SelectMany(i => i.Regions.Where(r => r.GetCapital() is not null).ToList()).Count();
+    }
     public async void FinishBattle(Battle battle){
         if (battle.Attackers.Count > 0 && battle.Defenders.Count == 0){
             if (battle.Location.IsLandRegion()){

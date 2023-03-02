@@ -19,8 +19,8 @@
 <MudCard Style="width: 20vw; margin-top: 10vh !important;" Class="m-auto">
     <MudCardMedia Image="img/menu/create.png" Height="200"/>
     <MudCardContent>
-        <MudTextField T="string" Label="Port" HelperText="Port" Required="true" RequiredError="Port is required!" @bind-Value="Port"/>
         <MudTextField T="string" Label="IpAddress" HelperText="Ip Address" Required="true" RequiredError="Ip Address is required!" @bind-Value="IpAddress"/>
+        <MudTextField T="string" Label="Port" HelperText="Port" Required="true" RequiredError="Port is required!" @bind-Value="Port"/>
         <MudTextField T="string" Label="RabbitPortS" HelperText="RabbitPortS" Required="true" RequiredError="RabbitPortS is required!" @bind-Value="RabbitPortS"/>
         <MudTextField T="string" Label="RabbitPortW" HelperText="RabbitPortW" Required="true" RequiredError="RabbitPortW is required!" @bind-Value="RabbitPortW"/>
     </MudCardContent>
@@ -53,7 +53,8 @@
     private bool _processing { get; set; }
 
     private async Task JoinGame(){
-        _processing = true;
+        await Task.Run(() => _processing = true);
+        StateHasChanged();
         if (Port == null || IpAddress == null || RabbitPortS == null || RabbitPortW == null) return;
         if (DockerService.CheckConnection(IpAddress, Port)){
             await DockerService.ChangeDbContext(IpAddress, Port, RabbitPortS, RabbitPortW);
@@ -62,6 +63,7 @@
             if (user == null){
                 CurrentUser.Nations = new ();
                 await UserRepository.CreateAsync(CurrentUser);
+                CurrentUser = user;
             }
             NavigationManager.NavigateTo("/lobby");
         }

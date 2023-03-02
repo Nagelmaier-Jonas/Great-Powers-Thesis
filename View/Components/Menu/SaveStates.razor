@@ -19,7 +19,7 @@
            <MudText Typo="Typo.h4" Color="Color.Secondary">@container</MudText>
         </MudCardContent>
         <MudCardActions>
-            <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => LoadSession(container, "127.0.0.1", DockerService.GetPortMySql().ToString(), DockerService.GetPortRabbitMqS().ToString(), DockerService.GetPortRabbitMqW().ToString()))">
+            <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => LoadSession(container, "localhost", DockerService.GetPortMySql().ToString(), DockerService.GetPortRabbitMqS().ToString(), DockerService.GetPortRabbitMqW().ToString()))">
                 @if (_processing){
                     <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
                     <MudText Class="ms-2">Loading ...</MudText>
@@ -41,14 +41,9 @@
 
     private bool _processing { get; set; } = false;
 
-    protected override void OnInitialized(){
-        foreach (var container in DockerContainers){
-            Infos.Add(container, FileService.ReadSessionInfoFromFile(container));
-        }
-    }
-
     private async Task LoadSession(string name, string ipAddress, string portmySql, string portRabbitMqS, string portRabbitMqW){
-        _processing = true;
+        await Task.Run(() => _processing = true);
+        StateHasChanged();
         await DockerService.StartDockerContainer(name, portmySql, portRabbitMqS, portRabbitMqW);
         while (!DockerService.CheckConnection($"{ipAddress}", portmySql)){
         }

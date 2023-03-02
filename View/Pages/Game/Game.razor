@@ -36,7 +36,7 @@
             <CollectIncome SessionInfo="Info" CurrentNation="CurrentNation"/>
         </MudDrawer>
     }
-    <GameMap Nations="@Nations" SeeZones="@SeeZones" SessionInfo="@Info" Style="@Style" ChildStyle="@ChildStyle" Battlegrounds="Battlegrounds" UnitPaths="UnitPaths"/>
+    <GameMap Nations="@Nations" SeeZones="@SeeZones" SessionInfo="@Info" Style="@Style" ChildStyle="@ChildStyle" Battlegrounds="Battlegrounds" UnitPaths="UnitPaths" Units="Units" IncomeData="IncomeData" Factories="Factories" CurrentUser="CurrentUser"/>
 </MudLayout>
 
 @code {
@@ -51,10 +51,13 @@
     private List<ARegion>? Battlegrounds { get; set; } = new();
     private List<AUnit> PlaceableUnits { get; set; } = new();
     private List<AUnit> PlaceableFactories { get; set; } = new();
-    public List<string> UnitPaths { get; set; } = new();
+    private List<string> UnitPaths { get; set; } = new();
+    private Dictionary<AUnit,int> Units { get; set; } = new();
+    private List<ARegion> IncomeData { get; set; } = new();
+    private List<ARegion> Factories { get; set; } = new();
     private int MaxTroops { get; set; }
 
-    bool _open = false;
+    bool _open;
     private string Style { get; set; } = "width: 100vw; transition: padding-right 0.5s;";
     private string ChildStyle { get; set; } = "";
 
@@ -71,6 +74,7 @@
 
     private async Task Load(){
         var scope = ServiceScopeFactory.CreateScope();
+        CurrentUser = await scope.ServiceProvider.GetRequiredService<UserRepository>().ReadGraphAsync(CurrentUser!.Id);
         Info = await scope.ServiceProvider.GetRequiredService<SessionInfoRepository>().ReadAsync();
         Nations = await scope.ServiceProvider.GetRequiredService<INationRepository>().ReadAllGraphAsync();
         SeeZones = await scope.ServiceProvider.GetRequiredService<IWaterRegionRepository>().ReadAllGraphAsync();
@@ -81,6 +85,9 @@
         PlaceableUnits = await scope.ServiceProvider.GetRequiredService<GameEngine>().GetPlaceableUnits();
         PlaceableFactories = await scope.ServiceProvider.GetRequiredService<GameEngine>().GetPlaceableFactories();
         UnitPaths = await GetUnitPaths(scope);
+        Units = await GetUnits();
+        IncomeData = await GetIncomeData();
+        Factories = await GetFactories();
         if (!(CurrentUser is not null && CurrentUser.Nations.Any(n => n.Id == CurrentNation.Id))){
             CloseDrawer();
         }
@@ -107,6 +114,45 @@
             Path.Add(new Point((int)c.PositionX, (int)c.PositionY));
         }
         return Path.Count is 0 ? String.Empty : Path.Aggregate($"M", (current, p) => current + $" {p.X} {p.Y}");
+    }
+
+    private async Task<Dictionary<AUnit, int>> GetUnits(){
+        var units = new Dictionary<AUnit, int>();
+        foreach (var nation in Nations){
+            foreach (var land in nation.Regions){
+                foreach (var unit in land.GetOneStationedUnitPerType()){
+                    units.Add(unit, land.GetUnitCount(unit));
+                }
+            }
+        }
+        foreach (var sea in SeeZones){
+            foreach (var unit in sea.GetOneStationedUnitPerType()){
+                units.Add(unit, sea.GetUnitCount(unit));
+            }
+        }
+        return units;
+    }
+    
+    private async Task<List<ARegion>> GetIncomeData(){
+        var incomeData = new List<ARegion>();
+        foreach (var land in Nations.SelectMany(nation => nation.Regions)){
+            incomeData.Add(land);
+        }
+        foreach (var sea in SeeZones){
+            incomeData.Add(sea);
+        }
+        return incomeData;
+    }
+    
+    private async Task<List<ARegion>> GetFactories(){
+        var factories = new List<ARegion>();
+        foreach (var land in Nations.SelectMany(nation => nation.Regions)){
+            factories.Add(land);
+        }
+        foreach (var sea in SeeZones){
+            factories.Add(sea);
+        }
+        return factories;
     }
 
     void OpenDrawer(){

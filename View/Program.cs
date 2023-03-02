@@ -17,6 +17,7 @@ using EventBus.Clients;
 using EventBus.Events;
 using EventHandling;
 using EventHandling.EventHandler;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.Extensions.Logging.Abstractions;
 using View;
 using View.Components.Game.Channel;
@@ -36,32 +37,20 @@ t.Stop();
 
 
 //start docker container
+var databasePath = Directory.GetParent(Environment.CurrentDirectory.Split("Great-Powers-Thesis")[0]) + "\\Great-Powers-Thesis\\Databases";
 var process = new Process();
 var startInfo = new ProcessStartInfo{
     WindowStyle = ProcessWindowStyle.Hidden,
     FileName = "cmd.exe"
 };
 process.StartInfo = startInfo;
-process.StartInfo.Arguments = "/c cd ..\\Databases && docker-compose down && docker-compose up -d --build";
+process.StartInfo.Arguments = $"/c cd {databasePath} && docker-compose down && docker-compose up -d --build";
 process.Start();
 process.WaitForExit();
 
-//write default sessionInfo
-File.WriteAllText(
-    Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, "Databases\\default\\") + "sessionInfo.json", JsonSerializer.Serialize(new SessionInfo(){
-        Id = 1,
-        CurrentNationId = 1,
-        StandardVictory = true,
-        TotalVictory = false,
-        Phase = EPhase.PurchaseUnits,
-        Round = 1,
-        AxisCapitals = 6,
-        AlliesCapitals = 6,
-        Path = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).FullName, "Databases\\default\\")
-    }));
-
 //configure builder
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddDbContext<GreatPowersDbContext>(
     options => {
         options.UseMySql(
@@ -129,7 +118,6 @@ builder.Services.AddScoped<ActiveRegion>();
 builder.Services.AddSingleton<ViewRefreshService>();
 builder.Services.AddSingleton<ReadyService>();
 builder.Services.AddScoped<CombatTargets>();
-builder.Services.AddScoped<Battlegrounds>();
 builder.Services.AddScoped<NonCombatTargets>();
 builder.Services.AddScoped<MobilizeUnit>();
 
@@ -139,7 +127,8 @@ builder.Services.AddTransient<StateHasChangedEventHandler>();
 builder.Services.AddTransient<ReadyEventHandler>();
 
 builder.Services.AddSingleton<IEventPublisher,EventPublisher>();
-builder.Services.AddSingleton<IEventProcessor, StateHasChangedEventProcessor>();
+builder.Services.AddSingleton<EventPublisher>();
+builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
 builder.Services.AddHostedService<EventSubscriber>();
 builder.Services.AddSingleton<EventSubscriberHelper>();
 

@@ -14,7 +14,8 @@
     private List<string> DockerContainer { get; set; } = new();
 
     protected override void OnInitialized(){
-        DockerContainer = Directory.GetDirectories("../Databases").Select(x => x.Split('\\').Last()).ToList();
+        var databasePath = Directory.GetParent(Environment.CurrentDirectory.Split("Great-Powers-Thesis")[0]) + "\\Great-Powers-Thesis\\Databases";
+        DockerContainer = Directory.GetDirectories($"{databasePath}").Select(x => x.Split('\\').Last()).ToList();
         DockerContainer.Remove("default");
         Items.Add(new SidebarItem(){
             Name = "MainMenu",
