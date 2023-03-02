@@ -6,11 +6,13 @@ namespace Model.Entities.Units.Abstract;
 
 [Table("PLANES_BT")]
 public abstract class APlane : AUnit{
-    [Column("LOCATION_ID")] public int? RegionId{ get; set; }
+    [Column("LOCATION_ID")] 
+    public int? RegionId{ get; set; }
 
     public ARegion? Region{ get; set; }
 
-    [Column("AIRCRAFT_CARRIER_ID")] public int? AircraftCarrierId{ get; set; }
+    [Column("AIRCRAFT_CARRIER_ID")] 
+    public int? AircraftCarrierId{ get; set; }
 
     public AircraftCarrier? AircraftCarrier{ get; set; }
 

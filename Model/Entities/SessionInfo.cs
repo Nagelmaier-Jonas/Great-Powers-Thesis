@@ -32,7 +32,8 @@ public class SessionInfo{
     [Column("CURRENT_NATION_ID")]
     public int CurrentNationId{ get; set; }
 
-    [JsonPropertyName("Nation")] public Nation Nation{ get; set; }
+    [JsonPropertyName("Nation")] 
+    public Nation Nation{ get; set; }
 
     [JsonPropertyName("AxisCapitals")]
     [Column("AXIS_CAPITALS")]

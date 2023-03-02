@@ -5,7 +5,8 @@ namespace Model.Entities.Units.Abstract;
 
 [Table("SHIPS_BT")]
 public abstract class AShip : AUnit{
-    [Column("LOCATION_ID")] public int? RegionId{ get; set; }
+    [Column("LOCATION_ID")] 
+    public int? RegionId{ get; set; }
 
     public WaterRegion? Region{ get; set; }
 

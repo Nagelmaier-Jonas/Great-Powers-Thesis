@@ -8,14 +8,13 @@ using Model.Entities.Units.Abstract;
 namespace Domain.Repositories.Implementations;
 
 public class UnitRepository : ACreatableRepository<AUnit>, IUnitRepository{
-    public LandUnitRepository _LandUnitRepository{ get; set; }
-    public PlaneRepository _PlaneRepository{ get; set; }
-    public ShipRepository _ShipRepository{ get; set; }
+    public ILandUnitRepository _LandUnitRepository{ get; set; }
+    public IPlaneRepository _PlaneRepository{ get; set; }
+    public IShipRepository _ShipRepository{ get; set; }
+    public IFactoryRepository _FactoryRepository{ get; set; }
 
-    public FactoryRepository _FactoryRepository{ get; set; }
-
-    public UnitRepository(GreatPowersDbContext context, LandUnitRepository landUnitRepository,
-        PlaneRepository planeRepository, ShipRepository shipRepository, FactoryRepository factoryRepository) : base(context){
+    public UnitRepository(GreatPowersDbContext context, ILandUnitRepository landUnitRepository,
+        IPlaneRepository planeRepository, IShipRepository shipRepository, IFactoryRepository factoryRepository) : base(context){
         _LandUnitRepository = landUnitRepository;
         _PlaneRepository = planeRepository;
         _ShipRepository = shipRepository;
@@ -74,81 +73,5 @@ public class UnitRepository : ACreatableRepository<AUnit>, IUnitRepository{
         }
 
         return result;
-    }
-
-    public async Task<List<AUnit>> GetPlaceableUnits(){
-        List<AUnit> units = new List<AUnit>();
-        units = await ReadAllAsync();
-
-        List<AUnit> placeableUnits = new List<AUnit>();
-
-        foreach (var u in units){
-            if(u is null) continue;
-            if (u.IsPlane()){
-                var p = u as APlane;
-                if (p.GetLocation() is null && p.GetAircraftCarrier() is null){
-                    placeableUnits.Add(p);
-                }
-            }
-
-            if (u.IsLandUnit()){
-                var l = u as ALandUnit;
-                if (l.GetLocation() is null && l.GetTransporter() is null){
-                    placeableUnits.Add(l);
-                }
-            }
-
-            if (u.IsShip()){
-                var s = u as AShip;
-                if (s.GetLocation() is null){
-                    placeableUnits.Add(s);
-                }
-            }
-        }
-
-        return placeableUnits;
-    }
-    
-    public async Task MoveUpdateAsync(AUnit unit){
-        _context.ChangeTracker.Clear();
-        _context.Entry(unit).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task RemoveTargetAsync(int unitId){
-        _context.ChangeTracker.Clear();
-        var unit = await ReadAsync(unitId);
-        unit.TargetId = null;
-        unit.Target = null;
-        _context.Entry(unit).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-    }
-    public async Task RemoveAggressorAsync(int unitId){
-        _context.ChangeTracker.Clear();
-        var unit = await ReadAsync(unitId);
-        unit.AggressorId = null;
-        unit.Aggressor = null;
-        _context.Entry(unit).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-    }
-    public async Task RemoveDefenderAsync(int unitId){
-        _context.ChangeTracker.Clear();
-        var unit = await ReadAsync(unitId);
-        unit.DefenderId = null;
-        unit.Defender = null;
-        _context.Entry(unit).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-    }
-    public async Task DeleteUnit(int id){
-        _context.ChangeTracker.Clear();
-        //var units = await ReadAllAsync();
-        var unit = await ReadAsync(id);
-        //if (units is null) return;
-        if (unit is null) return;
-        //units.Remove(unit);
-        _context.Units.Remove(unit);
-        _set.Remove(unit);
-        _context.Entry(unit).State = EntityState.Deleted;
-        await _context.SaveChangesAsync();
     }
 }

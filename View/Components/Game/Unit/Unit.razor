@@ -2,11 +2,12 @@
 @using Model.Entities
 @using System.Drawing
 @using Domain.Repositories.Implementations
+@using Domain.Repositories.Interfaces
 @using Model.Entities.Regions
 @using Model.Entities.Units.Abstract
 @using View.Services
-@inject AircraftCarrierRepository AircraftCarrierRepository
-@inject TransportRepository TransportRepository
+@inject IAircraftCarrierRepository AircraftCarrierRepository
+@inject ITransportRepository TransportRepository
 @inject ActiveRegion ActiveRegion
 
 @if (Troop is not null && Region is not null){

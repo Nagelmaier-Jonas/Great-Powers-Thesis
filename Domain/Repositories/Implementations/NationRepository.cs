@@ -78,20 +78,4 @@ public class NationRepository : ARepository<Nation>, INationRepository{
             .Select(r => r.Income)
             .SumAsync();
     }
-    
-    public async Task CollectNationIncome(int nationId){
-        _context.ChangeTracker.Clear();
-        var nation = await ReadGraphAsync(nationId);
-        nation.CollectIncome();
-        _context.Entry(nation).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-    }
-    public async Task ResetPlayer(int nationId){
-        _context.ChangeTracker.Clear();
-        var nation = await ReadGraphAsync(nationId);
-        nation.User = null;
-        nation.UserId = null;
-        _context.Entry(nation).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-    }
 }

@@ -5,12 +5,13 @@
 @using Vanara.Extensions
 @using System.Text.Json
 @using DataTransfer
+@using Domain.Repositories.Interfaces
 @inject IJSRuntime JSRuntime
-@inject BattleRepository BattleRepository
-@inject UnitRepository UnitRepository
+@inject IBattleRepository BattleRepository
+@inject IUnitRepository UnitRepository
 @inject GameEngine GameEngine
 @inject ViewRefreshService ViewRefreshService
-@inject EventPublisher EventPublisher
+@inject IEventPublisher EventPublisher
 @implements IDisposable
 
 @if (Battle is not null){

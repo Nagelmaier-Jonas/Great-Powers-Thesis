@@ -10,8 +10,4 @@ namespace Domain.Repositories.Implementations;
 public class FactoryRepository : ACreatableRepository<Factory>, IFactoryRepository{
     public FactoryRepository(GreatPowersDbContext context) : base(context){
     }
-    public async Task<List<AUnit>?> GetPlaceableFactories(){
-        var factories = await ReadAllAsync();
-        return factories.Where(f => f.RegionId is null).Cast<AUnit>().ToList();
-    }
 }

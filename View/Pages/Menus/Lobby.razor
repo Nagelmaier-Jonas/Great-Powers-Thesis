@@ -5,17 +5,18 @@
 @using System.Text.Json
 @using DataTransfer
 @using Domain.Repositories.Implementations
+@using Domain.Repositories.Interfaces
 @using Domain.Services
 @using EventBus.Clients
 @using Model.Entities
 @using Vanara.Extensions
-@inject NationRepository NationRepository
+@inject INationRepository NationRepository
 @inject UserRepository UserRepository
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
 @inject ReadyService ReadyService
 @inject ViewRefreshService ViewRefreshService
-@inject EventPublisher EventPublisher
+@inject IEventPublisher EventPublisher
 @implements IDisposable
 
 <style>
@@ -170,7 +171,9 @@
             Snackbar.Add("Sie können keine fremden Nationen freigeben", Severity.Error);
             return;
         }
-        await NationRepository.ResetPlayer(nation.Id);
+        nation.User = null;
+        nation.UserId = null;
+        await NationRepository.UpdateAsync(nation);
         Snackbar.Add("Nation freigegeben", Severity.Success);
         EventPublisher.Publish(JsonSerializer.Serialize(new StateHasChangedEvent()));
     }

@@ -6,6 +6,7 @@
 @using Model.Entities.Regions
 @using Model.Entities.Units.Abstract
 @using System.Drawing
+@using Domain.Repositories.Interfaces
 @using Size = MudBlazor.Size
 @inject ViewRefreshService ViewRefreshService
 @inject IServiceScopeFactory ServiceScopeFactory
@@ -71,10 +72,10 @@
     private async Task Load(){
         var scope = ServiceScopeFactory.CreateScope();
         Info = await scope.ServiceProvider.GetRequiredService<SessionInfoRepository>().ReadAsync();
-        Nations = await scope.ServiceProvider.GetRequiredService<NationRepository>().ReadAllGraphAsync();
-        SeeZones = await scope.ServiceProvider.GetRequiredService<WaterRegionRepository>().ReadAllGraphAsync();
-        CurrentNation = await scope.ServiceProvider.GetRequiredService<NationRepository>().ReadGraphAsync(Info.CurrentNationId);
-        MaxTroops = await scope.ServiceProvider.GetRequiredService<NationRepository>().GetFactoryPower(CurrentNation);
+        Nations = await scope.ServiceProvider.GetRequiredService<INationRepository>().ReadAllGraphAsync();
+        SeeZones = await scope.ServiceProvider.GetRequiredService<IWaterRegionRepository>().ReadAllGraphAsync();
+        CurrentNation = await scope.ServiceProvider.GetRequiredService<INationRepository>().ReadGraphAsync(Info.CurrentNationId);
+        MaxTroops = await scope.ServiceProvider.GetRequiredService<INationRepository>().GetFactoryPower(CurrentNation);
         CurrentUser = await scope.ServiceProvider.GetRequiredService<UserRepository>().ReadGraphAsync(CurrentUser!.Id);
         Battlegrounds = await scope.ServiceProvider.GetRequiredService<GameEngine>().GetBattleLocations();
         PlaceableUnits = await scope.ServiceProvider.GetRequiredService<GameEngine>().GetPlaceableUnits();

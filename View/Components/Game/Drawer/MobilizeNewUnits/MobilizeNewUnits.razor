@@ -11,7 +11,7 @@
 @inject MobilizeUnit MobilizeUnit
 @inject ViewRefreshService ViewRefreshService
 @inject IDialogService DialogService
-@inject EventPublisher EventPublisher
+@inject IEventPublisher EventPublisher
 
 @if (SessionInfo.Phase is not EPhase.MobilizeNewUnits){
     return;

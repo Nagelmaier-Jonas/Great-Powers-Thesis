@@ -12,32 +12,39 @@ public abstract class AUnit{
     [Key]
     public int Id{ get; set; }
 
-    [Column("NATION_ID")] public int NationId{ get; set; }
+    [Column("NATION_ID")] 
+    public int NationId{ get; set; }
 
     public Nation Nation{ get; set; }
 
-    [Column("TARGET_ID")] public int? TargetId{ get; set; }
+    [Column("TARGET_ID")] 
+    public int? TargetId{ get; set; }
 
     public ARegion? Target{ get; set; }
 
-    [Column("CURRENT_MOVEMENT")] public int CurrentMovement{ get; set; }
+    [Column("CURRENT_MOVEMENT")] 
+    public int CurrentMovement{ get; set; }
 
     [Column("CAN_MOVE", TypeName = "TINYINT")]
     public bool CanMove{ get; set; } = true;
 
-    [Column("AGGRESSOR_ID")] public int? AggressorId{ get; set; }
+    [Column("AGGRESSOR_ID")] 
+    public int? AggressorId{ get; set; }
 
     public Battle? Aggressor{ get; set; }
 
-    [Column("DEFENDER_ID")] public int? DefenderId{ get; set; }
+    [Column("DEFENDER_ID")]
+    public int? DefenderId{ get; set; }
 
     public Battle? Defender{ get; set; }
     
-    [Column("CASUALTY_ID")] public int? CasualtyId{ get; set; }
+    [Column("CASUALTY_ID")] 
+    public int? CasualtyId{ get; set; }
 
     public Battle? Casualty{ get; set; }
 
-    [Column("HITPOINTS")] public virtual int HitPoints{ get; set; } = 1;
+    [Column("HITPOINTS")]
+    public virtual int HitPoints{ get; set; } = 1;
 
     [NotMapped] public virtual int Movement{ get; protected set; }
     [NotMapped] public virtual int Cost{ get; protected set; }

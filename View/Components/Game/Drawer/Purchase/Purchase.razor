@@ -8,14 +8,15 @@
 @using View.Services
 @using System.Text.Json
 @using DataTransfer
+@using Domain.Repositories.Interfaces
 @using Domain.Services
 @using EventBus.Clients
 @inject SessionInfoRepository SessionInfoRepository
-@inject NationRepository NationRepository
+@inject INationRepository NationRepository
 @inject IDialogService DialogService
 @inject ViewRefreshService ViewRefreshService
 @inject GameEngine GameEngine
-@inject EventPublisher EventPublisher
+@inject IEventPublisher EventPublisher
 
 @if (SessionInfo.Phase is not EPhase.PurchaseUnits){
     return;

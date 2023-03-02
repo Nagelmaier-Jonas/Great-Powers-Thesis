@@ -6,11 +6,13 @@ namespace Model.Entities.Units.Abstract;
 
 [Table("LAND_UNITS_BT")]
 public abstract class ALandUnit : AUnit{
-    [Column("LOCATION_ID")] public int? RegionId{ get; set; }
+    [Column("LOCATION_ID")] 
+    public int? RegionId{ get; set; }
 
     public LandRegion? Region{ get; set; }
 
-    [Column("TRANSPORT_ID")] public int? TransportId{ get; set; }
+    [Column("TRANSPORT_ID")] 
+    public int? TransportId{ get; set; }
 
     public Transport? Transport{ get; set; }
     public Transport? GetTransporter() => Transport;
@@ -21,7 +23,7 @@ public abstract class ALandUnit : AUnit{
         List<ARegion> path = GetPath(phase, Target);
         if (path.Count == 0) return false;
 
-        if (phase == EPhase.CombatMove) CanMove = false;
+        if (phase == EPhase.ConductCombat) CanMove = false;
         
         if (Target.IsWaterRegion()){
             Transport transport = Target.GetOpenTransports(Nation, phase).FirstOrDefault();

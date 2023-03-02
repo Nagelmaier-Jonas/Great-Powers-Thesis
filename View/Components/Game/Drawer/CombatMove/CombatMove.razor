@@ -12,7 +12,7 @@
 @inject GameEngine GameEngine
 @inject ViewRefreshService ViewRefreshService
 @inject IDialogService DialogService
-@inject EventPublisher EventPublisher
+@inject IEventPublisher EventPublisher
 
 @if (SessionInfo.Phase is not EPhase.CombatMove){
     return;

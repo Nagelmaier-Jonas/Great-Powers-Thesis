@@ -8,12 +8,12 @@ using Model.Entities.Regions;
 namespace Domain.Repositories.Implementations;
 
 public class RegionRepository : ARepository<ARegion>, IRegionRepository{
-    public LandRegionRepository _LandRegionRepository{ get; set; }
-    public WaterRegionRepository _WaterRegionRepository{ get; set; }
-    public FactoryRepository _FactoryRepository{ get; set; }
+    public ILandRegionRepository _LandRegionRepository{ get; set; }
+    public IWaterRegionRepository _WaterRegionRepository{ get; set; }
+    public IFactoryRepository _FactoryRepository{ get; set; }
 
-    public RegionRepository(GreatPowersDbContext context, LandRegionRepository landRegionRepository,
-        WaterRegionRepository waterRegionRepository, FactoryRepository factoryRepository) : base(context){
+    public RegionRepository(GreatPowersDbContext context, ILandRegionRepository landRegionRepository,
+        IWaterRegionRepository waterRegionRepository, IFactoryRepository factoryRepository) : base(context){
         _LandRegionRepository = landRegionRepository;
         _WaterRegionRepository = waterRegionRepository;
         _FactoryRepository = factoryRepository;
@@ -66,61 +66,5 @@ public class RegionRepository : ARepository<ARegion>, IRegionRepository{
         }
 
         return result;
-    }
-
-    public async Task<List<ARegion>> GetCountryRegionsWithFactory(int nationId){
-        List<ARegion> regions = await base.ReadAllAsync();
-        regions = regions.Where(r => r.GetOwnerId() == nationId).ToList();
-        if (regions.Count == 0) return new List<ARegion>();
-
-        var result = new List<ARegion>();
-
-        var countriesWithFactories = await _FactoryRepository.ReadAllAsync();
-        var countryIds = countriesWithFactories.Select(i => i.RegionId).ToList();
-
-        foreach (var region in regions.Where(r => countryIds.Contains(r.Id))){
-            if (region.IsLandRegion()) result.Add(await _LandRegionRepository.ReadGraphAsync(region.Id));
-            if (region.IsWaterRegion()) result.Add(await _WaterRegionRepository.ReadGraphAsync(region.Id));
-        }
-
-        return result;
-    }
-
-    public async Task<List<ARegion>> GetCountryRegionsWithoutFactory(int nationId){
-        List<ARegion> regions = await base.ReadAllAsync();
-        regions = regions.Where(r => r.GetOwnerId() == nationId).ToList();
-        if (regions.Count == 0) return new List<ARegion>();
-
-        var result = new List<ARegion>();
-
-        var countriesWithFactories = await _FactoryRepository.ReadAllAsync();
-        var countryIds = countriesWithFactories.Select(i => i.RegionId).ToList();
-
-        foreach (var region in regions.Where(r => !countryIds.Contains(r.Id))){
-            if (region.IsLandRegion()) result.Add(await _LandRegionRepository.ReadGraphAsync(region.Id));
-            if (region.IsWaterRegion()) result.Add(await _WaterRegionRepository.ReadGraphAsync(region.Id));
-        }
-
-        return result;
-    }
-
-    public async Task<List<ARegion>> GetNeighborsLandRegions(List<Neighbours> neighbours){
-        List<ARegion> regions = await base.ReadAllAsync();
-        regions = regions.Where(r => r.IsLandRegion()).ToList();
-        if (regions.Count == 0) return new List<ARegion>();
-
-        var result = new List<ARegion>();
-
-        foreach (var region in regions.Where(region => neighbours.Any(n => n.NeighbourId == region.Id))){
-            result.Add(await _LandRegionRepository.ReadGraphAsync(region.Id));
-        }
-
-        return result;
-    }
-    public async Task ResetTroopsMobilized(int regionId){
-        var region = await _set.FindAsync(regionId);
-        region.ResetTroopsMobilized();
-        _context.Entry(region).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
     }
 }

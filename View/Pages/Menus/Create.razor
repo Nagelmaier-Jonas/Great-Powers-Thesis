@@ -6,12 +6,13 @@
 @using Model.Entities
 @using Domain.Repositories
 @using Domain.Repositories.Implementations
+@using Domain.Repositories.Interfaces
 @using EventBus.Clients
 @inject NavigationManager NavigationManager
 @inject DockerService DockerService
 @inject FileService FileService
 @inject SessionInfoRepository SessionInfoRepository
-@inject NationRepository NationRepository
+@inject INationRepository NationRepository
 @inject UserRepository UserRepository
 @inject EventSubscriberHelper EventSubscriberHelper
 
@@ -83,7 +84,10 @@
         else{
             NavigationManager.NavigateTo("/lobby");
         }
-        await UserRepository.InitUser(CurrentUser);
+        
+    
+        CurrentUser.IsOwner = true;
+        await UserRepository.UpdateAsync(CurrentUser);
         StateHasChanged();
     }
 
