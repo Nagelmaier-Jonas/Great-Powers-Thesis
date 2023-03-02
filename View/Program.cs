@@ -117,7 +117,6 @@ builder.Services.AddScoped<ActiveRegion>();
 builder.Services.AddSingleton<ViewRefreshService>();
 builder.Services.AddSingleton<ReadyService>();
 builder.Services.AddScoped<CombatTargets>();
-builder.Services.AddScoped<Battlegrounds>();
 builder.Services.AddScoped<NonCombatTargets>();
 builder.Services.AddScoped<MobilizeUnit>();
 
@@ -127,7 +126,7 @@ builder.Services.AddTransient<StateHasChangedEventHandler>();
 builder.Services.AddTransient<ReadyEventHandler>();
 
 builder.Services.AddSingleton<EventPublisher>();
-builder.Services.AddSingleton<IEventProcessor, StateHasChangedEventProcessor>();
+builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
 builder.Services.AddHostedService<EventSubscriber>();
 builder.Services.AddSingleton<EventSubscriberHelper>();
 

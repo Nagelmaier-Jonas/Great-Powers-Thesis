@@ -22,10 +22,6 @@ public class ActiveRegion{
         Region = region;
         HandleRegionChange?.Invoke();
     }
-    public void RefreshRegion(){
-        HandleRegionChange?.Invoke();
-    }
-
     public void ClearRegion(){
         Region = null;
         CombatTargets.ClearRegions();

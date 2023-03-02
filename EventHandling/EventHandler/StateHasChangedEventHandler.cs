@@ -6,13 +6,13 @@ namespace EventHandling.EventHandler;
 
 public class StateHasChangedEventHandler : IEventHandler{
     
-    private readonly ViewRefreshService viewRefreshService;
+    private readonly ViewRefreshService _viewRefreshService;
     
     public StateHasChangedEventHandler(IServiceScopeFactory serviceScopeFactory){
-        viewRefreshService = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<ViewRefreshService>();
+        _viewRefreshService = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<ViewRefreshService>();
     }
     public void Execute(){
-        viewRefreshService.Refresh();
+        _viewRefreshService.Refresh();
     }
     
 }

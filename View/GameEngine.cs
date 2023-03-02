@@ -21,7 +21,6 @@ public class GameEngine{
     public ViewRefreshService _ViewRefreshService{ get; set; }
     public RegionRepository _RegionRepository{ get; set; }
     public WaterRegionRepository _WaterRegionRepository{ get; set; }
-    public Battlegrounds _Battlegrounds{ get; set; }
     public FileService FileService{ get; set; }
     public EventPublisher _EventPublisher{ get; set; }
 
@@ -39,7 +38,6 @@ public class GameEngine{
         _ViewRefreshService = scope.ServiceProvider.GetRequiredService<ViewRefreshService>();
         FileService = scope.ServiceProvider.GetRequiredService<FileService>();
         _RegionRepository = scope.ServiceProvider.GetRequiredService<RegionRepository>();
-        _Battlegrounds = scope.ServiceProvider.GetRequiredService<Battlegrounds>();
         _FactoryRepository = scope.ServiceProvider.GetRequiredService<FactoryRepository>();
         _EventPublisher = scope.ServiceProvider.GetRequiredService<EventPublisher>();
         _WaterRegionRepository = scope.ServiceProvider.GetRequiredService<WaterRegionRepository>();

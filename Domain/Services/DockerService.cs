@@ -10,30 +10,9 @@ namespace Domain.Services;
 public class DockerService{
     private readonly GreatPowersDbContext _greatPowersDbContext;
     private ILogger<DockerService> Logger{ get; set; }
-
-    public List<int> PortsMysql{ get; set; } = new(){
-        26280,
-        26281,
-        26282,
-        26283,
-        26284
-    };
-
-    public List<int> PortsRabbitMqS{ get; set; } = new(){
-        5672,
-        5673,
-        5674,
-        5675,
-        5676
-    };
-
-    public List<int> PortsRabbitMqW{ get; set; } = new(){
-        15672,
-        15673,
-        15674,
-        15675,
-        15676
-    };
+    public List<int> PortsMysql{ get; set; } = new(){ 26280, 26281, 26282, 26283, 26284 };
+    public List<int> PortsRabbitMqS{ get; set; } = new(){ 5672, 5673, 5674, 5675, 5676 };
+    public List<int> PortsRabbitMqW{ get; set; } = new(){ 15672, 15673, 15674, 15675, 15676 };
 
     public DockerService(GreatPowersDbContext greatPowersDbContext, ILogger<DockerService> logger){
         _greatPowersDbContext = greatPowersDbContext;
@@ -70,13 +49,14 @@ public class DockerService{
             return false;
         }
         catch (Exception e){
-            Logger.LogInformation(e.Message);
+            Logger.LogInformation("{E}",e);
             return true;
         }
     }
 
     public Task WriteDockerFile(string name, string portmySql, string portRabbitMqS, string portRabbitMqW){
-        var databasePath = Directory.GetParent(Environment.CurrentDirectory.Split("Great-Powers-Thesis")[0]) + "\\Great-Powers-Thesis\\Databases";
+        var databasePath = Directory.GetParent(Environment.CurrentDirectory.Split("Great-Powers-Thesis")[0]) +
+                           "\\Great-Powers-Thesis\\Databases";
         var schema = File.ReadAllText($"{databasePath}\\schema.sql");
         schema = schema.Replace("\\Databases\\default\\", $"\\Databases\\{name}\\");
         var dockerComposeFile = File.ReadAllText($"{databasePath}\\docker-compose.yml");
@@ -95,24 +75,14 @@ public class DockerService{
         return Task.CompletedTask;
     }
 
+    // ReSharper disable ReturnValueOfPureMethodIsNotUsed
     public Task StartDockerContainer(string name, string portmySql, string portRabbitMqS, string portRabbitMqW){
-        var databasePath = Directory.GetParent(Environment.CurrentDirectory.Split("Great-Powers-Thesis")[0]) + "\\Great-Powers-Thesis\\Databases";
+        var databasePath = Directory.GetParent(Environment.CurrentDirectory.Split("Great-Powers-Thesis")[0]) +
+                           "\\Great-Powers-Thesis\\Databases";
         var dockerComposeFile = File.ReadAllText($"{databasePath}\\docker-compose.yml");
-        dockerComposeFile = dockerComposeFile.Replace("26280", portmySql);
-        dockerComposeFile = dockerComposeFile.Replace("26281", portmySql);
-        dockerComposeFile = dockerComposeFile.Replace("26282", portmySql);
-        dockerComposeFile = dockerComposeFile.Replace("26283", portmySql);
-        dockerComposeFile = dockerComposeFile.Replace("26284", portmySql);
-        dockerComposeFile = dockerComposeFile.Replace("26285", portRabbitMqS);
-        dockerComposeFile = dockerComposeFile.Replace("26286", portRabbitMqS);
-        dockerComposeFile = dockerComposeFile.Replace("26287", portRabbitMqS);
-        dockerComposeFile = dockerComposeFile.Replace("26288", portRabbitMqS);
-        dockerComposeFile = dockerComposeFile.Replace("26289", portRabbitMqS);
-        dockerComposeFile = dockerComposeFile.Replace("26290", portRabbitMqW);
-        dockerComposeFile = dockerComposeFile.Replace("26291", portRabbitMqW);
-        dockerComposeFile = dockerComposeFile.Replace("26292", portRabbitMqW);
-        dockerComposeFile = dockerComposeFile.Replace("26293", portRabbitMqW);
-        dockerComposeFile = dockerComposeFile.Replace("26294", portRabbitMqW);
+        PortsMysql.ForEach(i => dockerComposeFile.Replace(i.ToString(), portmySql));
+        PortsRabbitMqS.ForEach(i => dockerComposeFile.Replace(i.ToString(), portRabbitMqS));
+        PortsRabbitMqW.ForEach(i => dockerComposeFile.Replace(i.ToString(), portRabbitMqW));
         var process = new Process();
         var startInfo = new ProcessStartInfo{
             WindowStyle = ProcessWindowStyle.Hidden,
@@ -127,9 +97,9 @@ public class DockerService{
 
     public Task ChangeDbContext(string ipAddress, string port, string rabbitport, string rabbitport2){
         try{
+            var con = _greatPowersDbContext.Database.GetDbConnection().ConnectionString;
             Logger.Log(LogLevel.Warning,
-                "Changing current Connection String: " +
-                _greatPowersDbContext.Database.GetDbConnection().ConnectionString);
+                "Changing current Connection String: {Con}", con);
             AppSettings.DBPort = port;
             AppSettings.RabbitPort = rabbitport;
             AppSettings.RabbitPort2 = rabbitport2;
@@ -138,8 +108,8 @@ public class DockerService{
             _greatPowersDbContext.Database.SetConnectionString(
                 $"server={ipAddress}; port={port}; database=greatpowers; user=greatpowers; password=greatpowers; Persist Security Info=False; Connect Timeout=300");
             _greatPowersDbContext.Database.OpenConnection();
-            Logger.Log(LogLevel.Information,
-                "New Connection String: " + _greatPowersDbContext.Database.GetDbConnection().ConnectionString);
+            con = _greatPowersDbContext.Database.GetDbConnection().ConnectionString;
+            Logger.Log(LogLevel.Information, "New Connection String: {Con}", con);
             return Task.CompletedTask;
         }
         catch (Exception){
@@ -172,7 +142,8 @@ public class DockerService{
             FileName = "cmd.exe"
         };
         process.StartInfo = startInfo;
-        var databasePath = Directory.GetParent(Environment.CurrentDirectory.Split("Great-Powers-Thesis")[0]) + "\\Great-Powers-Thesis\\Databases";
+        var databasePath = Directory.GetParent(Environment.CurrentDirectory.Split("Great-Powers-Thesis")[0]) +
+                           "\\Great-Powers-Thesis\\Databases";
         process.StartInfo.Arguments = $"/c cd {databasePath} && docker-compose down";
         process.Start();
         process.WaitForExit();

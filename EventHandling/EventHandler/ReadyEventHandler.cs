@@ -6,12 +6,12 @@ namespace EventHandling.EventHandler;
 
 public class ReadyEventHandler : IEventHandler{
 
-    private readonly ReadyService readyService;
+    private readonly ReadyService _readyService;
 
     public ReadyEventHandler(IServiceScopeFactory serviceScopeFactory){
-        readyService = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<ReadyService>();
+        _readyService = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<ReadyService>();
     }
     public void Execute(){
-        readyService.Ready();
+        _readyService.Ready();
     }
 }
